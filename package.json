@@ -10,9 +10,10 @@
     "back"
   ],
   "scripts": {
-    "start-back": "yarn workspace back start",
-    "start-front": "yarn workspace front start",
-    "postinstall": "npm setup",
-    "setup": "node setup.js"
+    "start:back": "yarn workspace back start",
+    "start:front": "yarn workspace front start",
+    "db:create": "yarn workspace back sequelize db:create",
+    "postinstall": "npm setup:help",
+    "setup:help": "node setup.js"
   }
 }

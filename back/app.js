@@ -1,10 +1,11 @@
-import dotEnv from 'dotenv-flow';
-import express, { urlencoded, json } from 'express';
-import userRoutes from './routes/user.routes';
+const dotEnv = require('dotenv-flow');
+dotEnv.config({
+  silent: true
+});
+const express = require('express');
+const userRoutes = require('./routes/user.routes');
 
-dotEnv.config();
 const app = express();
-
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
@@ -12,12 +13,13 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(urlencoded({
+app.use(express.urlencoded({
   extended: true
 }));
-app.use(json());
+app.use(express.json());
+
 
 /**Auth Api */
 app.use('/api/auth', userRoutes);
 
-export default app;
+module.exports = app;

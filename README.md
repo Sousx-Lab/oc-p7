@@ -14,11 +14,11 @@ this project use [***workspaces***](https://docs.npmjs.com/cli/v7/using-npm/work
 #### back-end server
 
 ```bash
-  npm start-back
+  npm serve:back
 ```
 
 #### front-end server
 
 ```bash
-  npm start-front
+  npm serve:front
 ```

@@ -1,10 +1,18 @@
+const User = require('../models/index').User;
 
 /**SignUp */
-export function signup(req, res, next) {
-    return res.status(200).json(req.body);
+exports.signup = (req, res, next) => {
+    const user = {...req.body};
+    User.create(user)
+    .then(data => {
+        res.status(200).json(data);
+    })
+    .catch(err => {
+        res.status(500).json({message: err.message || 'Server Error'});
+    });
 }
 
 /**Login */
-export function login(req, res, next) {
+exports.login = (req, res, next) =>{
     return res.status(200).json('Hello Login controller');
 }
