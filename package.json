@@ -10,9 +10,12 @@
     "back"
   ],
   "scripts": {
-    "start:back": "yarn workspace back start",
-    "start:front": "yarn workspace front start",
-    "db:create": "yarn workspace back sequelize db:create",
+    "back:start": "cd ./back& nodemon --experimental-specifier-resolution=node server.js",
+    "front:start": "cd ./front& parcel serve src/index.html --cache-dir ./.parcel-cache",
+    "front:build": "cd ./front& parcel build src/index.html --dist-dir public --public-url ./",
+    "db:create": "cd ./back& sequelize-cli db:create",
+    "db:migrate": "cd ./back& sequelize-cli db:migrate",
+    "db:migrations:generate": "cd ./back& node config/sequelize/db-migrations-generator.js",
     "postinstall": "npm setup:help",
     "setup:help": "node setup.js"
   }

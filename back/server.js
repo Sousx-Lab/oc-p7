@@ -46,7 +46,7 @@ server.on('listening', () => {
   }else if(address.family === "IPv6"){
     bind = "http://127.0.0.1:"+port
   }
-  console.log(`\x1b[42mServer listening on: ${bind}\x1b[40m\n`);
+  console.log(`\x1b[42m 🚀 Server start listening on: ${bind}\x1b[40m\n`);
 });
 
 server.listen(port);

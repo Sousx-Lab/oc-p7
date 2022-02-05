@@ -10,6 +10,7 @@ module.exports =
     dialect:"mysql",
     charset:"utf8mb4",
     collate:"utf8mb4_unicode_ci",
+    underscored: true,
     pool: {
       max: 5,
       min: 0,
@@ -22,6 +23,7 @@ module.exports =
     dialect:"mysql",
     charset:"utf8mb4",
     collate:"utf8mb4_unicode_ci",
+    underscored: true,
     pool: {
       max: 5,
       min: 0,
@@ -34,6 +36,7 @@ module.exports =
     dialect:"mysql",
     charset:"utf8mb4",
     collate:"utf8mb4_unicode_ci",
+    underscored: true,
     pool: {
       max: 5,
       min: 0,
