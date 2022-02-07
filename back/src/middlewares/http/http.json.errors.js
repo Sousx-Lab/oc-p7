@@ -1,7 +1,4 @@
-const httpStatus = require('./http.status');
 const {response} = require('express')
-
-
 /**
  * 
  * @param {Error} err 
@@ -9,9 +6,8 @@ const {response} = require('express')
  * @returns {response}
  */
 exports.jsonErrors = (err, res) => {
-
-    if ((Object.getPrototypeOf(err.constructor).name === 
-        "ValidationError" || "BaseError")) {
+    
+    if (Object.getPrototypeOf(err.constructor).name === "ValidationError" || "BaseError" && err.name !== "Error"){
         let error = {
             validationError: {}
         }
@@ -20,10 +16,10 @@ exports.jsonErrors = (err, res) => {
                 meessage: er.message
             }
         });
-        return res.status(httpStatus.HTTP_BAD_REQUEST).json(error);
-
+        return res.http.BadRequest(error);
+    
     } else {
-        return res.status(httpStatus.HTTP_SERVER_ERROR).json({error: {message: err.message } || 'Server Error'});
+        return res.http.ServerError({error: {message: err.message } || 'Server Error'});
     }
 }
 

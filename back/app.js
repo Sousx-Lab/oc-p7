@@ -4,6 +4,8 @@ dotEnv.config({
 });
 const express = require('express');
 const userRoutes = require('./src/routes/user.routes');
+const cookieParser = require('cookie-parser');
+const httpResponse = require('./src/middlewares/http/http.response');
 
 const app = express();
 app.use((req, res, next) => {
@@ -12,12 +14,13 @@ app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
   next();
 });
+app.use(httpResponse)
 
 app.use(express.urlencoded({
   extended: true
 }));
 app.use(express.json());
-
+app.use(cookieParser());
 
 /**Auth Api */
 app.use('/api/auth', userRoutes);
