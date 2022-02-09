@@ -68,9 +68,12 @@ class HTTPResponse {
     }
 
 }
-const httpResponse = (req, res, next) => {
-    res.http = new HTTPResponse(res)
-    next();
+const httpResponse = () => {
+    return (req, res, next) => {
+        res.http = new HTTPResponse(res)
+        next();
+    }
+   
 };
 
 module.exports = httpResponse

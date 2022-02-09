@@ -6,6 +6,7 @@ const express = require('express');
 const userRoutes = require('./src/routes/user.routes');
 const cookieParser = require('cookie-parser');
 const httpResponse = require('./src/middlewares/http/http.response');
+const handleParserError = require('./src/middlewares/validator/body.parser')
 
 const app = express();
 app.use((req, res, next) => {
@@ -14,13 +15,16 @@ app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
   next();
 });
-app.use(httpResponse)
+app.use(httpResponse())
 
 app.use(express.urlencoded({
   extended: true
 }));
-app.use(express.json());
-app.use(cookieParser());
+app.use(express.json())
+
+app.use(handleParserError());
+
+app.use(cookieParser(process.env.COOKIE_SIGNATURE));
 
 /**Auth Api */
 app.use('/api/auth', userRoutes);

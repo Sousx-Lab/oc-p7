@@ -1,3 +1,4 @@
+const e = require('express');
 const {response} = require('express')
 /**
  * 
@@ -7,19 +8,34 @@ const {response} = require('express')
  */
 exports.jsonErrors = (err, res) => {
     
-    if (Object.getPrototypeOf(err.constructor).name === "ValidationError" || "BaseError" && err.name !== "Error"){
+    const classErrorType = err.name
+
+    if(classErrorType === "SequelizeConnectionRefusedError"){
+        return res.http.ServerError({error: {message: "Database ConnectionRefusedError"} });
+    }
+    else if (classErrorType === "SequelizeValidationError" || classErrorType === "SequelizeUniqueConstraintError"){
         let error = {
             validationError: {}
         }
         err.errors.map(er => {
+            console.log(err)
             error.validationError[er.path] = {
-                meessage: er.message
+                message: er.message,
+                context: {
+                    value: er.value,
+                    invalids:[
+                        er.value
+                    ],
+                    label: er.path,
+                    key: er.path,
+                },
+                type: er.type.replace(' ', '.')          
             }
         });
         return res.http.BadRequest(error);
     
     } else {
-        return res.http.ServerError({error: {message: err.message } || 'Server Error'});
+        return res.http.ServerError({error: {message: err?.message } || 'Server Error'});
     }
 }
 

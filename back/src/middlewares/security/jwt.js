@@ -12,7 +12,6 @@ exports.jwtSign = function (user) {
         return {
             userId: user.id,
             token: jwt.sign({
-
                     userId: user.id,
                     email: user.email
                 },

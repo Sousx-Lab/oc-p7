@@ -1,6 +1,6 @@
 'use strict';
 const { Model } = require('sequelize');
-const { isValidPassword, isEmail } = require('../middlewares/validator/validator');
+const { v4: uuidv4 } = require('uuid');
 
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
@@ -24,25 +24,28 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
       get(){
-        return this.getDataValue('id') ?? null;
+        return this.getDataValue('id') || null;
       },
     },
 
     /** FirstName */
     firstname: {
-      type: DataTypes.STRING(64) ,
+      type: DataTypes.STRING(64),
       allowNull: false,
       validate: {
         notNull: {
-          msg: "Firstname must be not NULL"
+          msg: "firstname must be not NULL"
         },
         notEmpty:{
-          msg: "FirstName must be not empty"
-        } 
+          msg: "firstName must be not empty"
+        },
       },
       get(){
-        return this.getDataValue('firstname') ?? null;
+        return this.getDataValue('firstname') || null;
       },
+      set(value){
+        this.setDataValue('firstname', value.replace(/ /g, ''))
+      }
     },
 
     /** LastName */
@@ -51,15 +54,18 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       validate: {
         notNull: {
-          msg: "Lastname must be not NULL"
+          msg: "lastname must be not NULL"
         },
         notEmpty:{
-          msg: "LastName must be not empty"
-        } 
+          msg: "lastName must be not empty"
+        },
       },
       get(){
-        return this.getDataValue('lastname') ?? null;
+        return this.getDataValue('lastname') || null;
       },
+      set(value){
+        this.setDataValue('lastname', value.replace(/ /g, ''))
+      }
     },
 
     /** Email */
@@ -69,38 +75,34 @@ module.exports = (sequelize, DataTypes) => {
       unique: true,
       validate: {
         notNull: {
-          msg: "Email must be not NULL"
+          msg: "email must be not NULL"
         },
         notEmpty:{
-          msg: "Email must be not empty"
-        },
-        validateEmail(value){
-          isEmail(value);
+          msg: "email must be not empty"
         },
       },
       get(){
-        return this.getDataValue('email') ?? null;
+        return this.getDataValue('email').replace(/ /g, '') || null;;
       },
     },
-
     /** Password */
     password: {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
         notNull: {
-          msg: "Password must be not NULL"
+          msg: "password must be not NULL"
         },
         notEmpty:{
-          msg: "Password must be not empty"
+          msg: "password must be not empty"
         },
-        validatePassword(value){
-          isValidPassword(value);
-        }
       },
       get(){
-        return this.getDataValue('password') ?? null;
+        return this.getDataValue('password') || null;
       },
+      set(value){
+        this.setDataValue('password', value.toString().replace(/ /g, ''))
+      }
     },
     
     roles:{
