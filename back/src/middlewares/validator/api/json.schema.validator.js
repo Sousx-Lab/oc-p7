@@ -8,10 +8,10 @@ const JsonSchemaValidator = (schema, property) => {
       } else {
         const {details} = error;
         const jsonError = {validationError : {}};
-        details.map(e => {
 
+        details.map(e => {
           jsonError.validationError[e.path[0]] = {
-            message: e.message.replace(/\/ /g, ''),
+            message: e.message.replace(/\"/g, ''),
             context: e.context,
             type: e.type
           }
