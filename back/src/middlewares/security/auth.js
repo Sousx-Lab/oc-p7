@@ -1,18 +1,24 @@
 const {jwtVerify} = require('./jwt');
-const Response = require('../http/http.response');
 
-module.exports = (req, res, next) => {
+const auth = async (req, res, next) => {
     try {
-        const token = req.headers.authorization.split(' ')[1];
-        const decodedToken = jwtVerify(token);
-        const userId = decodedToken.userId;
-        if(!userId){
-            throw 'User ID not valide';
-        }else{
-            req.token = decodedToken;
-            next();
+        const accessToken = req.signedCookies['access_token'];
+        const xsrfToken = req.headers['x-xsrf-token']
+        if(!accessToken){
+            return res.http.Unauthorized({error: {message: 'Unauthorized', reason: 'Missing access token'}})
         }
+        if(!xsrfToken){
+            return res.http.Unauthorized({error: {message: 'Unauthorized', reason: 'Missing xsrf token'}})
+        }
+        const decodedToken =  jwtVerify(accessToken);
+        if(decodedToken.xsrfToken !== xsrfToken){
+            return res.http.Unauthorized({error: {message: 'Unauthorized', reason: 'xsrf token not match'}})
+        }
+        
+        next();
     } catch (error) {
-        res.status(Response.HTTP_UNAUTHORIZED).json({error: error || 'Unauthorized request'});
-    }
-}
+        console.log(error);
+    };
+};
+
+module.exports = auth;
