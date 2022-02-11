@@ -1,7 +1,6 @@
-const e = require('express');
 const {response} = require('express')
+
 /**
- * 
  * @param {Error} err 
  * @param {response} res 
  * @returns {response}
@@ -18,15 +17,14 @@ exports.jsonErrors = (err, res) => {
             validationError: {}
         }
         err.errors.map(er => {
-            console.log(err)
             error.validationError[er.path] = {
                 message: er.message,
                 context: {
+                    label: er.path,
                     value: er.value,
                     invalids:[
                         er.value
                     ],
-                    label: er.path,
                     key: er.path,
                 },
                 type: er.type.replace(' ', '.')          
@@ -40,7 +38,6 @@ exports.jsonErrors = (err, res) => {
 }
 
 /**
- * 
  * @param {string} str 
  * @returns {string|boolean}
  */
