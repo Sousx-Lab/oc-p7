@@ -3,6 +3,7 @@
  * The regex is CNIL compliance and check if eight characters minimum, 
  * at least one uppercase letter, one lowercase letter and one number
  * @param {string} value 
+ * @param {function|null} helpers
  * @returns {string|boolean}
  */
 exports.isValidPassword = (value, helpers = null) => {
@@ -38,13 +39,18 @@ exports.isHtmlTag = (value, helpers = null) =>{
         }
         throw new Error(`value (${value}) is not valid`) 
     }else{
-        return value;
+        return true;
     }
 }
 
+/**
+ * 
+ * @param {any} value 
+ * @returns {boolean|Error}
+ */
 exports.isString = (value) =>{
     if(typeof value !== "string"){
-        throw new Error('Value must be string')
+        throw new Error('value must be string')
     }
     return true;
 }
