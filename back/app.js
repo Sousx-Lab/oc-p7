@@ -1,12 +1,10 @@
-const dotEnv = require('dotenv-flow');
-dotEnv.config({
-  silent: true
-});
+require('dotenv-flow').config({silent: true});
 const express = require('express');
-const userRoutes = require('./src/routes/user.routes');
 const cookieParser = require('cookie-parser');
 const httpResponse = require('./src/middlewares/http/http.response');
 const handleParserError = require('./src/middlewares/validator/body.parser')
+const userRoutes = require('./src/routes/user.routes');
+const postsRoutes = require('./src/routes/posts.routes');
 
 const app = express();
 app.use((req, res, next) => {
@@ -26,7 +24,11 @@ app.use(handleParserError());
 
 app.use(cookieParser(process.env.COOKIE_SIGNATURE));
 
-/**Auth Api */
+/**Auth Route */
 app.use('/api/auth', userRoutes);
+
+
+/** Posts Route */
+app.use('/api/posts', postsRoutes);
 
 module.exports = app;
