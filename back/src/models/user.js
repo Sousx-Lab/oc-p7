@@ -1,6 +1,6 @@
 'use strict';
 const { Model } = require('sequelize');
-const { v4: uuidv4 } = require('uuid');
+const crypto = require('crypto');
 
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
@@ -16,7 +16,6 @@ module.exports = (sequelize, DataTypes) => {
 
   }
   User.init({
-    
     /** ID */
     id: {
       allowNull: false,
@@ -24,8 +23,14 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
       get(){
-        return this.getDataValue('id') || null;
+        return this.getDataValue('id');
       },
+      set(value){
+        if(!this.getDataValue('id')){
+          this.setDataValue('id', crypto.randomUUID());
+        }
+        return;
+      }
     },
 
     /** FirstName */
@@ -41,11 +46,8 @@ module.exports = (sequelize, DataTypes) => {
         },
       },
       get(){
-        return this.getDataValue('firstname') || null;
+        return this.getDataValue('firstname').replace(/ /g, '');
       },
-      set(value){
-        this.setDataValue('firstname', value.replace(/ /g, ''))
-      }
     },
 
     /** LastName */
@@ -61,11 +63,8 @@ module.exports = (sequelize, DataTypes) => {
         },
       },
       get(){
-        return this.getDataValue('lastname') || null;
+        return this.getDataValue('lastname').replace(/ /g, '');
       },
-      set(value){
-        this.setDataValue('lastname', value.replace(/ /g, ''))
-      }
     },
 
     /** Email */
@@ -80,14 +79,18 @@ module.exports = (sequelize, DataTypes) => {
         notEmpty:{
           msg: "email must be not empty"
         },
+        isEmail:{
+          msg: "email is not valid"
+        },
       },
       get(){
-        return this.getDataValue('email').replace(/ /g, '') || null;;
+        return this.getDataValue('email').replace(/ /g, '');
       },
     },
+
     /** Password */
     password: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(255),
       allowNull: false,
       validate: {
         notNull: {
@@ -98,13 +101,20 @@ module.exports = (sequelize, DataTypes) => {
         },
       },
       get(){
-        return this.getDataValue('password') || null;
+        return this.getDataValue('password').replace(/ /g, '');
       },
-      set(value){
-        this.setDataValue('password', value.toString().replace(/ /g, ''))
+    },
+
+    /** Profile picture */
+    profile_pitcture:{
+      type: DataTypes.STRING(255),
+      allowNull: true,
+      get(){
+        return this.getDataValue('profile_pitcture').replace(/ /g, '') || null;
       }
     },
-    
+
+    /** Roles[]*/
     roles:{
       type: DataTypes.JSON,
       defaultValue: [],
@@ -115,13 +125,15 @@ module.exports = (sequelize, DataTypes) => {
       set(value){
         this.setDataValue('roles', value)
       }
-    },
-    
+    },    
   },
-   
   {
     sequelize,
     modelName: 'User',
+    timestamps: true,
+    updatedAt: 'updated_at',
+    createdAt: 'created_at',
+    underscored: true
   });
   return User;
 };
