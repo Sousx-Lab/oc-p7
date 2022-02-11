@@ -4,22 +4,21 @@ const jwt = require('jsonwebtoken');
  * @param {object} user 
  * @returns {object|Error}
  */
-exports.jwtSign = function (user) {
+exports.jwtSign = function (user, xsrfToken = null) {
     try {
         if(typeof user !== "object" || !user?.id || !user?.email ){
             throw 'User must be a object with id and email property';
         }
-        return {
-            userId: user.id,
-            token: jwt.sign({
-                    userId: user.id,
-                    email: user.email
+        return jwt.sign({
+                roles: user.roles,
+                ...(xsrfToken && {xsrfToken: xsrfToken}),
                 },
-                process.env.JWT_TOKEN_SECRET, {
-                    expiresIn: process.env.JWT_TOKEN_EXPIRES_IN
+                process.env.JWT_TOKEN_SECRET, 
+                {
+                expiresIn: parseInt(process.env.JWT_TOKEN_EXPIRES_IN,10) /1000,
+                subject: user.id            
                 }
-            )
-        };
+            );
     } catch (error) {
         throw error;
     }
