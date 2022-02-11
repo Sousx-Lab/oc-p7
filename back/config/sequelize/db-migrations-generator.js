@@ -21,7 +21,9 @@ module.exports = {
     delete attributes[column].fieldName;
     delete attributes[column].field;
     delete attributes[column]._modelAttribute;
-
+    delete attributes[column].get;
+    delete attributes[column].set;
+    delete attributes[column].validate;
     template += `      ${column}: {\n`;
 
     if (attributes[column].defaultValue) {
@@ -114,9 +116,14 @@ module.exports = {
 
   if (models[model].tableName !== undefined) {
     const now = new Date();
-    fs.writeFileSync(
-      `./migrations/${now.toISOString().replace(/[^\d]/g, '').slice(0, -3)}-create-${models[model].tableName}.js`,
-      template,
-    );
+    try {
+      fs.writeFileSync(
+        `${__dirname} + '/../../src/migrations/${now.toISOString().replace(/[^\d]/g, '').slice(0, -3)}-create-${models[model].tableName}.js`,
+        template,
+      );
+    } catch (error) {
+        console.log(error.message)
+    }
+    
   }
 }
