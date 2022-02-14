@@ -13,11 +13,10 @@ exports.jsonErrors = (err, res) => {
         return res.http.ServerError({error: {message: "Database ConnectionRefusedError"} });
     }
     else if (classErrorType === "SequelizeValidationError" || classErrorType === "SequelizeUniqueConstraintError"){
-        let error = {
-            validationError: {}
-        }
+        const jsonError = {validationError: {} }
+        
         err.errors.map(er => {
-            error.validationError[er.path] = {
+            jsonError.validationError[er.path] = {
                 message: er.message,
                 context: {
                     label: er.path,
