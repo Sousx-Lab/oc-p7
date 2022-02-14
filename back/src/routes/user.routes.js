@@ -10,5 +10,6 @@ const router = express.Router();
 /** Authentification Routes */
 router.post('/signup', xss(), JsonSchemaValidator(signupSchema), userController.signup);
 router.post('/login',xss(), JsonSchemaValidator(loginSchema), userController.login);
+router.post('/refresh-token', userController.login);
 
 module.exports = router;
