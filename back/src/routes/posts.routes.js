@@ -1,12 +1,10 @@
 const express = require('express');
 const { xss } = require('express-xss-sanitizer');
+const  postController  = require('../controllers/post.controller');
 const auth = require('../middlewares/security/auth');
 
 const router = express.Router();
-
 /** Posts Routes */
-router.get('/', xss(), auth, (req, res, next)=> {
-    return res.status(200).json('ok');
-} );
+router.get('/', auth, postController.getAll);
 
 module.exports = router;
