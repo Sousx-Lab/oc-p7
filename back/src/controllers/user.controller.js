@@ -2,6 +2,7 @@ const { User, Token } = require('../models/index');
 const {jsonErrors} = require('../middlewares/http/http.json.errors');
 const bcrypt = require('bcrypt');
 const jwt = require('../middlewares/security/jwt');
+const {cookieOptions} = require('../middlewares/http/cookie.options');
 const crypto = require('crypto');
 
 /**SignUp */
@@ -32,26 +33,70 @@ exports.login = async(req, res, next) => {
         const refreshToken = crypto.randomBytes(128).toString('base64');
         const xsrfToken = crypto.randomBytes(64).toString('hex');
         
-        const cookieOptions = {
-            maxAge: parseInt(process.env.COOKIE_EXPIRES_AT, 10),
-            httpOnly: true,
-            signed: true,
-            path: '/'
-        }
-       
         await Token.create({
             token: refreshToken,
             user_id: user.id, 
-            expires_at: Date.now() + parseInt(process.env.JWT_TOKEN_EXPIRES_IN,10)
+            expires_at: Date.now() + parseInt(process.env.JWT_REFRESH_TOKEN_EXPIRE_IN, 10)
         });
 
         res.cookie("access_token", jwt.jwtSign(user, xsrfToken), cookieOptions);
-        res.cookie("refresh_token", refreshToken, {...cookieOptions, path: '/token'});
+        res.cookie("refresh_token", refreshToken, {...cookieOptions, path: '/api/auth/refresh-token'});
         
-        return res.http.Ok({xsrfToken: xsrfToken, });
+        return res.http.Ok({
+            user_id: user.id,
+            firstname: user.firstname,
+            lastname: user.lastname,
+            xsrfToken: xsrfToken
+        });
 
     } catch (error) {
         return jsonErrors(error, res)
     }
+}
+
+/** Refresh token */
+exports.refreshToken = async(req, res, next) => {
+    try {
+        const cookieRefreshToken = req.signedCookies['refresh_token']
+        if(!cookieRefreshToken){
+            return res.http.Unauthorized({error: {message: 'Missing refresh token'}});
+        }
+
+        const refreshToken = await Token.findOne({ where: {token: cookieRefreshToken}})
+        if(!refreshToken){
+            return res.http.Unauthorized({error: {message: 'Not found refresh token'}});
+        }
+
+        const user = await User.findOne({where :{id: refreshToken.user_id}})
+        if(!user){
+            return res.http.Unauthorized({error: {message: 'refresh token not match User'}});
+        }
+        
+        if(new Date(`${refreshToken.expires_at}`).getTime() < Date.now()){
+            const newRefreshToken = crypto.randomBytes(128).toString('base64');
+            await refreshToken.destroy();
+            await Token.create({
+                token: newRefreshToken,
+                user_id: user.id,
+                expires_at: Date.now() + parseInt(process.env.JWT_REFRESH_TOKEN_EXPIRE_IN, 10)
+            });
+            res.cookie("refresh_token", newRefreshToken, {...cookieOptions, path: '/api/auth/refresh-token'});
+        }
+
+        const xsrfToken = crypto.randomBytes(64).toString('hex');
+        res.cookie("access_token", jwt.jwtSign(user, xsrfToken), cookieOptions);
+        
+        return res.http.Ok({
+            user_id: user.id,
+            firstname: user.firstname,
+            lastname: user.lastname,
+            xsrfToken: xsrfToken
+        });
+
+    } catch (error) {
+        return jsonErrors(error);
+    }
     
+
+
 }
