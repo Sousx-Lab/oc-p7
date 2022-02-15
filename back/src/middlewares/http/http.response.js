@@ -67,6 +67,21 @@ class HTTPResponse {
         return this.res.status(HTTP_SERVER_ERROR).json(message);
     }
 
+    /**
+     * @param {string|null} path 
+     * @returns status code 303 
+     */
+    SeeOther(path = '/'){
+        return this.res.redirect(303, path);
+    }
+    
+    /**
+     * @param {string|null} path 
+     * @returns status code 301
+     */
+    MovedPermanently(path = '/'){
+        return this.res.redirect(301, path);
+    }
 }
 const httpResponse = () => {
     return (req, res, next) => {
