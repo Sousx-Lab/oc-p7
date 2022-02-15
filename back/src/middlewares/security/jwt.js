@@ -10,6 +10,8 @@ exports.jwtSign = (user, xsrfToken = null) => {
             throw 'User must be a object with id property';
         }
         return jwt.sign({
+                firstname: user.firstname,
+                lastname: user.lastname,
                 roles: user.roles,
                 ...(xsrfToken && {xsrfToken: xsrfToken}),
                 },

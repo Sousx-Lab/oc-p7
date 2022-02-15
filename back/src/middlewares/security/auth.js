@@ -18,6 +18,12 @@ const auth = async (req, res, next) => {
             return res.http.Unauthorized({error: {message: 'xsrf token not match'}})
         }
         
+        req.user = {
+            id: decodedToken.sub, 
+            firstname: decodedToken.firstname,
+            lastname: decodedToken.lastname,
+            roles: decodedToken.roles
+        }
         if(req.originalUrl === "/api/auth/refresh-token"){
             return next();
         }
