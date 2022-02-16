@@ -1,5 +1,6 @@
 'use strict';
 const { Model } = require('sequelize');
+const crypto = require('crypto');
 
 module.exports = (sequelize, DataTypes) => {
   class Token extends Model {
@@ -23,7 +24,13 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
       get(){
-        return this.getDataValue('id') || null;
+        return this.getDataValue('id');
+      },
+      set(value){
+        if(!this.getDataValue('id')){
+          this.setDataValue('id', crypto.randomUUID());
+        }
+        return;
       },
     },
 

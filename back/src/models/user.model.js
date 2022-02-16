@@ -10,10 +10,7 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate(models) {
-      // define association here
-    }
-
+    static associate(model) {}
   }
   User.init({
     /** ID */
@@ -106,11 +103,11 @@ module.exports = (sequelize, DataTypes) => {
     },
 
     /** Profile picture */
-    profile_pitcture:{
+    profile_picture:{
       type: DataTypes.STRING(255),
       allowNull: true,
       get(){
-        return this.getDataValue('profile_pitcture').replace(/ /g, '') || null;
+        return this.getDataValue('profile_picture')?.replace(/ /g, '') || null;
       }
     },
 
@@ -133,7 +130,8 @@ module.exports = (sequelize, DataTypes) => {
     timestamps: true,
     updatedAt: 'updated_at',
     createdAt: 'created_at',
-    underscored: true
+    underscored: true,
   });
+
   return User;
 };

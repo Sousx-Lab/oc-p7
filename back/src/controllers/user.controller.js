@@ -5,7 +5,9 @@ const jwt = require('../middlewares/security/jwt');
 const {cookieOptions} = require('../middlewares/http/cookie.options');
 const crypto = require('crypto');
 
-/**SignUp */
+/** 
+ * SignUp 
+ */
 exports.signup = async(req, res, next) => {
     try {
         const user = await User.build({...req.body, roles: []});
@@ -18,10 +20,11 @@ exports.signup = async(req, res, next) => {
     }
 }
 
-/**Login */
+/**
+ * Login 
+ */
 exports.login = async(req, res, next) => {
     
-    // console.log(req.signedCookies['access_token'])
     try {
         const user = await User.findOne({ where: {email: req.body.email}})
         if(!user){
@@ -54,23 +57,25 @@ exports.login = async(req, res, next) => {
     }
 }
 
-/** Refresh token */
+/** 
+ * Refresh token 
+ */
 exports.refreshToken = async(req, res, next) => {
     try {
         const cookieRefreshToken = req.signedCookies['refresh_token']
         if(!cookieRefreshToken){
             return res.http.Unauthorized({error: {message: 'Missing refresh token'}});
-        }
+        };
 
         const refreshToken = await Token.findOne({ where: {token: cookieRefreshToken}})
         if(!refreshToken){
             return res.http.Unauthorized({error: {message: 'Not found refresh token'}});
-        }
+        };
 
         const user = await User.findOne({where :{id: refreshToken.user_id}})
         if(!user){
             return res.http.Unauthorized({error: {message: 'refresh token not match User'}});
-        }
+        };
         
         if(new Date(`${refreshToken.expires_at}`).getTime() < Date.now()){
             const newRefreshToken = crypto.randomBytes(128).toString('base64');
@@ -81,7 +86,7 @@ exports.refreshToken = async(req, res, next) => {
                 expires_at: Date.now() + parseInt(process.env.JWT_REFRESH_TOKEN_EXPIRE_IN, 10)
             });
             res.cookie("refresh_token", newRefreshToken, {...cookieOptions, path: '/api/auth/refresh-token'});
-        }
+        };
 
         const xsrfToken = crypto.randomBytes(64).toString('hex');
         res.cookie("access_token", jwt.jwtSign(user, xsrfToken), cookieOptions);
@@ -95,8 +100,6 @@ exports.refreshToken = async(req, res, next) => {
 
     } catch (error) {
         return jsonErrors(error);
-    }
-    
+    };
 
-
-}
+};

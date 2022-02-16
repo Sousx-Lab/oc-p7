@@ -1,5 +1,5 @@
 const Joi = require('joi');
-const {isValidPassword,isHtmlTag} = require('../validator');
+const {isValidPassword,isHtmlTag} = require('../../validator.utils');
 
 exports.signupSchema =
   Joi.object().keys({
@@ -9,7 +9,8 @@ exports.signupSchema =
           .messages({
             'any.unknown': "id is not allowed"
           }),
-        email: Joi.string()
+        email: Joi
+          .string()
           .required()
           .email()
           .messages({

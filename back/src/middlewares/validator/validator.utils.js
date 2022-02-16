@@ -44,7 +44,6 @@ exports.isHtmlTag = (value, helpers = null) =>{
 }
 
 /**
- * 
  * @param {any} value 
  * @returns {boolean|Error}
  */
