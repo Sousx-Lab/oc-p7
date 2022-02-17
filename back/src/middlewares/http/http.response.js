@@ -1,7 +1,10 @@
 const HTTP_OK = 200;
 const HTTP_CREATED = 201;
+const HTTP_MOVEDPEEMANENTLY = 301;
+const HTTP_SEE_OTHER = 303;
 const HTTP_BAD_REQUEST = 400;
 const HTTP_UNAUTHORIZED = 401;
+const HTTP_FORBIDDEN = 403;
 const HTTP_NOT_FOUND = 404;
 const HTTP_UNPROCESSABLE_ENTIITY = 422;
 const HTTP_SERVER_ERROR = 500;
@@ -42,6 +45,14 @@ class HTTPResponse {
     Unauthorized(message = ''){
         return this.res.status(HTTP_UNAUTHORIZED).json(message);
     }
+    
+    /**
+     * @param {object|String|null} message 
+     * @returns status code 403 & json message | " "
+     */
+     Forbidden(message = ''){
+        return this.res.status(HTTP_FORBIDDEN).json(message);
+    }
 
     /**
      * @param {object|String|null} message 
@@ -72,7 +83,7 @@ class HTTPResponse {
      * @returns status code 303 
      */
     SeeOther(path = '/'){
-        return this.res.redirect(303, path);
+        return this.res.redirect(HTTP_SEE_OTHER, path);
     }
     
     /**
@@ -80,15 +91,13 @@ class HTTPResponse {
      * @returns status code 301
      */
     MovedPermanently(path = '/'){
-        return this.res.redirect(301, path);
+        return this.res.redirect(HTTP_MOVEDPEEMANENTLY, path);
     }
 }
-const httpResponse = () => {
+
+module.exports = () => {
     return (req, res, next) => {
         res.http = new HTTPResponse(res)
         next();
     }
-   
-};
-
-module.exports = httpResponse
+}

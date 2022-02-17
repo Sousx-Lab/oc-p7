@@ -43,7 +43,7 @@ exports.login = async(req, res, next) => {
         });
 
         res.cookie("access_token", jwt.jwtSign(user, xsrfToken), cookieOptions);
-        res.cookie("refresh_token", refreshToken, {...cookieOptions, path: '/api/auth/refresh-token'});
+        res.cookie("refresh_token", refreshToken, {...cookieOptions, path: '/api/user/refresh-token'});
         
         return res.http.Ok({
             user_id: user.id,
@@ -85,7 +85,7 @@ exports.refreshToken = async(req, res, next) => {
                 user_id: user.id,
                 expires_at: Date.now() + parseInt(process.env.JWT_REFRESH_TOKEN_EXPIRE_IN, 10)
             });
-            res.cookie("refresh_token", newRefreshToken, {...cookieOptions, path: '/api/auth/refresh-token'});
+            res.cookie("refresh_token", newRefreshToken, {...cookieOptions, path: '/api/user/refresh-token'});
         };
 
         const xsrfToken = crypto.randomBytes(64).toString('hex');

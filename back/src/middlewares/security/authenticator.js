@@ -1,7 +1,7 @@
 const { jsonErrors } = require('../http/http.json.errors');
 const {jwtVerify, jwtIsExpired} = require('./jwt');
 
-const auth = async (req, res, next) => {
+const authenticator = async (req, res, next) => {
     try {
         const accessToken = req.signedCookies['access_token'];
         if(!accessToken){
@@ -24,10 +24,10 @@ const auth = async (req, res, next) => {
             lastname: decodedToken.lastname,
             roles: decodedToken.roles
         }
-        if(req.originalUrl === "/api/auth/refresh-token"){
+        if(req.originalUrl === "/api/user/refresh-token"){
             return next();
         }
-
+        
         if(jwtIsExpired(decodedToken.exp)){
             return res.http.Unauthorized({error: {message: 'Expired access token'}});
         }
@@ -37,5 +37,4 @@ const auth = async (req, res, next) => {
         return jsonErrors(error, res)
     };
 };
-
-module.exports = auth;
+module.exports = authenticator;
