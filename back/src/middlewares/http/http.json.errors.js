@@ -29,7 +29,7 @@ exports.jsonErrors = (err, res) => {
                 type: er.type.replace(' ', '.')          
             }
         });
-        return res.http.BadRequest(error);
+        return res.http.BadRequest(jsonError);
     
     } else {
         return res.http.ServerError({error: {message: err?.message } || 'Server Error'});
