@@ -43,7 +43,7 @@ exports.login = async(req, res, next) => {
         });
 
         res.cookie("access_token", jwt.jwtSign(user, xsrfToken), cookieOptions);
-        res.cookie("refresh_token", refreshToken, {...cookieOptions, path: '/api/user/refresh-token'});
+        res.cookie("refresh_token", refreshToken, {...cookieOptions, path: '/api/user/'});
         
         return res.http.Ok({
             user_id: user.id,
@@ -55,6 +55,27 @@ exports.login = async(req, res, next) => {
     } catch (error) {
         return jsonErrors(error, res)
     }
+}
+
+/** Logout */
+exports.logout = async(req, res, next) => {
+    
+    try {
+        if(req.signedCookies['refresh_token']){
+            const refreshToken = await Token.findOne({ 
+                where: {token: req.signedCookies['refresh_token']}
+            });
+            if(refreshToken){
+                await refreshToken.destroy()
+            }
+            res.clearCookie('refresh_token')
+            res.clearCookie('access_token')
+        }
+        return res.http.Ok()
+    } catch (error) {
+        return jsonErrors(error, res)
+    }
+    
 }
 
 /** 
@@ -85,7 +106,7 @@ exports.refreshToken = async(req, res, next) => {
                 user_id: user.id,
                 expires_at: Date.now() + parseInt(process.env.JWT_REFRESH_TOKEN_EXPIRE_IN, 10)
             });
-            res.cookie("refresh_token", newRefreshToken, {...cookieOptions, path: '/api/user/refresh-token'});
+            res.cookie("refresh_token", newRefreshToken, {...cookieOptions, path: '/api/user'});
         };
 
         const xsrfToken = crypto.randomBytes(64).toString('hex');
@@ -99,7 +120,7 @@ exports.refreshToken = async(req, res, next) => {
         });
 
     } catch (error) {
-        return jsonErrors(error);
+        return jsonErrors(error, res);
     };
 
 };
