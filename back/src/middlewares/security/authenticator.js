@@ -1,21 +1,29 @@
 const { jsonErrors } = require('../http/http.json.errors');
 const {jwtVerify, jwtIsExpired} = require('./jwt');
 
-const authenticator = async (req, res, next) => {
+
+const authenticator = (req, res, next) => {
+    let authError;
     try {
         const accessToken = req.signedCookies['access_token'];
         if(!accessToken){
-            return res.http.Unauthorized({error: {message:'Missing access token'}})
+            return authError = () => {
+                return res.http.Unauthorized({error: {message:'Missing access token'}})
+            } 
         }
 
         const xsrfToken = req.headers['x-xsrf-token']
         if(!xsrfToken){
-            return res.http.Unauthorized({error: {message: 'Missing xsrf token'}})
+            return authError = () => {
+                return res.http.Unauthorized({error: {message: 'Missing xsrf token'}})
+            } 
         }
         
         const decodedToken = jwtVerify(accessToken);
         if(decodedToken.xsrfToken !== xsrfToken){
-            return res.http.Unauthorized({error: {message: 'xsrf token not match'}})
+            return authError = () => {
+                return res.http.Unauthorized({error: {message: 'xsrf token not match'}})
+            } 
         }
         
         req.user = {
@@ -25,16 +33,45 @@ const authenticator = async (req, res, next) => {
             roles: decodedToken.roles
         }
         if(req.originalUrl === "/api/user/refresh-token"){
-            return next();
+            return authError = () =>{
+                return next();
+            }
         }
         
         if(jwtIsExpired(decodedToken.exp)){
-            return res.http.Unauthorized({error: {message: 'Expired access token'}});
+            return authError = () => {
+                return res.http.Unauthorized({error: {message: 'Expired access token'}});
+            } 
         }
-
-        next();
+        
+        return authError;
     } catch (error) {
         return jsonErrors(error, res)
     };
 };
-module.exports = authenticator;
+
+/**
+ * 
+ * @param {string|array} roles
+ * @returns 
+ */
+const isGranted = (roles = 'ROLE_USER') => {
+    return (req, res, next) =>{
+        const authError = authenticator(req, res, next)
+        if(authError){
+            return authError()
+        }
+        try {
+            
+            if(!req.user.roles.includes(roles)){
+                return res.http.Forbidden({error: {message: 'access denied'}});
+            }
+            
+            next();
+        } catch (error) {
+            return jsonErrors(error, res)
+        }
+    }
+    
+}
+module.exports = isGranted;
