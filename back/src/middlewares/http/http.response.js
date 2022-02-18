@@ -1,5 +1,6 @@
 const HTTP_OK = 200;
 const HTTP_CREATED = 201;
+const HTTP_NO_CONTENT= 204;
 const HTTP_MOVEDPEEMANENTLY = 301;
 const HTTP_SEE_OTHER = 303;
 const HTTP_BAD_REQUEST = 400;
@@ -28,8 +29,13 @@ class HTTPResponse {
      * @returns status code 201 & json message | " "
      */
     Created(message = ''){
-        return this.res.status(HTTP_CREATED).json(message);
+        return this.res.status(HTTP_NO_CONTENT).json(message);
     }
+
+    NoContent(){
+        return this.res.status(HTTP_NO_CONTENT).end()
+    }
+
     /**
      * @param {object|String|null} message 
      * @returns status code 400 & json message | " "
