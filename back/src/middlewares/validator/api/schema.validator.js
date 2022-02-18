@@ -10,7 +10,7 @@ class SchemaValidator{
   /**
    * @param {object} schema 
    */
-  query(){
+  query(schema){
     const { error } = schema.validate(this.req.query, {escapeHtml: true, abortEarly: false })
     this.handleError(error)
   }
