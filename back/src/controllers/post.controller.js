@@ -29,8 +29,10 @@ exports.getOnePost = async(req, res, next) => {
             attributes: ['id', 'content', 'created_at', 'updated_at'],
             include: [{model: User, attributes: ['id', 'firstname', 'lastname', 'profile_picture']}], 
             order: [['created_at', 'DESC']] });
-        
-        return res.http.Ok(post);
+        if(post){
+            return res.http.Ok(post);
+        }
+        return res.http.NotFound({error: {message: `Post id: ${id} not found`}});
     } catch (error) {
         return jsonErrors(error, res);
     };   
