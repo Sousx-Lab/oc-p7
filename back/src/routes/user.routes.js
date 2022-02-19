@@ -8,10 +8,18 @@ const isGranted = require('../middlewares/security/authenticator');
 
 const router = express.Router();
 
-/** guardentification Routes */
+/** User Routes */
+
+/** Singup  */
 router.post('/signup', xss(), schemaValidator.body(signupSchema), userController.signup);
-router.post('/login',xss(), schemaValidator.body(loginSchema), userController.login);
+
+/** Login */
+router.post('/login',xss(), userController.login);
+
+/** Logout */
 router.get('/logout', userController.logout);
+
+/** Refresh token */
 router.get('/refresh-token', isGranted('ROLE_USER'), userController.refreshToken);
 
 module.exports = router;
