@@ -44,9 +44,9 @@ server.on('listening', () => {
   if(typeof address === 'string'){
     bind = 'pipe ' + address;
   }else if(address.family === "IPv6"){
-    bind = "http://127.0.0.1:"+port
+    bind = "http://localhost:"+port+"/api"
   }
-  console.log(`\x1b[42m 🚀 Server start listening on: ${bind}\x1b[40m\n`);
+  console.log(`\x1b[42m 🚀 API Server start listening on: ${bind}\x1b[40m\n`);
 });
 
 server.listen(port);
