@@ -1,4 +1,4 @@
-const { User, Token } = require('../models/index');
+const { User, Token, Post } = require('../models/index');
 const {jsonErrors} = require('../middlewares/http/http.json.errors');
 const bcrypt = require('bcrypt');
 const jwt = require('../middlewares/security/jwt');
@@ -57,7 +57,9 @@ exports.login = async(req, res, next) => {
     }
 }
 
-/** Logout */
+/** 
+ * Logout 
+ */
 exports.logout = async(req, res, next) => {
     
     try {
@@ -66,16 +68,59 @@ exports.logout = async(req, res, next) => {
                 where: {token: req.signedCookies['refresh_token']}
             });
             if(refreshToken){
-                await refreshToken.destroy()
+                await refreshToken.destroy();
             }
-            res.clearCookie('refresh_token')
-            res.clearCookie('access_token')
+            res.clearCookie('refresh_token');
+            res.clearCookie('access_token');
         }
         return res.http.Ok()
     } catch (error) {
-        return jsonErrors(error, res)
+        return jsonErrors(error, res);
     }
     
+}
+exports.getUserByid = async (req, res, next) =>{
+    try {
+        const user = await User.findOne({
+            where : {id:  req.params.id},
+            attributes: ['firstname', 'lastname', 'email', 'profile_picture'],
+            include: [{
+                model: Post,
+                attributes: ['id', 'content', 'published_at', 'updated_at']
+                }],
+        });
+        if(!user){
+            return res.http.NotFound({error: {message: `User id: ${req.params.id} not found`}});
+        }
+        
+        return res.http.Ok(user);
+    } catch (error) {
+        return jsonErrors(error, res);
+    }
+}
+
+exports.deleteUser = async (req, res, next) =>{
+    try {
+        const user = User.findOne({where : {id:  req.user.id}});
+        if(!user){
+            return res.http.NotFound({error: {message: `User not found`}});
+        }
+        if(req.signedCookies['refresh_token']){
+            const refreshToken = await Token.findOne({ 
+                where: {token: req.signedCookies['refresh_token']}
+            });
+            if(refreshToken){
+                await refreshToken.destroy();
+            }
+            res.clearCookie('refresh_token');
+        }
+        res.clearCookie('access_token');
+        await user.destroy();
+        delete req.user;
+        return res.http.Ok({message: `User deleted !`});
+    } catch (error) {
+        return jsonErrors(error, res);
+    }
 }
 
 /** 

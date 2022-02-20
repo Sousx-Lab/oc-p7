@@ -22,4 +22,10 @@ router.get('/logout', userController.logout);
 /** Refresh token */
 router.get('/refresh-token', isGranted('ROLE_USER'), userController.refreshToken);
 
+/** Get User by id */
+router.get('/:id', isGranted('ROLE_USER'), userController.getUserByid);
+
+/** Delete User by id */
+router.delete('/delete', isGranted('ROLE_USER'), userController.deleteUser);
+
 module.exports = router;
