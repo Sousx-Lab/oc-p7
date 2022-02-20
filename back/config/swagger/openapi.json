@@ -151,6 +151,7 @@
         "tags": [
           "user"
         ],
+        "description": "This can only be done by the logged in user.",
         "summary": "Refresh json web token current logged user",
         "operationId": "refreshToken",
         "security": [
@@ -183,6 +184,16 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "Unauthorized user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpErrorResponse"
+                }
+              }
+            }
           }
         }
       }
@@ -193,6 +204,7 @@
           "user"
         ],
         "summary": "Fetch user by id",
+        "description": "This can only be done by the logged in user.",
         "operationId": "getUserById",
         "parameters": [
           {
@@ -201,6 +213,12 @@
             "in": "path",
             "description": "The id that needs to be fetched.",
             "required": true
+          }
+        ],
+        "security": [
+          {
+            "accessToken": [],
+            "xsrfToken": []
           }
         ],
         "responses": {
@@ -215,7 +233,7 @@
             }
           },
           "400": {
-            "description": "Invalid id supplied",
+            "description": "Unauthorized user",
             "content": {
               "application/json": {
                 "schema": {
@@ -235,29 +253,26 @@
             }
           }
         }
-      },
+      }
+    },
+    "/user/update": {
       "put": {
         "tags": [
           "user"
         ],
-        "summary": "Updated user by id",
+        "summary": "Update currently logged user",
         "description": "This can only be done by the logged in user.",
         "operationId": "updateUser",
-        "parameters": [
+        "security": [
           {
-            "name": "id",
-            "in": "path",
-            "description": "id that need to be updated",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "accessToken": [],
+            "xsrfToken": []
           }
         ],
         "requestBody": {
           "description": "Updated user object",
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
                 "$ref": "#/components/schemas/UpdateUserRequest"
               }
@@ -266,38 +281,67 @@
           "required": true
         },
         "responses": {
+          "200": {
+            "description": "successfully operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
           "400": {
-            "description": "Invalid user supplied",
-            "content": {}
+            "description": "Unauthorized user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpErrorResponse"
+                }
+              }
+            }
           },
           "404": {
             "description": "User not found",
-            "content": {}
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpErrorResponse"
+                }
+              }
+            }
           }
         },
         "x-codegen-request-body-name": "body"
-      },
+      }
+    },
+    "/user/delete": {
       "delete": {
         "tags": [
           "user"
         ],
-        "summary": "Delete user by id",
+        "summary": "Delete currently logged user",
         "description": "This can only be done by the logged in user.",
         "operationId": "deleteUser",
-        "parameters": [
+        "security": [
           {
-            "name": "id",
-            "in": "path",
-            "description": "The id that needs to be deleted",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
+            "accessToken": [],
+            "xsrfToken": []
           }
         ],
         "responses": {
+          "200": {
+            "description": "successfully opetation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpMessage"
+                }
+              }
+            }
+          },
           "400": {
-            "description": "Invalid id supplied",
+            "description": "Unauthorized user",
             "content": {
               "application/json": {
                 "schema": {
@@ -534,7 +578,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GetPostByIdResponse"
+                  "$ref": "#/components/schemas/HttpMessage"
                 }
               }
             }
@@ -641,7 +685,8 @@
                 "id",
                 "content",
                 "media",
-                "published_at"
+                "published_at",
+                "updated_at"
               ],
               "properties": {
                 "id": {
@@ -654,6 +699,10 @@
                   "type": "string"
                 },
                 "published_at": {
+                  "type": "string",
+                  "format": "date"
+                },
+                "updated_at":{
                   "type": "string",
                   "format": "date"
                 }
@@ -679,6 +728,10 @@
           },
           "newPassword": {
             "type": "string"
+          },
+          "profile_picture": {
+            "type": "string",
+            "format": "binary"
           }
         }
       },
@@ -844,6 +897,14 @@
           "media": {
             "type": "string",
             "format": "binary"
+          }
+        }
+      },
+      "HttpMessage": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
           }
         }
       }
