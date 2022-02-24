@@ -1,8 +1,8 @@
 'use strict';
 const { Model } = require('sequelize');
 const crypto = require('crypto');
-const { isEmpty } = require('../middlewares/validator/validator.utils');
 const mime = require('mime-types');
+
 module.exports = (sequelize, DataTypes) => {
   class Post extends Model {
     

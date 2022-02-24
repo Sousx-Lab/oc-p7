@@ -40,8 +40,8 @@ exports.getAllPosts = async (req, res, next) => {
  * Get One Post 
  */
 exports.getPostById = async(req, res, next) => {
-    const id = req.params.id
     try {
+        const id = req.params.id
         const post = await Post.findOne({
             where: {id: id},
             attributes: ['id', 'content', 'media', 'created_at','updated_at','likes','mediaType', 
@@ -112,21 +112,23 @@ exports.updatePost = async(req, res, next) => {
         if(!post){
             return res.http.NotFound({error: {message: `Post not found`}});
         }
-        if(post.user_id !== req.user.id){
-            return res.http.Forbidden({error: {message: "permission denied !"}})
-        }
-        
-        await post.set({
-            content: req.body.content || null,
-            media: req.file?.filename ?? post.media
-        },{ individualHooks: true})
-        await post.validate()
+        if(post.user_id === req.user.id || req.user.roles.includes('ROLE_ADMIN')){
+            await post.set({
+                content: req.body.content || null,
+                media: req.file?.filename ?? post.media
+                },{ individualHooks: true})
+            
+            await post.validate()
 
-        if(post.previous('media') !== post.media){
+            if(post.previous('media') !== post.media){
             deleteFile(post.previous('media'))
+            }
+            await post.save()
+            return res.http.Ok(post)
         }
-        await post.save()
-        return res.http.Ok(post)
+
+        return res.http.Forbidden({error: {message: "permission denied !"}});
+
     } catch (error) {
         return jsonErrors(error, res)
     }
@@ -136,8 +138,8 @@ exports.updatePost = async(req, res, next) => {
  * Delete Post  
  */
 exports.deletePost = async(req, res, next) => {
-    const id = req.params.id
     try {
+        const id = req.params.id
         const post = await Post.findOne({where: {id: id}});
         if(!post){
             return res.http.NotFound({error: {message: `Post not found !`}});

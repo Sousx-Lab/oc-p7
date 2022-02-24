@@ -5,7 +5,6 @@ const isGranted = require('../middlewares/security/authenticator');
 const schemaValidator = require('../middlewares/validator/api/schema.validator');
 const multer = require('../middlewares/multer/multer');
 
-
 const router = express.Router();
 
 /** Posts Routes */
@@ -26,6 +25,6 @@ router.put('/:id', xss(),isGranted('ROLE_USER'), multer, postController.updatePo
 router.delete('/:id',isGranted('ROLE_USER'), postController.deletePost);
 
 /** Like unlike Post by id */
-router.post('/:id/like',isGranted('ROLE_USER'), postController.likePost);
+router.post('/like/:id',isGranted('ROLE_USER'), postController.likePost);
 
 module.exports = router;
