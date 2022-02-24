@@ -4,8 +4,9 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 const httpResponse = require('./src/middlewares/http/http.response');
 const handleParserError = require('./src/middlewares/validator/body.parser')
-const userRoutes = require('./src/routes/user.routes');
+const userRoutes = require('./src/routes/users.routes');
 const postsRoutes = require('./src/routes/posts.routes');
+const commenstRoutes = require('./src/routes/comments.routes');
 const swaggerRoutes = require('./src/routes/swagger.routes');
 const path = require('path');
 const app = express();
@@ -44,6 +45,9 @@ app.use('/api/user', userRoutes);
 /** Posts Routes */
 app.use('/api/posts', postsRoutes);
 /***************/
+
+/** Comments Routes */
+app.use('/api/comments', commenstRoutes);
 
 /** Swagger Routes */
 app.use('/api', swaggerRoutes);

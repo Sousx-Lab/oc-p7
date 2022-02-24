@@ -1,6 +1,7 @@
 'use strict';
 const { Model } = require('sequelize');
 const crypto = require('crypto');
+const mime = require('mime-types');
 
 module.exports = (sequelize, DataTypes) => {
   class Comment extends Model {
@@ -26,7 +27,10 @@ module.exports = (sequelize, DataTypes) => {
           },
           onDelete: 'CASCADE',
           onUpdate: 'CASCADE'
-      })
+      });
+    }
+    addUrl(hostUrl){
+      this.media = this.media ? hostUrl + this.media : this.media
     }
   }
   Comment.init({
@@ -52,6 +56,16 @@ module.exports = (sequelize, DataTypes) => {
     media:{
       type: DataTypes.STRING(255),
       allowNull: true,
+    },
+
+    mediaType: {
+      type: DataTypes.VIRTUAL,
+      get(){
+        return mime.lookup(this.getDataValue('media')).split('/')[0];
+      },
+      set(value){
+        return;
+      }
     },
 
     /** Content */
