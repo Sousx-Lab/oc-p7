@@ -2,4 +2,4 @@
 /.env.local
 /.env.*.local
 sequelize-cmd.txt
-/images/*
+/src/media/*

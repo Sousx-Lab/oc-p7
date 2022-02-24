@@ -10,7 +10,7 @@
   },
   "servers": [
     {
-      "url": "http://127.0.0.1:3000/api"
+      "url": "http://localhost:3000/api"
     }
   ],
   "tags": [
@@ -81,7 +81,7 @@
         ],
         "summary": "Logs in user",
         "operationId": "loginUser",
-        "description": "Logs in user and returns the authentication cookie contain JWT",
+        "description": "Logsin user and returns **access_token** & **refrsh_token** cookie & **xsrfToken** in body",
         "requestBody": {
           "description": "Login user",
           "content": {
@@ -151,7 +151,7 @@
         "tags": [
           "user"
         ],
-        "description": "This can only be done by the logged in user.",
+        "description": "This can only be done by the logged in user. Add xsrf token in **Authorize**",
         "summary": "Refresh json web token current logged user",
         "operationId": "refreshToken",
         "security": [
@@ -204,11 +204,14 @@
           "user"
         ],
         "summary": "Fetch user by id",
-        "description": "This can only be done by the logged in user.",
+        "description": "This can only be done by the logged in user. Add xsrf token in **Authorize**",
         "operationId": "getUserById",
         "parameters": [
           {
-            "schema": {},
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
             "name": "id",
             "in": "path",
             "description": "The id that needs to be fetched.",
@@ -227,7 +230,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GetUserResponse"
+                  "$ref": "#/components/schemas/GetUserByIdResponse"
                 }
               }
             }
@@ -261,7 +264,7 @@
           "user"
         ],
         "summary": "Update currently logged user",
-        "description": "This can only be done by the logged in user.",
+        "description": "This can only be done by the logged in user. Add xsrf token in **Authorize**",
         "operationId": "updateUser",
         "security": [
           {
@@ -321,7 +324,7 @@
           "user"
         ],
         "summary": "Delete currently logged user",
-        "description": "This can only be done by the logged in user.",
+        "description": "This can only be done by the logged in user. Add xsrf token in **Authorize**",
         "operationId": "deleteUser",
         "security": [
           {
@@ -368,24 +371,13 @@
         "tags": [
           "post"
         ],
-        "description": "This can only be done by the logged in user.",
+        "description": "This can only be done by the logged in user. Add xsrf token in **Authorize**",
         "summary": "Fetch all posts",
         "operationId": "getAllPosts",
         "security": [
           {
             "accessToken": [],
             "xsrfToken": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "x-xsrf-token",
-            "in": "header",
-            "description": "x-xsrf-token that need to be fetch posts",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
           }
         ],
         "responses": {
@@ -413,28 +405,29 @@
       }
     },
     "/posts/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "description": "id post",
+          "required": true,
+          "in": "path",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
       "get": {
         "tags": [
           "post"
         ],
-        "description": "This can only be done by the logged in user.",
+        "description": "This can only be done by the logged in user. Add xsrf token in **Authorize**",
         "summary": "Fetch post by id",
         "operationId": "getPostById",
         "security": [
           {
             "accessToken": [],
             "xsrfToken": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "x-xsrf-token",
-            "in": "header",
-            "description": "x-xsrf-token that need to be fetch posts",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
           }
         ],
         "responses": {
@@ -474,7 +467,7 @@
         "tags": [
           "post"
         ],
-        "description": "This can only be done by the logged in user and the post is owned by the user",
+        "description": "This can only be done by the logged in user and the post is owned by the user. Add xsrf token in **Authorize**",
         "summary": "Update post by id",
         "operationId": "updatePost",
         "security": [
@@ -489,29 +482,18 @@
           "content": {
             "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/Post"
+                "$ref": "#/components/schemas/CreatePost"
               }
             }
           }
         },
-        "parameters": [
-          {
-            "name": "x-xsrf-token",
-            "in": "header",
-            "description": "x-xsrf-token that need to be fetch posts",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
         "responses": {
           "200": {
             "description": "successfully operation",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GetPostByIdResponse"
+                  "$ref": "#/components/schemas/Post"
                 }
               }
             }
@@ -552,24 +534,13 @@
         "tags": [
           "post"
         ],
-        "description": "This can only be done by the logged in user and the post is owned by the user",
+        "description": "This can only be done by the logged in user and the post is owned by the user. Add xsrf token in **Authorize**",
         "summary": "Delete post by id",
         "operationId": "deletePost",
         "security": [
           {
             "accessToken": [],
             "xsrfToken": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "x-xsrf-token",
-            "in": "header",
-            "description": "x-xsrf-token that need to be fetch posts",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
           }
         ],
         "responses": {
@@ -622,10 +593,10 @@
       "SignUpRequest": {
         "type": "object",
         "properties": {
-          "firstname": {
+          "firstName": {
             "type": "string"
           },
-          "lastname": {
+          "lastName": {
             "type": "string"
           },
           "email": {
@@ -650,63 +621,47 @@
       "LoginResponse": {
         "type": "object",
         "properties": {
-          "user_id": {
+          "userId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "firstName": {
             "type": "string"
           },
-          "firstname": {
+          "lastName": {
             "type": "string"
           },
-          "lastname": {
-            "type": "string"
+          "expiresAt": {
+            "type": "integer"
           },
           "xsrfToken": {
             "type": "string"
           }
         }
       },
-      "GetUserResponse": {
+      "GetUserByIdResponse": {
         "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/User"
+          }
+        ],
         "properties": {
-          "firstname": {
-            "type": "string"
-          },
-          "lastname": {
-            "type": "string"
-          },
-          "email": {
-            "type": "string"
-          },
-          "posts": {
+          "Posts": {
             "type": "array",
             "items": {
-              "minItems": 0,
-              "type": "object",
-              "required": [
-                "id",
-                "content",
-                "media",
-                "published_at",
-                "updated_at"
-              ],
-              "properties": {
-                "id": {
-                  "type": "string"
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/Post"
                 },
-                "content": {
-                  "type": "string"
-                },
-                "media": {
-                  "type": "string"
-                },
-                "published_at": {
-                  "type": "string",
-                  "format": "date"
-                },
-                "updated_at":{
-                  "type": "string",
-                  "format": "date"
+                {
+                  "properties": {
+                    "comment_count": {
+                      "type": "integer"
+                    }
+                  }
                 }
-              }
+              ]
             }
           }
         }
@@ -714,10 +669,10 @@
       "UpdateUserRequest": {
         "type": "object",
         "properties": {
-          "firstname": {
+          "firstName": {
             "type": "string"
           },
-          "lastname": {
+          "lastName": {
             "type": "string"
           },
           "email": {
@@ -729,7 +684,7 @@
           "newPassword": {
             "type": "string"
           },
-          "profile_picture": {
+          "profilePicture": {
             "type": "string",
             "format": "binary"
           }
@@ -818,7 +773,7 @@
             "media",
             "created_at",
             "updated_at",
-            "published_at",
+            "comment_count",
             "User"
           ],
           "properties": {
@@ -839,9 +794,8 @@
               "type": "string",
               "format": "date"
             },
-            "published_at": {
-              "type": "string",
-              "format": "date"
+            "comment_count": {
+              "type": "integer"
             },
             "User": {
               "$ref": "#/components/schemas/User"
@@ -868,6 +822,12 @@
           },
           "User": {
             "$ref": "#/components/schemas/User"
+          },
+          "Comment": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Comment"
+            }
           }
         }
       },
@@ -877,18 +837,42 @@
           "id": {
             "type": "string"
           },
-          "firstname": {
+          "firstName": {
             "type": "string"
           },
-          "lastname": {
+          "lastName": {
             "type": "string"
           },
-          "profile_picture": {
+          "profilePicture": {
             "type": "string"
           }
         }
       },
       "Post": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "content": {
+            "type": "string"
+          },
+          "media": {
+            "type": "string",
+            "format": "binary"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date"
+          }
+        }
+      },
+      "CreatePost": {
         "type": "object",
         "properties": {
           "content": {
@@ -897,6 +881,20 @@
           "media": {
             "type": "string",
             "format": "binary"
+          }
+        }
+      },
+      "Comment": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          },
+          "User": {
+            "$ref": "#/components/schemas/User"
           }
         }
       },

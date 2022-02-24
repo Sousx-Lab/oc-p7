@@ -56,7 +56,7 @@ const authenticator = (req, res, next) => {
  * @returns 
  */
 const isGranted = (roles = 'ROLE_USER') => {
-    return (req, res, next) =>{
+    return (req, res, next) => {
         const authError = authenticator(req, res, next)
         if(authError){
             return authError()

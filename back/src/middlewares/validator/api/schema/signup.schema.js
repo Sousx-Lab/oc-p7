@@ -11,6 +11,7 @@ exports.signupSchema =
           }),
         email: Joi
           .string()
+          .trim()
           .required()
           .email()
           .messages({
@@ -19,8 +20,9 @@ exports.signupSchema =
             'string.empty': "email must not be empty",
             'string.email': "email must be an email valid",
           }),
-        firstname: Joi
+        firstName: Joi
           .string()
+          .trim()
           .max(64)
           .custom(isHtmlTag, 'string.html')
           .required()
@@ -31,8 +33,9 @@ exports.signupSchema =
             'string.max': "firstname must have max 64 characters",
             'string.alphanum': "must only contain alpha-numeric characters"
           }),
-        lastname: Joi
+        lastName: Joi
           .string()
+          .trim()
           .max(64)
           .custom(isHtmlTag, 'string.html')
           .required()
@@ -44,6 +47,7 @@ exports.signupSchema =
           }),
         password: Joi
           .string()
+          .trim()
           .custom(isValidPassword, 'password.validation')
           .required()
           .messages({

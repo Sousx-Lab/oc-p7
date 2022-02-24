@@ -1,4 +1,4 @@
-const { User, Token, Post } = require('../models/index');
+const { User, Token, Post, Comment, Sequelize } = require('../models/index');
 const {jsonErrors} = require('../middlewares/http/http.json.errors');
 const bcrypt = require('bcrypt');
 const jwt = require('../middlewares/security/jwt');
@@ -38,24 +38,74 @@ exports.login = async(req, res, next) => {
         
         await Token.create({
             token: refreshToken,
-            user_id: user.id, 
-            expires_at: Date.now() + parseInt(process.env.JWT_REFRESH_TOKEN_EXPIRE_IN, 10)
+            userId: user.id, 
+            expiresAt: Date.now() + parseInt(process.env.JWT_REFRESH_TOKEN_EXPIRE_IN, 10)
         });
 
         res.cookie("access_token", jwt.jwtSign(user, xsrfToken), cookieOptions);
         res.cookie("refresh_token", refreshToken, {...cookieOptions, path: '/api/user/'});
         
         return res.http.Ok({
-            user_id: user.id,
-            firstname: user.firstname,
-            lastname: user.lastname,
+            userId: user.id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            expriesAt: Date.now() + parseInt(process.env.JWT_TOKEN_EXPIRES_IN,10),
             xsrfToken: xsrfToken
         });
 
     } catch (error) {
         return jsonErrors(error, res)
     }
-}
+};
+
+/** 
+ * Refresh token 
+ */
+ exports.refreshToken = async(req, res, next) => {
+    try {
+        const cookieRefreshToken = req.signedCookies['refresh_token']
+        
+        if(!cookieRefreshToken){
+            return res.http.Unauthorized({error: {message: 'Missing refresh token'}});
+        };
+
+        const refreshToken = await Token.findOne({ where: {token: cookieRefreshToken}})
+        if(!refreshToken){
+            return res.http.Unauthorized({error: {message: 'Not found refresh token'}});
+        };
+
+        const user = await User.findOne({where :{id: refreshToken.userId}})
+        if(!user){
+            return res.http.Unauthorized({error: {message: 'refresh token not match User'}});
+        };
+        
+        if(new Date(`${refreshToken.expiresAt}`).getTime() < Date.now()){
+            const newRefreshToken = crypto.randomBytes(128).toString('base64');
+            await refreshToken.destroy();
+            await Token.create({
+                token: newRefreshToken,
+                user_id: user.id,
+                expiresAt: Date.now() + parseInt(process.env.JWT_REFRESH_TOKEN_EXPIRE_IN, 10)
+            });
+            res.cookie("refresh_token", newRefreshToken, {...cookieOptions, path: '/api/user'});
+        };
+
+        const xsrfToken = crypto.randomBytes(64).toString('hex');
+        res.cookie("access_token", jwt.jwtSign(user, xsrfToken), cookieOptions);
+        
+        return res.http.Ok({
+            userId: user.id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            expriesAt: Date.now() + parseInt(process.env.JWT_TOKEN_EXPIRES_IN,10),
+            xsrfToken: xsrfToken
+        });
+
+    } catch (error) {
+        return jsonErrors(error, res);
+    };
+
+};
 
 /** 
  * Logout 
@@ -83,16 +133,24 @@ exports.getUserByid = async (req, res, next) =>{
     try {
         const user = await User.findOne({
             where : {id:  req.params.id},
-            attributes: ['firstname', 'lastname', 'email', 'profile_picture'],
+            attributes: ['firstName', 'lastName', 'profilePicture'],
             include: [{
                 model: Post,
-                attributes: ['id', 'content', 'published_at', 'updated_at']
-                }],
+                attributes: ['id', 'content', "media", 'updated_at', 'created_at', 'likes', 'users_liked',
+                [Sequelize.fn('count', Sequelize.col('post_id')) ,'comments'], 
+                ],
+                order: [['created_at', 'DESC']] 
+                },
+                {
+                model: Comment,
+                attributes: []
+                }
+            ],
         });
-        if(!user){
-            return res.http.NotFound({error: {message: `User id: ${req.params.id} not found`}});
+        // 
+        if(!user.firstName){
+            return res.http.NotFound({error: {message: `User not found`}});
         }
-        
         return res.http.Ok(user);
     } catch (error) {
         return jsonErrors(error, res);
@@ -122,50 +180,3 @@ exports.deleteUser = async (req, res, next) =>{
         return jsonErrors(error, res);
     }
 }
-
-/** 
- * Refresh token 
- */
-exports.refreshToken = async(req, res, next) => {
-    try {
-        const cookieRefreshToken = req.signedCookies['refresh_token']
-        if(!cookieRefreshToken){
-            return res.http.Unauthorized({error: {message: 'Missing refresh token'}});
-        };
-
-        const refreshToken = await Token.findOne({ where: {token: cookieRefreshToken}})
-        if(!refreshToken){
-            return res.http.Unauthorized({error: {message: 'Not found refresh token'}});
-        };
-
-        const user = await User.findOne({where :{id: refreshToken.user_id}})
-        if(!user){
-            return res.http.Unauthorized({error: {message: 'refresh token not match User'}});
-        };
-        
-        if(new Date(`${refreshToken.expires_at}`).getTime() < Date.now()){
-            const newRefreshToken = crypto.randomBytes(128).toString('base64');
-            await refreshToken.destroy();
-            await Token.create({
-                token: newRefreshToken,
-                user_id: user.id,
-                expires_at: Date.now() + parseInt(process.env.JWT_REFRESH_TOKEN_EXPIRE_IN, 10)
-            });
-            res.cookie("refresh_token", newRefreshToken, {...cookieOptions, path: '/api/user'});
-        };
-
-        const xsrfToken = crypto.randomBytes(64).toString('hex');
-        res.cookie("access_token", jwt.jwtSign(user, xsrfToken), cookieOptions);
-        
-        return res.http.Ok({
-            user_id: user.id,
-            firstname: user.firstname,
-            lastname: user.lastname,
-            xsrfToken: xsrfToken
-        });
-
-    } catch (error) {
-        return jsonErrors(error, res);
-    };
-
-};

@@ -1,7 +1,8 @@
 'use strict';
 const { Model } = require('sequelize');
 const crypto = require('crypto');
-
+const { isEmpty } = require('../middlewares/validator/validator.utils');
+const mime = require('mime-types');
 module.exports = (sequelize, DataTypes) => {
   class Post extends Model {
     
@@ -10,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate({User}) {
+    static associate({User, Comment}) {
       this.belongsTo(User,{
         foreignKey:{
           allowNull: false,
@@ -19,6 +20,17 @@ module.exports = (sequelize, DataTypes) => {
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE'
       })
+      this.hasMany(Comment, {
+        foreignKey:{
+          allowNull: false,
+          name: 'post_id',
+        },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
+      })
+    }
+    addUrl(hostUrl){
+      this.media = this.media ? hostUrl+ this.media : this.media
     }
     
 
@@ -44,22 +56,52 @@ module.exports = (sequelize, DataTypes) => {
 
     /** Content */
     content: {
-      type: DataTypes.TEXT,
+      type: DataTypes.TEXT(),
+      allowNull: true,
+    },
+    
+    /** Media (picture, video) */
+    media:{
+      type: DataTypes.STRING(255),
       allowNull: false,
       validate: {
         notNull: {
-          msg: "content must be not NULL"
+          msg: "Please add picture or video to post"
         },
         notEmpty:{
-          msg: "content must be not empty"
+          msg: "Please add picture or video to post"
         },
       },
     },
-    
-    /** Expire at */
-    published_at:{
-      type: DataTypes.DATE,
-      allowNull: true,
+
+    mediaType: {
+      type: DataTypes.VIRTUAL,
+      get(){
+        return mime.lookup(this.getDataValue('media')).split('/')[0];
+      },
+      set(value){
+        return;
+      }
+    },
+
+    /** User liked list */
+    usersLiked:{
+      type: DataTypes.JSON,
+      defaultValue: [],
+      allowNull: false,
+      field: 'users_liked'
+    },
+
+    /** likes count this usersLiked array */
+    likes: {
+      type: DataTypes.STRING(255),
+      defaultValue: '0',
+      get(){
+        return this.getDataValue('usersLiked').length.toString();
+      },
+      set(value){
+        return;
+      }
     },
   },
   {

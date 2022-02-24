@@ -49,8 +49,9 @@ module.exports = (sequelize, DataTypes) => {
     },
 
     /** User id */
-    user_id: {
+    userId: {
       type: DataTypes.UUID,
+      field: 'user_id',
       allowNull: false,
       validate: {
         notNull: {
@@ -62,15 +63,16 @@ module.exports = (sequelize, DataTypes) => {
       },
     },
     /** Expire at */
-    expires_at:{
+    expiresAt:{
       type: DataTypes.DATE,
+      field: 'expires_at',
       allowNull: false,
       validate: {
         notNull: {
-          msg: "expires_at must be not NULL"
+          msg: "expiresAt must be not NULL"
         },
         notEmpty:{
-          msg: "expires_at must be not empty"
+          msg: "expiresAt must be not empty"
         },
       },
     },

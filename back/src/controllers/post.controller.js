@@ -1,6 +1,6 @@
 const { jsonErrors } = require('../middlewares/http/http.json.errors');
-const { Post, User } = require('../models/index');
-
+const { Post, User, Comment, Sequelize} = require('../models/index');
+const {deleteFile} = require('../services/files/handle.files');
 /** 
  * Get All Posts 
  */
@@ -8,10 +8,28 @@ exports.getAllPosts = async (req, res, next) => {
     const limit = req.query.limit
     try {
         const posts = await Post.findAll({
-            attributes: ['id', 'content', 'created_at', 'updated_at'],
-            include: [{model: User, attributes: ['id', 'firstname', 'lastname', 'profile_picture']}], 
-            order: [['created_at', 'DESC']] });
+            attributes: ['id', 'content','media', 'created_at', 'updated_at', 'likes', 'mediaType', 
+            ['users_liked', 'usersLiked'],
+            [Sequelize.fn('count', Sequelize.col('post_id')), 'comments']
+            ],
+            include: [{
+                    model: User,
+                    attributes: ['id', 'firstName', 'lastName', 'profilePicture']
+                },
+                {
+                    model: Comment,
+                    attributes: []
+                }
+            ],
+            group: ['post.id'],
+            order: [
+                ['created_at', 'DESC']
+            ]
+        });
         
+        posts.map(post => {
+            post.addUrl(req.mediaUrl)
+        })
         return res.http.Ok(posts);
     } catch (error) {
         return jsonErrors(error, res);
@@ -21,21 +39,33 @@ exports.getAllPosts = async (req, res, next) => {
 /** 
  * Get One Post 
  */
-exports.getOnePost = async(req, res, next) => {
+exports.getPostById = async(req, res, next) => {
     const id = req.params.id
     try {
         const post = await Post.findOne({
             where: {id: id},
-            attributes: ['id', 'content', 'created_at', 'updated_at'],
+            attributes: ['id', 'content', 'media', 'created_at','updated_at','likes','mediaType', 
+            ['users_liked', 'usersLiked']],
             include: [{
-                model: User, 
-                attributes: ['id', 'firstname', 'lastname', 'profile_picture']
-            }], 
-            order: [['created_at', 'DESC']] });
-        if(post){
-            return res.http.Ok(post);
+                    model: User,
+                    attributes: ['id', 'firstName', 'lastName', 'profilePicture']
+                },
+                {
+                    model: Comment,
+                    attributes: ['id', 'content'],
+                    include: [{
+                        model: User,
+                        attributes: ['id', 'firstName', 'lastName', 'profilePicture']
+                    }]
+                }
+            ],
+            order: [ ['created_at', 'DESC']]
+        });
+        if(!post.id){
+            return res.http.NotFound({error: {message: `Post not found`}});
         }
-        return res.http.NotFound({error: {message: `Post id: ${id} not found`}});
+        post.addUrl(req.mediaUrl)
+        return res.http.Ok(post);
     } catch (error) {
         return jsonErrors(error, res);
     };   
@@ -44,9 +74,26 @@ exports.getOnePost = async(req, res, next) => {
 /**
  * Create One Post
  */
-exports.createPost = async(req, res, next) => {
-    
-    return res.http.Ok('OK')
+exports.createPost = async (req, res, next) => {
+
+    if(req.fileValidationError?.error){
+        return res.http.BadRequest({error: 
+            {message: 
+            `File type ${req.fileValidationError.fileExt} not allowed`
+        }})
+    }
+    try {
+        const payload = {
+            content: req.body.content || null,
+            media: req.file?.filename ||  null
+        }
+        const post = await Post.build({...payload, user_id: req.user.id});
+        await post.validate()
+        await post.save();
+        return res.http.Created(post)
+    } catch (error) {
+        return jsonErrors(error, res)
+    }
 }
 
 /**
@@ -54,7 +101,35 @@ exports.createPost = async(req, res, next) => {
  */
 exports.updatePost = async(req, res, next) => {
     
-    return res.http.Ok('OK')
+    if(req.fileValidationError?.error){
+        return res.http.BadRequest({error: 
+            {message: 
+            `File type ${req.fileValidationError.fileExt} not allowed`
+        }})
+    }
+    try {
+        const post = await Post.findOne({where :{id: req.params.id}});
+        if(!post){
+            return res.http.NotFound({error: {message: `Post not found`}});
+        }
+        if(post.user_id !== req.user.id){
+            return res.http.Forbidden({error: {message: "permission denied !"}})
+        }
+        
+        await post.set({
+            content: req.body.content || null,
+            media: req.file?.filename ?? post.media
+        },{ individualHooks: true})
+        await post.validate()
+
+        if(post.previous('media') !== post.media){
+            deleteFile(post.previous('media'))
+        }
+        await post.save()
+        return res.http.Ok(post)
+    } catch (error) {
+        return jsonErrors(error, res)
+    }
 }
 
 /** 
@@ -65,12 +140,13 @@ exports.deletePost = async(req, res, next) => {
     try {
         const post = await Post.findOne({where: {id: id}});
         if(!post){
-            return res.http.NotFound({error: {message: `Post id:"${req.params.id}" not found !`}});
+            return res.http.NotFound({error: {message: `Post not found !`}});
         }
         
         if(post.user_id === req.user.id || req.user.roles.includes('ROLE_ADMIN')){
+            deleteFile(post.media)
             await post.destroy();
-            return res.http.Ok({message: `Post id:"${req.params.id}" deleted !`});   
+            return res.http.Ok({message: `Post deleted !`});   
         }
         
         return res.http.Forbidden({error: {message: 'permission denied'}});
@@ -84,6 +160,22 @@ exports.deletePost = async(req, res, next) => {
  * Like UnLike Post 
  */
 exports.likePost = async(req, res, next) => {
+    try {
+        const id = req.params.id
+        const post = await Post.findOne({where :{id: id}})
+        if(!post){
+            return res.http.NotFound({error: { message: 'Post not found'}})
+        }
+        if(!post.usersLiked.includes(req.user.id)){
+            post.usersLiked = [...post.usersLiked, req.user.id]
+        }else{
+            post.usersLiked = post.usersLiked.filter(item => item !== req.user.id)
+        }
+        await post.save();
+        return res.http.Ok(post);
+        
+    } catch (error) {
+        return jsonErrors(error, res)
+    }
     
-    return res.http.Ok('OK')
 }

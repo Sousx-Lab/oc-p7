@@ -10,7 +10,11 @@ module.exports =
     dialect:"mysql",
     charset:"utf8mb4",
     collate:"utf8mb4_unicode_ci",
+    timestamps: true,
     underscored: true,
+    underscoredAll: true,
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
     pool: {
       max: 5,
       min: 0,

@@ -1,4 +1,5 @@
-require('dotenv-flow').config({silent: true});
+const dotEnv = require('dotenv-flow')
+dotEnv.config({silent: true});
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const httpResponse = require('./src/middlewares/http/http.response');
@@ -6,6 +7,7 @@ const handleParserError = require('./src/middlewares/validator/body.parser')
 const userRoutes = require('./src/routes/user.routes');
 const postsRoutes = require('./src/routes/posts.routes');
 const swaggerRoutes = require('./src/routes/swagger.routes');
+const path = require('path');
 const app = express();
 
 
@@ -26,8 +28,16 @@ app.use(handleParserError());
 
 app.use(cookieParser(process.env.COOKIE_SIGNATURE));
 
+app.use((req, res, next) => {
+  req.mediaUrl = `${req.protocol}://${req.get('host')}/media/`
+  next();
+});
 
-/**User Routes */
+/** Medias */
+app.use('/media', express.static(path.join(__dirname, 'src/media')));
+/***********/
+
+/** User Routes */
 app.use('/api/user', userRoutes);
 /*************/
 

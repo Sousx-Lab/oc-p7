@@ -29,9 +29,12 @@ class HTTPResponse {
      * @returns status code 201 & json message | " "
      */
     Created(message = ''){
-        return this.res.status(HTTP_NO_CONTENT).json(message);
+        return this.res.status(HTTP_CREATED).json(message);
     }
 
+    /**
+     * @returns status code 204
+     */
     NoContent(){
         return this.res.status(HTTP_NO_CONTENT).end()
     }
@@ -101,7 +104,7 @@ class HTTPResponse {
     }
 }
 
-module.exports = () => {
+module.exports = (req, res, next) => {
     return (req, res, next) => {
         res.http = new HTTPResponse(res)
         next();

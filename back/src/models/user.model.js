@@ -10,8 +10,16 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate({Post}) {
+    static associate({Post, Comment}) {
       this.hasMany(Post, {
+        foreignKey:{
+          allowNull: false,
+          name: 'user_id',
+        },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
+      })
+      this.hasMany(Comment, {
         foreignKey:{
           allowNull: false,
           name: 'user_id',
@@ -40,8 +48,9 @@ module.exports = (sequelize, DataTypes) => {
     },
 
     /** FirstName */
-    firstname: {
+    firstName: {
       type: DataTypes.STRING(64),
+      field: 'firstname',
       allowNull: false,
       validate: {
         notNull: {
@@ -52,13 +61,17 @@ module.exports = (sequelize, DataTypes) => {
         },
       },
       get(){
-        return this.getDataValue('firstname').replace(/ /g, '');
+        return this.getDataValue('firstName');
       },
+      set(value){
+        this.setDataValue('firstName', value.replace(/ /g, ''));
+      }
     },
 
     /** LastName */
-    lastname: {
+    lastName: {
       type: DataTypes.STRING(64) ,
+      field: 'lastname',
       allowNull: false,
       validate: {
         notNull: {
@@ -69,8 +82,11 @@ module.exports = (sequelize, DataTypes) => {
         },
       },
       get(){
-        return this.getDataValue('lastname').replace(/ /g, '');
+        return this.getDataValue('lastName');
       },
+      set(value){
+        this.setDataValue('lastName', value.replace(/ /g, ''));
+      }
     },
 
     /** Email */
@@ -90,8 +106,11 @@ module.exports = (sequelize, DataTypes) => {
         },
       },
       get(){
-        return this.getDataValue('email').replace(/ /g, '');
+        return this.getDataValue('email');
       },
+      set(value){
+        this.setDataValue('email', value.replace(/ /g, ''))
+      }
     },
 
     /** Password */
@@ -112,12 +131,21 @@ module.exports = (sequelize, DataTypes) => {
     },
 
     /** Profile picture */
-    profile_picture:{
+    profilePicture:{
       type: DataTypes.STRING(255),
+      field: 'profile_picture',
       allowNull: true,
       get(){
         return this.getDataValue('profile_picture')?.replace(/ /g, '') || null;
       }
+    },
+    
+    /** Is active */
+    isActive:{
+      type: DataTypes.BOOLEAN,
+      field: 'is_active',
+      defaultValue: 1,
+      allowNull: false,
     },
 
     /** Roles[]*/
@@ -137,9 +165,9 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'User',
     timestamps: true,
+    underscored: true,
     updatedAt: 'updated_at',
     createdAt: 'created_at',
-    underscored: true,
   });
 
   return User;

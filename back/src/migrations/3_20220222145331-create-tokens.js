@@ -7,17 +7,21 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.CHAR(36).BINARY,
         defaultValue: 'UUIDV4',
+        field: 'id',
       },
       token: {
         type: Sequelize.STRING(255),
         allowNull: false,
+        field: 'token',
       },
-      user_id: {
+      userId: {
         type: Sequelize.CHAR(36).BINARY,
+        field: 'user_id',
         allowNull: false,
       },
-      expires_at: {
+      expiresAt: {
         type: Sequelize.DATE,
+        field: 'expires_at',
         allowNull: false,
       },
     });

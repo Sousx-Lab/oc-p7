@@ -53,3 +53,12 @@ exports.isString = (value) =>{
     }
     return true;
 }
+
+/**
+ * 
+ * @param {string} value 
+ * @returns 
+ */
+exports.isEmpty = (value) =>{
+    return (!value || value.length === 0 );
+}

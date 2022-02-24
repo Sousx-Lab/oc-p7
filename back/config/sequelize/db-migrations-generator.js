@@ -19,7 +19,6 @@ module.exports = {
   for (const column in attributes) {
     delete attributes[column].Model;
     delete attributes[column].fieldName;
-    delete attributes[column].field;
     delete attributes[column]._modelAttribute;
     delete attributes[column].get;
     delete attributes[column].set;
