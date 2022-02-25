@@ -30,7 +30,7 @@ module.exports = (sequelize, DataTypes) => {
       });
     }
     addUrl(hostUrl){
-      this.media = this.media ? hostUrl + this.media : this.media
+      this.media = this.media ? hostUrl+ this.media : this.media
     }
   }
   Comment.init({
@@ -61,7 +61,10 @@ module.exports = (sequelize, DataTypes) => {
     mediaType: {
       type: DataTypes.VIRTUAL,
       get(){
-        return mime.lookup(this.getDataValue('media')).split('/')[0];
+        if(this.getDataValue('media')){
+          return mime.lookup(this.getDataValue('media')).split('/')[0];
+        }
+        return this.getDataValue('media');
       },
       set(value){
         return;
@@ -73,9 +76,12 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.TEXT(),
       allowNull: true,
       validate:{
+        notEmpty:{
+          msg: "comment must be not empty"
+        },
         oneOfTwoNotNull(value){
           if(value === null && this.media === null){
-            throw new Error("comment can't be null unless media not null")
+            throw new Error("Please add comment or picture or video to comment")
           }
         }
       }
