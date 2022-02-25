@@ -11,10 +11,10 @@ const router = express.Router();
 router.get('/:id', isGranted('ROLE_USER'), commentController.getCommentByid);
 
 /** Create new comment by post id */
-router.post('/:id', xss(), isGranted('ROLE_USER'), commentController.createComment);
+router.post('/:id', xss(), isGranted('ROLE_USER'), multer, commentController.createComment);
 
 /** Update comment by id */
-router.put('/:id', xss(),isGranted('ROLE_USER'), commentController.updateComment);
+router.put('/:id', xss(),isGranted('ROLE_USER'), multer, commentController.updateComment);
 
 /** Delete comment by id */
 router.delete('/:id',isGranted('ROLE_USER'), commentController.deleteComment);
