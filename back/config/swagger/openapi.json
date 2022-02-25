@@ -402,6 +402,63 @@
             }
           }
         }
+      },
+      "post": {
+        "tags": [
+          "post"
+        ],
+        "description": "This can only be done by the logged in user. Add xsrf token in **Authorize**",
+        "summary": "Create new post",
+        "operationId": "createPost",
+        "security": [
+          {
+            "accessToken": [],
+            "xsrfToken": []
+          }
+        ],
+        "requestBody": {
+          "description": "Update post object",
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePost"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "successfully operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetPostByIdResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpErrorResponse"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/posts/{id}": {
@@ -576,6 +633,66 @@
           },
           "403": {
             "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/posts/like/{id}": {
+      "post": {
+        "tags": [
+          "post"
+        ],
+        "security": [
+          {
+            "accessToken": [],
+            "xsrfToken": []
+          }
+        ],
+        "description": "This can only be done by the logged in user. Add xsrf token in **Authorize**",
+        "summary": "Like post by id",
+        "operationId": "likePost",
+        "parameters": [
+          {
+            "name": "id",
+            "description": "id post",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "successfully operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Post"
+                }
+              }
+            }
+          },
+          "400":{
+            "description": "Bad Request",
+            "content": {
+              "application/json":{
+                "schema":{
+                  "$ref": "#/components/schemas/ValidationErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized user",
             "content": {
               "application/json": {
                 "schema": {
@@ -861,6 +978,12 @@
           "media": {
             "type": "string",
             "format": "binary"
+          },
+          "mediaType":{
+            "type": "string"
+          },
+          "like":{
+            "type": "string"
           },
           "created_at": {
             "type": "string",
