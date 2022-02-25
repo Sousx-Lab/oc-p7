@@ -77,10 +77,7 @@ exports.getPostById = async(req, res, next) => {
 exports.createPost = async (req, res, next) => {
 
     if(req.fileValidationError?.error){
-        return res.http.BadRequest({error: 
-            {message: 
-            `File type ${req.fileValidationError.fileExt} not allowed`
-        }})
+        return res.http.BadRequest({error: {message: req.fileValidationError.message}});
     }
     try {
         const payload = {
@@ -102,10 +99,7 @@ exports.createPost = async (req, res, next) => {
 exports.updatePost = async(req, res, next) => {
     
     if(req.fileValidationError?.error){
-        return res.http.BadRequest({error: 
-            {message: 
-            `File type ${req.fileValidationError.fileExt} not allowed`
-        }})
+        return res.http.BadRequest({error: {message: req.fileValidationError.message}});
     }
     try {
         const post = await Post.findOne({where :{id: req.params.id}});
@@ -174,7 +168,7 @@ exports.likePost = async(req, res, next) => {
             post.usersLiked = post.usersLiked.filter(item => item !== req.user.id)
         }
         await post.save();
-        return res.http.Ok(post);
+        return res.http.Ok({message: "Post liked"});
         
     } catch (error) {
         return jsonErrors(error, res)
