@@ -12,24 +12,20 @@ exports.getAllPosts = async (req, res, next) => {
             ['users_liked', 'usersLiked'],
             [Sequelize.fn('count', Sequelize.col('post_id')), 'comments']
             ],
-            include: [{
-                    model: User,
+            include: [
+                {
+                    model: User, 
                     attributes: ['id', 'firstName', 'lastName', 'profilePicture']
                 },
                 {
-                    model: Comment,
+                    model: Comment, 
                     attributes: []
                 }
             ],
             group: ['post.id'],
-            order: [
-                ['created_at', 'DESC']
-            ]
+            order: [['created_at', 'DESC']]
         });
         
-        posts.map(post => {
-            post.addUrl(req.mediaUrl)
-        })
         return res.http.Ok(posts);
     } catch (error) {
         return jsonErrors(error, res);
@@ -44,7 +40,7 @@ exports.getPostById = async(req, res, next) => {
         const id = req.params.id
         const post = await Post.findOne({
             where: {id: id},
-            attributes: ['id', 'content', 'media', 'created_at','updated_at','likes','mediaType', 
+            attributes: ['id', 'content', 'media', 'created_at','updated_at', 'likes', 'mediaType', 
             ['users_liked', 'usersLiked']],
             include: [{
                     model: User,
@@ -64,7 +60,7 @@ exports.getPostById = async(req, res, next) => {
         if(!post.id){
             return res.http.NotFound({error: {message: `Post not found`}});
         }
-        post.addUrl(req.mediaUrl)
+        
         return res.http.Ok(post);
     } catch (error) {
         return jsonErrors(error, res);
@@ -75,16 +71,16 @@ exports.getPostById = async(req, res, next) => {
  * Create One Post
  */
 exports.createPost = async (req, res, next) => {
-
-    if(req.fileValidationError?.error){
-        return res.http.BadRequest({error: {message: req.fileValidationError.message}});
-    }
     try {
+        if(req.fileValidationError?.error){
+            return res.http.BadRequest({error: {message: req.fileValidationError.message}});
+        }
         const payload = {
             content: req.body.content || null,
-            media: req.file?.filename ||  null
+            media: req.files?.media ||  null
         }
-        const post = await Post.build({...payload, user_id: req.user.id});
+        
+        const post = await Post.build({...payload, media: payload.media[0].filename ,user_id: req.user.id});
         await post.validate()
         await post.save();
         return res.http.Created(post)
@@ -98,10 +94,11 @@ exports.createPost = async (req, res, next) => {
  */
 exports.updatePost = async(req, res, next) => {
     
-    if(req.fileValidationError?.error){
-        return res.http.BadRequest({error: {message: req.fileValidationError.message}});
-    }
     try {
+        if(req.fileValidationError?.error){
+            return res.http.BadRequest({error: {message: req.fileValidationError.message}});
+        }
+
         const post = await Post.findOne({where :{id: req.params.id}});
         if(!post){
             return res.http.NotFound({error: {message: `Post not found`}});
@@ -109,12 +106,12 @@ exports.updatePost = async(req, res, next) => {
         if(post.user_id === req.user.id || req.user.roles.includes('ROLE_ADMIN')){
             await post.set({
                 content: req.body.content || null,
-                media: req.file?.filename ?? post.media
+                media: req.files?.media ? req.files?.media[0].filename: post.getDataValue('media')
                 },{ individualHooks: true})
             
             await post.validate()
 
-            if(post.previous('media') !== post.media){
+            if(post.previous('media') !== post.getDataValue('media')){
             deleteFile(post.previous('media'))
             }
             await post.save()
@@ -140,7 +137,7 @@ exports.deletePost = async(req, res, next) => {
         }
         
         if(post.user_id === req.user.id || req.user.roles.includes('ROLE_ADMIN')){
-            deleteFile(post.media)
+            deleteFile(post.getDataValue('media'))
             await post.destroy();
             return res.http.Ok({message: `Post deleted !`});   
         }

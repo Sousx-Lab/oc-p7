@@ -28,6 +28,9 @@ module.exports = (sequelize, DataTypes) => {
         onUpdate: 'CASCADE'
       })
     }
+    getProfilePictureName(){
+      return this.getDataValue('profilePicture')
+    }
   }
   User.init({
     /** ID */
@@ -136,7 +139,8 @@ module.exports = (sequelize, DataTypes) => {
       field: 'profile_picture',
       allowNull: true,
       get(){
-        return this.getDataValue('profile_picture')?.replace(/ /g, '') || null;
+        const picture = this.getDataValue('profilePicture')
+        return picture ? mediaUrl+picture: picture
       }
     },
     
@@ -169,6 +173,6 @@ module.exports = (sequelize, DataTypes) => {
     updatedAt: 'updated_at',
     createdAt: 'created_at',
   });
-
+  
   return User;
 };

@@ -47,5 +47,13 @@ const getExtFromMimeType = (mime) => {
 
 module.exports = multer({
     storage: storage,
-    fileFilter: filter
-}).single('media');
+    limits: '100mb',
+    fileFilter: filter,
+    }).fields([
+        {
+            name: 'media',
+            maxCount: 1
+        }, {
+            name: 'profilePicture',
+            maxCount: 1
+        }])

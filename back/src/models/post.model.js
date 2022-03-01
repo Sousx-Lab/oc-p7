@@ -32,8 +32,6 @@ module.exports = (sequelize, DataTypes) => {
     addUrl(hostUrl){
       this.media = this.media ? hostUrl+ this.media : this.media
     }
-    
-
   }
   Post.init({
 
@@ -72,6 +70,10 @@ module.exports = (sequelize, DataTypes) => {
           msg: "Please add picture or video to post"
         },
       },
+      get(){
+        const media = this.getDataValue('media')
+        return  media ? mediaUrl+media : media;
+      }
     },
 
     mediaType: {

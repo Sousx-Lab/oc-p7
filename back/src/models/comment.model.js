@@ -56,6 +56,10 @@ module.exports = (sequelize, DataTypes) => {
     media:{
       type: DataTypes.STRING(255),
       allowNull: true,
+      get(){
+        const media = this.getDataValue('media')
+        return  media ? mediaUrl+media : media;
+      }
     },
 
     mediaType: {

@@ -27,7 +27,7 @@ exports.isValidPassword = (value, helpers = null) => {
         }
         throw new Error(validationErrors.toString());
     }else{
-        return true;
+        return value;
     }
 }
 

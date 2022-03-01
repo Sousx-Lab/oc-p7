@@ -1,6 +1,10 @@
 const { jsonErrors } = require('../middlewares/http/http.json.errors');
 const { Comment, User } = require('../models/index');
-
+const {deleteFile} = require('../services/files/handle.files');
+/**
+ * 
+ * Get comment
+ */
 exports.getCommentByid = async(req, res, next) =>{
     try {   
         const id = req.params.id;
@@ -15,7 +19,7 @@ exports.getCommentByid = async(req, res, next) =>{
         if(!comment){
             return res.http.NotFound({error: {message: 'Comment not found'}})
         }
-        comment.addUrl(req.mediaUrl)
+        
         return res.http.Ok(comment);
 
     } catch (error) {
@@ -24,32 +28,70 @@ exports.getCommentByid = async(req, res, next) =>{
     
 };
 
+/**
+ * 
+ * Create Comment
+ */
 exports.createComment = async (req, res, next) =>{
-    if(req.fileValidationError?.error){
-        return res.http.BadRequest({error: {message: req.fileValidationError.message}})
-    }
     try {
-        
-        const payload = {
-            content: req.body.content || null,
-            media: req.file?.filename ||  null,
-            post_id: req.params.id
+        if(req.fileValidationError?.error){
+            return res.http.BadRequest({error: {message: req.fileValidationError.message}})
         }
-        const comment = await Comment.build({...payload, user_id: req.user.id});
+        let comment = await Comment.build({
+            content: req.body.content || null,
+            media: req.files?.media ? req.files?.media[0].filename :null, 
+            user_id: req.user.id,
+            post_id: req.params.id
+        });
+        
         await comment.validate()
         await comment.save();
-        comment.addUrl(req.mediaUrl);
-        const user = User.findOne({where: {id: comment.user_id}})
-        return res.http.Created(comment)
+        comment = await Comment.findOne({
+            where : {id: comment.id},
+            attributes: ['id', 'content', 'media', 'created_at','updated_at', 'mediaType'],
+            include: [{
+                model: User,
+                attributes: ['id', 'firstName', 'lastName', 'profilePicture']
+            }],
+        });
+
+        return res.http.Created({comment})
     } catch (error) {
         return jsonErrors(error, res)
     }
 }
 
+/**
+ * 
+ * Update comment
+ */
 exports.updateComment = async (req, res, next) => {
-    return res.http.Ok('ok')
+    try {
+        const comment = await Comment.findOne({where : {id: req.params.id}})
+        if(!comment){
+            return res.http.NotFound({error: {message : "Comment not found"}});
+        }
+        await comment.set({
+            comment: req.body.content ?? comment.getDateValue('content'),
+            media: req.files?.media ? req.files?.media[0].filename: comment.getDateValue('media') 
+        },{ individualHooks: true});
+        
+        await comment.validate();
+        if(comment.previous('media') !== comment.getDataValue('media')){
+            deleteFile(comment.previous('media'));
+        }
+        await comment.save();
+        return res.http.Ok(comment)
+    } catch (error) {
+        return jsonErrors(error, res)
+    }
+   
 }
 
+/** 
+ * 
+ * Delete comment 
+ * */
 exports.deleteComment = async (req, res, next) => {
     try {
         const id = req.params.id
@@ -59,7 +101,7 @@ exports.deleteComment = async (req, res, next) => {
         }
         
         if(comment.user_id === req.user.id || req.user.roles.includes('ROLE_ADMIN')){
-            deleteFile(comment.media)
+            deleteFile(comment.getDataValue('media'))
             await comment.destroy();
             return res.http.Ok({message: `Comment deleted !`});   
         }

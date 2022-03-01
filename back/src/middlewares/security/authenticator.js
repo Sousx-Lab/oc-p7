@@ -52,7 +52,7 @@ const authenticator = (req, res, next) => {
 
 /**
  * 
- * @param {string|array} roles
+ * @param {string} roles
  * @returns 
  */
 const isGranted = (roles = 'ROLE_USER') => {

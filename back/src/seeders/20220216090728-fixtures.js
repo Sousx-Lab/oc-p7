@@ -24,6 +24,7 @@ module.exports = {
         lastname: `Doe${i}`,
         password: bcrypt.hashSync(`Password${i}`, 10),
         roles: (i === 1) ? JSON.stringify(['ROLE_ADMIN']) : JSON.stringify([]),
+        profile_picture: `image${i}.jpeg`,
         is_active: true,
         created_at: date,
         updated_at: date,

@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('../middlewares/security/jwt');
 const {cookieOptions} = require('../middlewares/http/cookie.options');
 const crypto = require('crypto');
+const {deleteFile} = require('../services/files/handle.files')
 
 /** 
  * SignUp 
@@ -49,6 +50,7 @@ exports.login = async(req, res, next) => {
             userId: user.id,
             firstName: user.firstName,
             lastName: user.lastName,
+            profilePicture: user.profilePicture,
             expriesAt: Date.now() + parseInt(process.env.JWT_TOKEN_EXPIRES_IN,10),
             xsrfToken: xsrfToken
         });
@@ -62,6 +64,7 @@ exports.login = async(req, res, next) => {
  * Refresh token 
  */
  exports.refreshToken = async(req, res, next) => {
+    
     try {
         const cookieRefreshToken = req.signedCookies['refresh_token']
         
@@ -97,6 +100,7 @@ exports.login = async(req, res, next) => {
             userId: user.id,
             firstName: user.firstName,
             lastName: user.lastName,
+            profilePicture: user.profilePicture,
             expriesAt: Date.now() + parseInt(process.env.JWT_TOKEN_EXPIRES_IN,10),
             xsrfToken: xsrfToken
         });
@@ -129,6 +133,10 @@ exports.logout = async(req, res, next) => {
     }
     
 }
+
+/**
+ * Get User by id
+ */
 exports.getUserByid = async (req, res, next) =>{
     try {
         const user = await User.findOne({
@@ -136,7 +144,8 @@ exports.getUserByid = async (req, res, next) =>{
             attributes: ['firstName', 'lastName', 'profilePicture'],
             include: [{
                 model: Post,
-                attributes: ['id', 'content', "media", 'updated_at', 'created_at', 'likes', 'users_liked',
+                attributes: ['id', 'content', "media", 'updated_at', 'created_at', 'likes', 
+                ['users_liked', 'usersLiked'],
                 [Sequelize.fn('count', Sequelize.col('post_id')) ,'comments'], 
                 ],
                 order: [['created_at', 'DESC']] 
@@ -147,16 +156,76 @@ exports.getUserByid = async (req, res, next) =>{
                 }
             ],
         });
-        // 
+        
         if(!user.firstName){
             return res.http.NotFound({error: {message: `User not found`}});
         }
+        user.addUrl(req.mediaUrl)
         return res.http.Ok(user);
     } catch (error) {
         return jsonErrors(error, res);
     }
 }
 
+/**
+ * Update User  
+ */
+exports.updateUser = async(req, res, next) =>{
+    try {
+        if(req.fileValidationError?.error){
+            return res.http.BadRequest({error: {message: req.fileValidationError.message}});
+        }
+        
+        const user = await User.findOne({where: {id: req.user.id}});
+        if(!user){
+            res.http.NotFound({error: {message: 'User not found!'}});
+        }
+        const payload = {
+            ...req.body,
+            newPassword: req.body.newPassword ?? null,
+            uploadedPicture: req.files?.profilePicture || null
+        }
+        if(!await bcrypt.compare(payload.currentPassword, user.password)){
+            if(payload.uploadedPicture){
+                deleteFile(payload.uploadedPicture[0].filename)
+            }
+            return res.http.BadRequest({error: {message: 'Invalid current Password'}});
+        }
+        
+        await user.set({
+            ...payload,
+            roles: [],
+            password: payload.newPassword ? await bcrypt.hash(payload.newPassword, 10): user.password,
+            profilePicture: payload.uploadedPicture ? payload.uploadedPicture[0].filename: user.getDataValue('profilePicture')
+        },{ individualHooks: true});
+
+        await user.validate();
+        if(user.previous('profilePicture') !== user.getDataValue('profilePicture')){
+            deleteFile(user.previous('profilePicture'));
+        }
+        
+        await user.save();
+
+        const xsrfToken = crypto.randomBytes(64).toString('hex');
+        res.cookie("access_token", jwt.jwtSign(user, xsrfToken), cookieOptions);
+
+        return res.http.Ok({
+            userId: user.id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            profilePicture: user.profilePicture,
+            expriesAt: Date.now() + parseInt(process.env.JWT_TOKEN_EXPIRES_IN,10),
+            xsrfToken: xsrfToken
+        })
+        
+    } catch (error) {
+        return jsonErrors(error, res)
+    }
+};
+
+/**
+ * Delete User  
+ */
 exports.deleteUser = async (req, res, next) =>{
     try {
         const user = User.findOne({where : {id:  req.user.id}});
@@ -173,6 +242,8 @@ exports.deleteUser = async (req, res, next) =>{
             res.clearCookie('refresh_token');
         }
         res.clearCookie('access_token');
+        deleteFile(user.getDataValue('profilePicture'));
+        
         await user.destroy();
         delete req.user;
         return res.http.Ok({message: `User deleted !`});

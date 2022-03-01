@@ -54,5 +54,5 @@ module.exports = {
       const validator = new SchemaValidator(req, res, next)
       validator.body(schema)
     }
-  }
+  },
 }
