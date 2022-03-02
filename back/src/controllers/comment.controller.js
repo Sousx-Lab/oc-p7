@@ -10,7 +10,9 @@ exports.getCommentByid = async(req, res, next) =>{
         const id = req.params.id;
         const comment = await Comment.findOne({
             where : {id: id},
-            attributes: ['id', 'content', 'media', 'created_at','updated_at', 'mediaType'],
+            attributes: ['id', 'content', 'media', 'mediaType',
+            ['created_at', 'createdAt'],['updated_at', 'updatedAt']
+            ],
             include: [{
                 model: User,
                 attributes: ['id', 'firstName', 'lastName', 'profilePicture']
@@ -48,14 +50,16 @@ exports.createComment = async (req, res, next) =>{
         await comment.save();
         comment = await Comment.findOne({
             where : {id: comment.id},
-            attributes: ['id', 'content', 'media', 'created_at','updated_at', 'mediaType'],
+            attributes: ['id', 'content', 'media', 'mediaType',
+            ['created_at', 'createdAt'],['updated_at', 'updatedAt']
+            ],
             include: [{
                 model: User,
                 attributes: ['id', 'firstName', 'lastName', 'profilePicture']
             }],
         });
 
-        return res.http.Created({comment})
+        return res.http.Created(comment)
     } catch (error) {
         return jsonErrors(error, res)
     }
@@ -67,21 +71,35 @@ exports.createComment = async (req, res, next) =>{
  */
 exports.updateComment = async (req, res, next) => {
     try {
-        const comment = await Comment.findOne({where : {id: req.params.id}})
+        let comment = await Comment.findOne({where : {id: req.params.id}})
         if(!comment){
             return res.http.NotFound({error: {message : "Comment not found"}});
         }
-        await comment.set({
-            comment: req.body.content ?? comment.getDateValue('content'),
-            media: req.files?.media ? req.files?.media[0].filename: comment.getDateValue('media') 
-        },{ individualHooks: true});
-        
-        await comment.validate();
-        if(comment.previous('media') !== comment.getDataValue('media')){
-            deleteFile(comment.previous('media'));
+        if(comment.user_id === req.user.id || req.user.roles.includes('ROLE_ADMIN')){
+            await comment.set({
+                content: req.body.content ?? comment.getDataValue('content'),
+                media: req.files?.media ? req.files?.media[0].filename: comment.getDataValue('media') 
+            },{ individualHooks: true});
+            
+            await comment.validate();
+            
+            if(comment.previous('media') !== comment.getDataValue('media')){
+                deleteFile(comment.previous('media'));
+            }
+            await comment.save();
+            comment = await Comment.findOne({
+                where : {id: comment.id},
+                attributes: ['id', 'content', 'media', 'mediaType',
+                ['created_at', 'createdAt'],['updated_at', 'updatedAt']
+                ],
+                include: [{
+                    model: User,
+                    attributes: ['id', 'firstName', 'lastName', 'profilePicture']
+                }],
+            });
+            return res.http.Ok(comment)
         }
-        await comment.save();
-        return res.http.Ok(comment)
+        return res.http.Forbidden({error: {message: 'permission denied'}});
     } catch (error) {
         return jsonErrors(error, res)
     }
