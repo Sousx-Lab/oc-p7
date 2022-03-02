@@ -8,19 +8,13 @@ exports.getAllPosts = async (req, res, next) => {
     const limit = req.query.limit
     try {
         const posts = await Post.findAll({
-            attributes: ['id', 'content','media', 'created_at', 'updated_at', 'likes', 'mediaType', 
-            ['users_liked', 'usersLiked'],
-            [Sequelize.fn('count', Sequelize.col('post_id')), 'comments']
+            attributes: ['id', 'content','media', 'likes', 'mediaType', 
+            ['users_liked', 'usersLiked'],['created_at', 'createdAt'],['updated_at', 'updatedAt'],
+            [Sequelize.fn('count', Sequelize.col('post_id')), 'commentsCount']
             ],
             include: [
-                {
-                    model: User, 
-                    attributes: ['id', 'firstName', 'lastName', 'profilePicture']
-                },
-                {
-                    model: Comment, 
-                    attributes: []
-                }
+                {model: User, attributes: ['id', 'firstName', 'lastName', 'profilePicture']},
+                {model: Comment, attributes: []}
             ],
             group: ['post.id'],
             order: [['created_at', 'DESC']]
@@ -40,8 +34,9 @@ exports.getPostById = async(req, res, next) => {
         const id = req.params.id
         const post = await Post.findOne({
             where: {id: id},
-            attributes: ['id', 'content', 'media', 'created_at','updated_at', 'likes', 'mediaType', 
-            ['users_liked', 'usersLiked']],
+            attributes: ['id', 'content', 'media', 'likes', 'mediaType', 
+            ['users_liked', 'usersLiked'],['created_at', 'createdAt'],['updated_at', 'updatedAt']
+            ],
             include: [{
                     model: User,
                     attributes: ['id', 'firstName', 'lastName', 'profilePicture']
@@ -161,8 +156,11 @@ exports.likePost = async(req, res, next) => {
         }
         if(!post.usersLiked.includes(req.user.id)){
             post.usersLiked = [...post.usersLiked, req.user.id]
+            post.updateCountLikes()
+            
         }else{
             post.usersLiked = post.usersLiked.filter(item => item !== req.user.id)
+            post.updateCountLikes()
         }
         await post.save();
         return res.http.Ok({message: "Post liked"});

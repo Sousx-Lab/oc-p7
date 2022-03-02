@@ -29,8 +29,8 @@ module.exports = (sequelize, DataTypes) => {
         onUpdate: 'CASCADE'
       })
     }
-    addUrl(hostUrl){
-      this.media = this.media ? hostUrl+ this.media : this.media
+    updateCountLikes(){
+      this.likes = this.getDataValue('usersLiked').length.toString();
     }
   }
   Post.init({
@@ -97,13 +97,7 @@ module.exports = (sequelize, DataTypes) => {
     /** likes count this usersLiked array */
     likes: {
       type: DataTypes.STRING(255),
-      defaultValue: '0',
-      get(){
-        return this.getDataValue('usersLiked').length.toString();
-      },
-      set(value){
-        return;
-      }
+      defaultValue: '0'
     },
   },
   {
