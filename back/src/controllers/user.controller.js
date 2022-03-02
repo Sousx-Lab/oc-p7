@@ -1,17 +1,18 @@
-const { User, Token, Post, Comment, Sequelize } = require('../models/index');
+const { Token } = require('../models/index');
 const {jsonErrors} = require('../middlewares/http/http.json.errors');
 const bcrypt = require('bcrypt');
 const jwt = require('../middlewares/security/jwt');
 const {cookieOptions} = require('../middlewares/http/cookie.options');
 const crypto = require('crypto');
 const {deleteFile} = require('../services/files/handle.files')
+const userRespository = require('../repository/user.repository');
 
 /** 
  * SignUp 
  */
 exports.signup = async(req, res, next) => {
     try {
-        const user = await User.build({...req.body, roles: []});
+        const user = await userRespository.User.build({...req.body, roles: []});
         await user.validate()
         user.password = await bcrypt.hash(user.password, 10);
         await user.save();
@@ -27,7 +28,7 @@ exports.signup = async(req, res, next) => {
 exports.login = async(req, res, next) => {
     
     try {
-        const user = await User.findOne({ where: {email: req.body.email}})
+        const user = await userRespository.User.findOne({ where: {email: req.body.email}})
         if(!user){
             return res.http.BadRequest({error: {message: 'Email or password invalid'}});
         }
@@ -77,7 +78,7 @@ exports.login = async(req, res, next) => {
             return res.http.Unauthorized({error: {message: 'Not found refresh token'}});
         };
 
-        const user = await User.findOne({where :{id: refreshToken.userId}})
+        const user = await userRespository.User.findOne({where :{id: refreshToken.userId}})
         if(!user){
             return res.http.Unauthorized({error: {message: 'refresh token not match User'}});
         };
@@ -139,25 +140,10 @@ exports.logout = async(req, res, next) => {
  */
 exports.getUserByid = async (req, res, next) =>{
     try {
-        const user = await User.findOne({
-            where : {id:  req.params.id},
-            attributes: ['firstName', 'lastName', 'profilePicture',
-            ['created_at', 'createdAt'],['updated_at', 'updatedAt']
-            ],
-            include: [
-                {
-                model: Post,
-                attributes: ['id', 'content', "media", 'likes', 
-                ['users_liked', 'usersLiked'],['created_at', 'createdAt'],['updated_at', 'updatedAt'],
-                [Sequelize.fn('count', Sequelize.col('post_id')), 'commentsCount'], 
-                ],
-                include: {model: Comment,attributes: []} 
-                }
-            ],
-            group:['post_id']
-        });
+        const id = req.params.id
+        const user = await userRespository.findOneJoinPostsComment(id);
         
-        if(!user.firstName){
+        if(!user){
             return res.http.NotFound({error: {message: `User not found`}});
         }
         return res.http.Ok(user);
@@ -171,11 +157,11 @@ exports.getUserByid = async (req, res, next) =>{
  */
 exports.updateUser = async(req, res, next) =>{
     try {
-        if(req.fileValidationError?.error){
+        if(req.ileValidationError?.error){
             return res.http.BadRequest({error: {message: req.fileValidationError.message}});
         }
         
-        const user = await User.findOne({where: {id: req.user.id}});
+        const user = await userRespository.User.findOne({where: {id: req.user.id}});
         if(!user){
             res.http.NotFound({error: {message: 'User not found!'}});
         }
@@ -227,7 +213,7 @@ exports.updateUser = async(req, res, next) =>{
  */
 exports.deleteUser = async (req, res, next) =>{
     try {
-        const user = User.findOne({where : {id:  req.user.id}});
+        const user = await userRespository.User.findOne({where : {id:  req.user.id}});
         if(!user){
             return res.http.NotFound({error: {message: `User not found`}});
         }
@@ -241,6 +227,7 @@ exports.deleteUser = async (req, res, next) =>{
             res.clearCookie('refresh_token');
         }
         res.clearCookie('access_token');
+        
         deleteFile(user.getDataValue('profilePicture'));
         
         await user.destroy();

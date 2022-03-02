@@ -1,6 +1,8 @@
 const { jsonErrors } = require('../middlewares/http/http.json.errors');
 const { Comment, User } = require('../models/index');
 const {deleteFile} = require('../services/files/handle.files');
+const commentRespository = require('../repository/comment.respository');
+
 /**
  * 
  * Get comment
@@ -8,16 +10,7 @@ const {deleteFile} = require('../services/files/handle.files');
 exports.getCommentByid = async(req, res, next) =>{
     try {   
         const id = req.params.id;
-        const comment = await Comment.findOne({
-            where : {id: id},
-            attributes: ['id', 'content', 'media', 'mediaType',
-            ['created_at', 'createdAt'],['updated_at', 'updatedAt']
-            ],
-            include: [{
-                model: User,
-                attributes: ['id', 'firstName', 'lastName', 'profilePicture']
-            }],
-        })
+        const comment = await commentRespository.findOneJoinUser(id)
         if(!comment){
             return res.http.NotFound({error: {message: 'Comment not found'}})
         }
@@ -27,7 +20,6 @@ exports.getCommentByid = async(req, res, next) =>{
     } catch (error) {
         return jsonErrors(error, res)
     }
-    
 };
 
 /**
@@ -39,7 +31,7 @@ exports.createComment = async (req, res, next) =>{
         if(req.fileValidationError?.error){
             return res.http.BadRequest({error: {message: req.fileValidationError.message}})
         }
-        let comment = await Comment.build({
+        let comment = await commentRespository.Comment.build({
             content: req.body.content || null,
             media: req.files?.media ? req.files?.media[0].filename :null, 
             user_id: req.user.id,
@@ -48,16 +40,8 @@ exports.createComment = async (req, res, next) =>{
         
         await comment.validate()
         await comment.save();
-        comment = await Comment.findOne({
-            where : {id: comment.id},
-            attributes: ['id', 'content', 'media', 'mediaType',
-            ['created_at', 'createdAt'],['updated_at', 'updatedAt']
-            ],
-            include: [{
-                model: User,
-                attributes: ['id', 'firstName', 'lastName', 'profilePicture']
-            }],
-        });
+
+        comment = await commentRespository.findOneJoinUser(comment.id)
 
         return res.http.Created(comment)
     } catch (error) {
@@ -71,7 +55,7 @@ exports.createComment = async (req, res, next) =>{
  */
 exports.updateComment = async (req, res, next) => {
     try {
-        let comment = await Comment.findOne({where : {id: req.params.id}})
+        let comment = await commentRespository.Comment.findOne({where : {id: req.params.id}})
         if(!comment){
             return res.http.NotFound({error: {message : "Comment not found"}});
         }
@@ -87,16 +71,7 @@ exports.updateComment = async (req, res, next) => {
                 deleteFile(comment.previous('media'));
             }
             await comment.save();
-            comment = await Comment.findOne({
-                where : {id: comment.id},
-                attributes: ['id', 'content', 'media', 'mediaType',
-                ['created_at', 'createdAt'],['updated_at', 'updatedAt']
-                ],
-                include: [{
-                    model: User,
-                    attributes: ['id', 'firstName', 'lastName', 'profilePicture']
-                }],
-            });
+            comment = await commentRespository.findOneJoinUser(comment.id)
             return res.http.Ok(comment)
         }
         return res.http.Forbidden({error: {message: 'permission denied'}});
@@ -113,7 +88,7 @@ exports.updateComment = async (req, res, next) => {
 exports.deleteComment = async (req, res, next) => {
     try {
         const id = req.params.id
-        const comment = await Comment.findOne({where: {id: id}});
+        const comment = await commentRespository.Comment.findOne({where: {id: id}});
         if(!comment){
             return res.http.NotFound({error: {message: `Comment not found !`}});
         }

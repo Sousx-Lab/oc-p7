@@ -1,25 +1,13 @@
 const { jsonErrors } = require('../middlewares/http/http.json.errors');
-const { Post, User, Comment, Sequelize} = require('../models/index');
 const {deleteFile} = require('../services/files/handle.files');
+const postRespository = require('../repository/post.repository');
 /** 
  * Get All Posts 
  */
 exports.getAllPosts = async (req, res, next) => {
     const limit = req.query.limit
     try {
-        const posts = await Post.findAll({
-            attributes: ['id', 'content','media', 'likes', 'mediaType', 
-            ['users_liked', 'usersLiked'],['created_at', 'createdAt'],['updated_at', 'updatedAt'],
-            [Sequelize.fn('count', Sequelize.col('post_id')), 'commentsCount']
-            ],
-            include: [
-                {model: User, attributes: ['id', 'firstName', 'lastName', 'profilePicture']},
-                {model: Comment, attributes: []}
-            ],
-            group: ['post.id'],
-            order: [['created_at', 'DESC']]
-        });
-        
+        const posts = await postRespository.findAllJoinUser();
         return res.http.Ok(posts);
     } catch (error) {
         return jsonErrors(error, res);
@@ -32,30 +20,11 @@ exports.getAllPosts = async (req, res, next) => {
 exports.getPostById = async(req, res, next) => {
     try {
         const id = req.params.id
-        const post = await Post.findOne({
-            where: {id: id},
-            attributes: ['id', 'content', 'media', 'likes', 'mediaType', 
-            ['users_liked', 'usersLiked'],['created_at', 'createdAt'],['updated_at', 'updatedAt']
-            ],
-            include: [{
-                    model: User,
-                    attributes: ['id', 'firstName', 'lastName', 'profilePicture']
-                },
-                {
-                    model: Comment,
-                    attributes: ['id', 'content'],
-                    include: [{
-                        model: User,
-                        attributes: ['id', 'firstName', 'lastName', 'profilePicture']
-                    }]
-                }
-            ],
-            order: [ ['created_at', 'DESC']]
-        });
-        if(!post.id){
+        const post = await postRespository.findOneJoinUserComment(id)
+        
+        if(!post){
             return res.http.NotFound({error: {message: `Post not found`}});
         }
-        
         return res.http.Ok(post);
     } catch (error) {
         return jsonErrors(error, res);
@@ -75,9 +44,11 @@ exports.createPost = async (req, res, next) => {
             media: req.files?.media ||  null
         }
         
-        const post = await Post.build({...payload, media: payload.media[0].filename ,user_id: req.user.id});
+        let post = await postRespository.Post.build({...payload, media: payload.media[0].filename, user_id: req.user.id});
         await post.validate()
         await post.save();
+        post = await postRespository.findOneJoinUserComment(post.id)
+
         return res.http.Created(post)
     } catch (error) {
         return jsonErrors(error, res)
@@ -88,13 +59,12 @@ exports.createPost = async (req, res, next) => {
  * Update Post
  */
 exports.updatePost = async(req, res, next) => {
-    
     try {
         if(req.fileValidationError?.error){
             return res.http.BadRequest({error: {message: req.fileValidationError.message}});
         }
 
-        const post = await Post.findOne({where :{id: req.params.id}});
+        let post = await postRespository.Post.findOne({where :{id: req.params.id}});
         if(!post){
             return res.http.NotFound({error: {message: `Post not found`}});
         }
@@ -110,6 +80,7 @@ exports.updatePost = async(req, res, next) => {
             deleteFile(post.previous('media'))
             }
             await post.save()
+            post = await postRespository.findOneJoinUserComment(post.id)
             return res.http.Ok(post)
         }
 
@@ -126,7 +97,7 @@ exports.updatePost = async(req, res, next) => {
 exports.deletePost = async(req, res, next) => {
     try {
         const id = req.params.id
-        const post = await Post.findOne({where: {id: id}});
+        const post = await postRespository.Post.findOne({where: {id: id}});
         if(!post){
             return res.http.NotFound({error: {message: `Post not found !`}});
         }
@@ -150,7 +121,7 @@ exports.deletePost = async(req, res, next) => {
 exports.likePost = async(req, res, next) => {
     try {
         const id = req.params.id
-        const post = await Post.findOne({where :{id: id}})
+        const post = await postRespository.Post.findOne({where :{id: id}})
         if(!post){
             return res.http.NotFound({error: { message: 'Post not found'}})
         }
