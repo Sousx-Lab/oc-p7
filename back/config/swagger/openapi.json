@@ -804,6 +804,9 @@
           "newPassword": {
             "type": "string"
           },
+          "confirmNewPassword": {
+            "type": "string"
+          },
           "profilePicture": {
             "type": "string",
             "format": "binary"
@@ -891,9 +894,9 @@
             "id",
             "content",
             "media",
-            "created_at",
-            "updated_at",
-            "comment_count",
+            "createdAt",
+            "updatedAt",
+            "commentsCount",
             "User"
           ],
           "properties": {
@@ -906,15 +909,15 @@
             "media": {
               "type": "string"
             },
-            "created_at": {
+            "createdAt": {
               "type": "string",
               "format": "date"
             },
-            "updated_at": {
+            "updatedAt": {
               "type": "string",
               "format": "date"
             },
-            "comment_count": {
+            "commentsCount": {
               "type": "integer"
             },
             "User": {
@@ -932,11 +935,11 @@
           "content": {
             "type": "string"
           },
-          "created_at": {
+          "createdAt": {
             "type": "string",
             "format": "date"
           },
-          "updated_at": {
+          "updatedAt": {
             "type": "string",
             "format": "date"
           },
@@ -985,14 +988,14 @@
           "mediaType":{
             "type": "string"
           },
-          "like":{
+          "likes":{
             "type": "string"
           },
-          "created_at": {
+          "createdAt": {
             "type": "string",
             "format": "date"
           },
-          "updated_at": {
+          "updatedAt": {
             "type": "string",
             "format": "date"
           }
