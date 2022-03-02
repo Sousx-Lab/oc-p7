@@ -141,26 +141,25 @@ exports.getUserByid = async (req, res, next) =>{
     try {
         const user = await User.findOne({
             where : {id:  req.params.id},
-            attributes: ['firstName', 'lastName', 'profilePicture'],
-            include: [{
-                model: Post,
-                attributes: ['id', 'content', "media", 'updated_at', 'created_at', 'likes', 
-                ['users_liked', 'usersLiked'],
-                [Sequelize.fn('count', Sequelize.col('post_id')) ,'comments'], 
-                ],
-                order: [['created_at', 'DESC']] 
-                },
+            attributes: ['firstName', 'lastName', 'profilePicture',
+            ['created_at', 'createdAt'],['updated_at', 'updatedAt']
+            ],
+            include: [
                 {
-                model: Comment,
-                attributes: []
+                model: Post,
+                attributes: ['id', 'content', "media", 'likes', 
+                ['users_liked', 'usersLiked'],['created_at', 'createdAt'],['updated_at', 'updatedAt'],
+                [Sequelize.fn('count', Sequelize.col('post_id')), 'commentsCount'], 
+                ],
+                include: {model: Comment,attributes: []} 
                 }
             ],
+            group:['post_id']
         });
         
         if(!user.firstName){
             return res.http.NotFound({error: {message: `User not found`}});
         }
-        user.addUrl(req.mediaUrl)
         return res.http.Ok(user);
     } catch (error) {
         return jsonErrors(error, res);
