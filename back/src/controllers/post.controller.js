@@ -37,7 +37,7 @@ exports.getPostById = async(req, res, next) => {
 exports.createPost = async (req, res, next) => {
     try {
         if(req.fileValidationError?.error){
-            return res.http.BadRequest({error: {message: req.fileValidationError.message}});
+            return res.http.UnprocessableEntity({error: {message: req.fileValidationError.message}});
         }
         const payload = {
             content: req.body.content || null,
@@ -61,7 +61,7 @@ exports.createPost = async (req, res, next) => {
 exports.updatePost = async(req, res, next) => {
     try {
         if(req.fileValidationError?.error){
-            return res.http.BadRequest({error: {message: req.fileValidationError.message}});
+            return res.http.UnprocessableEntity({error: {message: req.fileValidationError.message}});
         }
 
         let post = await postRespository.Post.findOne({where :{id: req.params.id}});
