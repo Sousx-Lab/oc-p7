@@ -35,16 +35,18 @@ exports.getPostById = async(req, res, next) => {
  * Create One Post
  */
 exports.createPost = async (req, res, next) => {
+    
     try {
         if(req.fileValidationError?.error){
             return res.http.UnprocessableEntity({error: {message: req.fileValidationError.message}});
         }
-        const payload = {
-            content: req.body.content || null,
-            media: req.files?.media ||  null
-        }
         
-        let post = await postRespository.Post.build({...payload, media: payload.media[0].filename, user_id: req.user.id});
+        let post = await postRespository.Post.build({
+            content: req.body.content || null, 
+            media: req.files?.media ? req.files.media[0].filename : null, 
+            user_id: req.user.id
+        });
+        
         await post.validate()
         await post.save();
         post = await postRespository.findOneJoinUserComment(post.id)

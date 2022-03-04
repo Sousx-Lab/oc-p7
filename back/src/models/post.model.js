@@ -56,19 +56,20 @@ module.exports = (sequelize, DataTypes) => {
     content: {
       type: DataTypes.TEXT(),
       allowNull: true,
+      validate: {
+        ifMediaNull(value){
+          if(null === this.getDataValue('media') && null === value){
+            throw new Error('Please add a text, or picture or video to post');
+          }
+        }
+      }
     },
     
-    /** Media (picture, video) */
+    /** Media filename */
     media:{
       type: DataTypes.STRING(255),
-      allowNull: false,
+      allowNull: true,
       validate: {
-        notNull: {
-          msg: "Please add picture or video to post"
-        },
-        notEmpty:{
-          msg: "Please add picture or video to post"
-        },
       },
       get(){
         const media = this.getDataValue('media')
@@ -76,10 +77,14 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
 
+    /** Media type (image / video...) */
     mediaType: {
       type: DataTypes.VIRTUAL,
       get(){
-        return mime.lookup(this.getDataValue('media')).split('/')[0];
+        if(!this.getDataValue('media')){
+          return this.getDataValue('media')
+        }
+        return mime.lookup(this.getDataValue('media'))?.split('/')[0];
       },
       set(value){
         return;

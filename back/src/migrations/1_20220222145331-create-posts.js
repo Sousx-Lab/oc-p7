@@ -16,7 +16,7 @@ module.exports = {
       },
       media: {
         type: Sequelize.STRING(255),
-        allowNull: false,
+        allowNull: true,
         field: 'media',
       },
       usersLiked: {
