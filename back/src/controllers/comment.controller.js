@@ -29,7 +29,7 @@ exports.getCommentByid = async(req, res, next) =>{
 exports.createComment = async (req, res, next) =>{
     try {
         if(req.fileValidationError?.error){
-            return res.http.BadRequest({error: {message: req.fileValidationError.message}})
+            return res.http.UnprocessableEntity({error: {message: req.fileValidationError.message}})
         }
         let comment = await commentRespository.Comment.build({
             content: req.body.content || null,
@@ -55,6 +55,9 @@ exports.createComment = async (req, res, next) =>{
  */
 exports.updateComment = async (req, res, next) => {
     try {
+        if(req.fileValidationError?.error){
+            return res.http.UnprocessableEntity({error: {message: req.fileValidationError.message}})
+        }
         let comment = await commentRespository.Comment.findOne({where : {id: req.params.id}})
         if(!comment){
             return res.http.NotFound({error: {message : "Comment not found"}});

@@ -2,7 +2,8 @@ const express = require('express');
 const userController = require('../controllers/user.controller');
 const { xss } = require('express-xss-sanitizer');
 const schemaValidator = require('../middlewares/validator/api/schema.validator');
-const {signupSchema, loginSchema, updateUserSchema}= require('../middlewares/validator/api/schema/user.schema');
+const {signupSchema, loginSchema, 
+    updateUserSchema, forgotPasswordSchema, resetPasswordSchema }= require('../middlewares/validator/api/schema/user.schema');
 const multer = require('../middlewares/multer/multer')
 const isGranted = require('../middlewares/security/authenticator');
 
@@ -29,6 +30,12 @@ router.get('/:id', isGranted('ROLE_USER'), userController.getUserByid);
 router.delete('/delete', isGranted('ROLE_USER'), userController.deleteUser);
 
 /** Refresh token */
-router.post('/refresh-token', isGranted('ROLE_USER'), userController.refreshToken);
+router.post('/refresh-token', userController.refreshToken);
+
+/** Forgot password */
+router.post('/password-forgot', schemaValidator.body(forgotPasswordSchema), userController.forgotPassword);
+
+/** Reset passowrd */
+router.post('/password-reset', schemaValidator.body(resetPasswordSchema), userController.resetPassowrd);
 
 module.exports = router;

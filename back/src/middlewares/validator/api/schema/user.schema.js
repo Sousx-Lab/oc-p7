@@ -149,11 +149,57 @@ exports.updateUserSchema = Joi.object().keys({
       .optional()
       .trim()
       .custom(isValidPassword, 'passwor.validation')
-      .allow(null, 'null')
+      .allow(null, '')
       .messages({
         'string.base': "new password must be a string",
         'any.required': "new password is required",
         'string.empty': "new password must not be empty",
       }),
       
-  })
+  });
+
+  exports.forgotPasswordSchema = Joi.object().keys({
+      email: Joi
+      .string()
+      .trim()
+      .required()
+      .email()
+      .messages({
+        'string.base': "email must be a string",
+        'any.required': "email is required",
+        'string.empty': "email must not be empty",
+        'string.email': "email must be an email valid",
+      }),
+  });
+
+exports.resetPasswordSchema = Joi.object().keys({
+      confirmPassword: Joi
+      .any()
+      .valid(Joi.ref('password'))
+      .required()
+      .messages({
+        'string.base': "new password must be a string",
+        'any.required': "new password is required",
+        'string.empty': "new password must not be empty",
+        'any.only': "confirm new password must be same new password"
+      }),
+      password: Joi
+      .string()
+      .trim()
+      .custom(isValidPassword, 'password.validation')
+      .required()
+      .messages({
+        'string.base': "current password must be a string",
+        'any.required': "current password is required",
+        'string.empty': "current password must not be empty",
+      }),
+      token: Joi
+      .string()
+      .trim()
+      .required()
+      .messages({
+        'string.base': "token must be a string",
+        'any.required': "token is required",
+        'string.empty': "token must not be empty",
+      })
+})

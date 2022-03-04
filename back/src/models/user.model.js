@@ -140,7 +140,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: true,
       get(){
         const picture = this.getDataValue('profilePicture')
-        return picture ? mediaUrl+picture: picture
+        return picture ? mediaHost + picture: picture
       }
     },
     

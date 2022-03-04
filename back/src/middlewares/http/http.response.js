@@ -1,8 +1,10 @@
 const HTTP_OK = 200;
 const HTTP_CREATED = 201;
+const HTTP_ACCEPTED = 202
 const HTTP_NO_CONTENT= 204;
 const HTTP_MOVEDPEEMANENTLY = 301;
 const HTTP_SEE_OTHER = 303;
+const HTTP_TEMPORARY_REDIRECT= 307;
 const HTTP_BAD_REQUEST = 400;
 const HTTP_UNAUTHORIZED = 401;
 const HTTP_FORBIDDEN = 403;
@@ -33,6 +35,14 @@ class HTTPResponse {
     }
 
     /**
+     * @param {object|String|null} message 
+     * @returns status code 201 & json message | " "
+     */
+    Accepted(message = ''){
+        return this.res.status(HTTP_ACCEPTED).json(message);
+    }
+
+    /**
      * @returns status code 204
      */
     NoContent(){
@@ -59,7 +69,7 @@ class HTTPResponse {
      * @param {object|String|null} message 
      * @returns status code 403 & json message | " "
      */
-     Forbidden(message = ''){
+    Forbidden(message = ''){
         return this.res.status(HTTP_FORBIDDEN).json(message);
     }
 
@@ -101,6 +111,14 @@ class HTTPResponse {
      */
     MovedPermanently(path = '/'){
         return this.res.redirect(HTTP_MOVEDPEEMANENTLY, path);
+    }
+
+    /**
+     * @param {string|null} path 
+     * @returns status code 307
+     */
+    TemporaryRedirect(path = '/'){
+        return this.res.redirect(HTTP_TEMPORARY_REDIRECT, path);
     }
 }
 

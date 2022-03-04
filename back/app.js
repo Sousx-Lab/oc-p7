@@ -30,7 +30,8 @@ app.use(handleParserError());
 app.use(cookieParser(process.env.COOKIE_SIGNATURE));
 
 app.use((req, res, next) => {
-  global.mediaUrl = `${req.protocol}://${req.get('host')}/media/`
+  global.apiHost = `${req.protocol}://${req.get('host')}`
+  global.mediaHost = apiHost + `${process.env.MEDIA_FOLDER}`
   next();
 });
 

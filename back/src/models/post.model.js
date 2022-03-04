@@ -72,7 +72,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       get(){
         const media = this.getDataValue('media')
-        return  media ? mediaUrl+media : media;
+        return  media ? mediaHost + media : media;
       }
     },
 

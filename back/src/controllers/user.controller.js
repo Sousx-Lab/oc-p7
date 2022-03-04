@@ -1,4 +1,4 @@
-const { Token } = require('../models/index');
+const { Token, ResetPassword} = require('../models/index');
 const {jsonErrors} = require('../middlewares/http/http.json.errors');
 const bcrypt = require('bcrypt');
 const jwt = require('../middlewares/security/jwt');
@@ -6,6 +6,7 @@ const {cookieOptions} = require('../middlewares/http/cookie.options');
 const crypto = require('crypto');
 const {deleteFile} = require('../services/files/handle.files')
 const userRespository = require('../repository/user.repository');
+const { sendEmail } = require('../services/mailer/mailer');
 
 /** 
  * SignUp 
@@ -28,6 +29,9 @@ exports.signup = async(req, res, next) => {
 exports.login = async(req, res, next) => {
     
     try {
+        if(req.signedCookies['refresh_token'] && req.signedCookies['access_token']){
+            return res.http.TemporaryRedirect('/api/user/refresh-token');
+        }
         const user = await userRespository.User.findOne({ where: {email: req.body.email}})
         if(!user){
             return res.http.BadRequest({error: {message: 'Email or password invalid'}});
@@ -158,7 +162,7 @@ exports.getUserByid = async (req, res, next) =>{
 exports.updateUser = async(req, res, next) =>{
     try {
         if(req.ileValidationError?.error){
-            return res.http.BadRequest({error: {message: req.fileValidationError.message}});
+            return res.http.UnprocessableEntity({error: {message: req.fileValidationError.message}});
         }
         
         const user = await userRespository.User.findOne({where: {id: req.user.id}});
@@ -237,3 +241,68 @@ exports.deleteUser = async (req, res, next) =>{
         return jsonErrors(error, res);
     }
 }
+
+/**
+ * Forgot Password
+ */
+exports.forgotPassword = async(req, res, next) =>{
+    try {
+        let resetToken = await ResetPassword.findOne({where : {email: req.body.email}})
+        if(resetToken){
+            return res.http.UnprocessableEntity({error: {message: `A request already exists, please check your email or wait 15 minutes before making a new request.`}});
+        }
+        const user = await userRespository.User.findOne({where : {email: req.body.email}});
+        if(!user){
+            return res.http.UnprocessableEntity();
+        }
+        const Token = crypto.randomBytes(32).toString('base64').replace(/\W/g, '');
+        await ResetPassword.create({
+            token: Token,
+            userId: user.id,
+            email: user.email,
+            expiresAt: Date.now() + parseInt(process.env.RESET_PASSWORD_EXPIRE_AT, 10)
+        })
+        await sendEmail(
+            user.email, 
+            'Groupomania reset passowrd',
+            'password.reset.html',
+                {
+                firstName: user.firstName,
+                link: `${process.env.FRONT_HOST}/password-reset?token=${Token}`
+                }
+            )
+        res.clearCookie('refresh_token');
+        res.clearCookie('access_token');
+        return res.http.Accepted({message: `Email sended at ${req.body.email}`});
+    } catch (error) {
+        jsonErrors(error, res)
+    }
+};
+
+exports.resetPassowrd = async(req, res, next) => {
+    try {
+        const resetToken = await ResetPassword.findOne({where: {token: req.body.token}})
+        if(!resetToken){
+            return res.http.UnprocessableEntity({error: {message: 'Reset password token not exist.'}});
+        }
+        
+        if(new Date(`${resetToken.expiresAt}`).getTime() < Date.now()){
+            await resetToken.destroy();
+            return res.http.UnprocessableEntity({error: {message: 'Reset password token expire !'}});
+        }
+        const user = await userRespository.User.findOne({where: {id: resetToken.userId}});
+        if(!user){
+            return res.http.UnprocessableEntity({error: {message: 'User not exist.'}});
+        }
+        user.password = await bcrypt.hash(req.body.password, 10);
+        await user.save();
+        await resetToken.destroy();
+
+        res.clearCookie('refresh_token');
+        res.clearCookie('access_token');
+        return res.http.Ok({message: 'User password has been successfully updated'});
+
+    } catch (error) {
+        return jsonErrors(error, res);
+    }
+};

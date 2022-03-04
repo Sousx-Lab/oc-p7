@@ -29,9 +29,6 @@ module.exports = (sequelize, DataTypes) => {
           onUpdate: 'CASCADE'
       });
     }
-    addUrl(hostUrl){
-      this.media = this.media ? hostUrl+ this.media : this.media
-    }
   }
   Comment.init({
 
@@ -58,7 +55,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: true,
       get(){
         const media = this.getDataValue('media')
-        return  media ? mediaUrl+media : media;
+        return  media ? mediaHost+ media : media;
       }
     },
 
