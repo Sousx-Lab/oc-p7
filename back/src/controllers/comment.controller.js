@@ -2,6 +2,7 @@ const { jsonErrors } = require('../middlewares/http/http.json.errors');
 const { Comment, User } = require('../models/index');
 const {deleteFile} = require('../services/files/handle.files');
 const commentRespository = require('../repository/comment.respository');
+const postRespository = require('../repository/post.repository');
 
 /**
  * 
@@ -31,9 +32,13 @@ exports.createComment = async (req, res, next) =>{
         if(req.fileValidationError?.error){
             return res.http.UnprocessableEntity({error: {message: req.fileValidationError.message}})
         }
+        const post = await postRespository.Post.findOne({where: {id: req.params.id}});
+        if(!post){
+            return res.http.UnprocessableEntity({error: {message: 'Sorry this post not exist !'}})
+        }
         let comment = await commentRespository.Comment.build({
             content: req.body.content || null,
-            media: req.files?.media ? req.files?.media[0].filename :null, 
+            media: req.files?.media ? req.files?.media[0].filename : null, 
             user_id: req.user.id,
             post_id: req.params.id
         });

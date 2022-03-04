@@ -49,7 +49,7 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
 
-    /** Media */
+    /** Media filename*/
     media:{
       type: DataTypes.STRING(255),
       allowNull: true,
@@ -58,7 +58,8 @@ module.exports = (sequelize, DataTypes) => {
         return  media ? mediaHost+ media : media;
       }
     },
-
+    
+    /** Media type (image / video...) */
     mediaType: {
       type: DataTypes.VIRTUAL,
       get(){
@@ -80,9 +81,9 @@ module.exports = (sequelize, DataTypes) => {
         notEmpty:{
           msg: "comment must be not empty"
         },
-        oneOfTwoNotNull(value){
-          if(value === null && this.media === null){
-            throw new Error("Please add comment or picture or video to comment")
+        ifMediaNull(value){
+          if(null === this.getDataValue('media') && null === value){
+            throw new Error('Please add a text, or picture or video to comment');
           }
         }
       }
