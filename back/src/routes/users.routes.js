@@ -21,13 +21,13 @@ router.post('/login', xss(), schemaValidator.body(loginSchema), userController.l
 router.get('/logout', userController.logout);
 
 /** Update user  */
-router.put('/update', xss(), isGranted('ROLE_USER'), multer, schemaValidator.body(updateUserSchema), userController.updateUser);
+router.put('/:id', xss(), isGranted('ROLE_USER'), multer, schemaValidator.body(updateUserSchema), userController.updateUserById);
 
 /** Get User by id */
-router.get('/:id', isGranted('ROLE_USER'), userController.getUserByid);
+router.get('/:id', isGranted('ROLE_USER'), userController.getUserById);
 
 /** Delete User by id */
-router.delete('/delete', isGranted('ROLE_USER'), userController.deleteUser);
+router.delete('/:id', isGranted('ROLE_USER'), userController.deleteUserById);
 
 /** Refresh token */
 router.post('/refresh-token', userController.refreshToken);

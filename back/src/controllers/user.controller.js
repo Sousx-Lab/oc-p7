@@ -29,8 +29,15 @@ exports.signup = async(req, res, next) => {
 exports.login = async(req, res, next) => {
     
     try {
-        if(req.signedCookies['refresh_token'] && req.signedCookies['access_token']){
-            return res.http.TemporaryRedirect('/api/user/refresh-token');
+        if(req.signedCookies['refresh_token']){
+            const refreshToken = await Token.findOne({ 
+                where: {token: req.signedCookies['refresh_token']}
+            });
+            if(refreshToken){
+                await refreshToken.destroy();
+            }
+            res.clearCookie('refresh_token');
+            res.clearCookie('access_token');
         }
         const user = await userRespository.User.findOne({ where: {email: req.body.email}})
         if(!user){
@@ -142,7 +149,7 @@ exports.logout = async(req, res, next) => {
 /**
  * Get User by id
  */
-exports.getUserByid = async (req, res, next) =>{
+exports.getUserById = async (req, res, next) =>{
     try {
         const id = req.params.id
         const user = await userRespository.findOneJoinPostsComment(id);
@@ -159,15 +166,18 @@ exports.getUserByid = async (req, res, next) =>{
 /**
  * Update User  
  */
-exports.updateUser = async(req, res, next) =>{
+exports.updateUserById = async(req, res, next) =>{
     try {
         if(req.ileValidationError?.error){
             return res.http.UnprocessableEntity({error: {message: req.fileValidationError.message}});
         }
         
-        const user = await userRespository.User.findOne({where: {id: req.user.id}});
+        const user = await userRespository.User.findOne({where: {id: req.params.id}});
         if(!user){
             res.http.NotFound({error: {message: 'User not found!'}});
+        }
+        if(user.id !== req.user.id){
+            return res.http.Forbidden({error: {message: "permission denied!"}});
         }
         const payload = {
             ...req.body,
@@ -215,13 +225,16 @@ exports.updateUser = async(req, res, next) =>{
 /**
  * Delete User  
  */
-exports.deleteUser = async (req, res, next) =>{
+exports.deleteUserById = async (req, res, next) =>{
     try {
-        const user = await userRespository.User.findOne({where : {id:  req.user.id}});
+        const user = await userRespository.User.findOne({where : {id:  req.params.id}});
         if(!user){
             return res.http.NotFound({error: {message: `User not found`}});
         }
-        if(req.signedCookies['refresh_token']){
+        if(user.id !== req.user.id && !req.user.roles.includes('ROLE_ADMIN')){
+            return res.http.Forbidden({error: {message: "permission denied!"}});
+        }
+        if(req.signedCookies['refresh_token'] && !req.user.roles.includes('ROLE_ADMIN')){
             const refreshToken = await Token.findOne({ 
                 where: {token: req.signedCookies['refresh_token']}
             });
@@ -229,13 +242,12 @@ exports.deleteUser = async (req, res, next) =>{
                 await refreshToken.destroy();
             }
             res.clearCookie('refresh_token');
+            res.clearCookie('access_token');
         }
-        res.clearCookie('access_token');
-        
         deleteFile(user.getDataValue('profilePicture'));
         
         await user.destroy();
-        delete req.user;
+
         return res.http.Ok({message: `User deleted !`});
     } catch (error) {
         return jsonErrors(error, res);
