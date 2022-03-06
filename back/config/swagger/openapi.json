@@ -21,6 +21,10 @@
     {
       "name": "post",
       "description": "Operation about post"
+    },
+    {
+      "name": "comment",
+      "description": "Operation about commentary"
     }
   ],
   "paths": {
@@ -214,7 +218,7 @@
             },
             "name": "id",
             "in": "path",
-            "description": "The id that needs to be fetched.",
+            "description": "User uuid",
             "required": true
           }
         ],
@@ -256,9 +260,65 @@
             }
           }
         }
-      }
-    },
-    "/user/update": {
+      },
+      "delete": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Delete currently logged user",
+        "description": "This can only be done by the logged in user. Add xsrf token in **Authorize**",
+        "operationId": "deleteUser",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "name": "id",
+            "in": "path",
+            "description": "User uuid",
+            "required": true
+          }
+        ],
+        "security": [
+          {
+            "accessToken": [],
+            "xsrfToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successfully opetation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpMessage"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unauthorized user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
       "put": {
         "tags": [
           "user"
@@ -266,6 +326,18 @@
         "summary": "Update currently logged user",
         "description": "This can only be done by the logged in user. Add xsrf token in **Authorize**",
         "operationId": "updateUser",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "name": "id",
+            "in": "path",
+            "description": "User uuid",
+            "required": true
+          }
+        ],
         "security": [
           {
             "accessToken": [],
@@ -318,45 +390,100 @@
         "x-codegen-request-body-name": "body"
       }
     },
-    "/user/delete": {
-      "delete": {
+    "/user/password-forgot": {
+      "post": {
         "tags": [
           "user"
         ],
-        "summary": "Delete currently logged user",
-        "description": "This can only be done by the logged in user. Add xsrf token in **Authorize**",
-        "operationId": "deleteUser",
-        "security": [
-          {
-            "accessToken": [],
-            "xsrfToken": []
+        "summary": "Forgotten password request",
+        "description": "Request to send an email to reset the forgotten password",
+        "operationId": "forgottenPassword",
+        "requestBody": {
+          "description": "User email",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  }
+                }
+              }
+            }
           }
-        ],
+        },
         "responses": {
-          "200": {
-            "description": "successfully opetation",
+          "202": {
+            "description": "Accepeted operation",
             "content": {
-              "application/json": {
+              "apllication/json": {
                 "schema": {
                   "$ref": "#/components/schemas/HttpMessage"
                 }
               }
             }
           },
-          "400": {
-            "description": "Unauthorized user",
+          "422": {
+            "description": "Unprocessable Entity",
             "content": {
-              "application/json": {
+              "apllication/json": {
                 "schema": {
                   "$ref": "#/components/schemas/HttpErrorResponse"
                 }
               }
             }
-          },
-          "404": {
-            "description": "User not found",
+          }
+        }
+      }
+    },
+    "/user/password-reset": {
+      "post": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Reset password",
+        "description": "Request to update the forgotten password with a token received by email",
+        "operationId": "ResetPassword",
+        "requestBody": {
+          "description": "New password and token received by email",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "password": {
+                    "type": "string"
+                  },
+                  "confirmPassword": {
+                    "type": "string"
+                  },
+                  "token": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "successfully operation",
             "content": {
-              "application/json": {
+              "apllication/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpMessage"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "apllication/json": {
                 "schema": {
                   "$ref": "#/components/schemas/HttpErrorResponse"
                 }
@@ -681,11 +808,11 @@
               }
             }
           },
-          "400":{
+          "400": {
             "description": "Bad Request",
             "content": {
-              "application/json":{
-                "schema":{
+              "application/json": {
+                "schema": {
                   "$ref": "#/components/schemas/ValidationErrorResponse"
                 }
               }
@@ -693,6 +820,256 @@
           },
           "401": {
             "description": "Unauthorized user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/comments/{id}": {
+      "get": {
+        "tags": [
+          "comment"
+        ],
+        "description": "This can only be done by the logged in user. Add xsrf token in **Authorize**",
+        "summary": "get comment by id",
+        "operationId": "getCommentById",
+        "parameters": [
+          {
+            "name": "id",
+            "description": "comment id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "security": [
+          {
+            "accessToken": [],
+            "xsrfToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successfully operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetCommentById"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "comment"
+        ],
+        "description": "This can only be done by the logged in user and the comment is owned by the user. Add xsrf token in **Authorize**",
+        "summary": "Create comment by post id",
+        "operationId": "createComment",
+        "security": [
+          {
+            "accessToken": [],
+            "xsrfToken": []
+          }
+        ],
+        "requestBody": {
+          "description": "Create new comment object",
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePost"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "successfully operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetCommentById"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "comment"
+        ],
+        "description": "This can only be done by the logged in user and the comment is owned by the user. Add xsrf token in **Authorize**",
+        "summary": "Update comment by id",
+        "operationId": "updateComment",
+        "security": [
+          {
+            "accessToken": [],
+            "xsrfToken": []
+          }
+        ],
+        "requestBody": {
+          "description": "Update comment object",
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePost"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "successfully operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetCommentById"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "comment"
+        ],
+        "description": "This can only be done by the logged in user and the comment is owned by the user. Add xsrf token in **Authorize**",
+        "summary": "Delete post by id",
+        "operationId": "deletePost",
+        "security": [
+          {
+            "accessToken": [],
+            "xsrfToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successfully operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpMessage"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
             "content": {
               "application/json": {
                 "schema": {
@@ -717,12 +1094,13 @@
             "type": "string"
           },
           "email": {
-            "type": "string"
+            "type": "string",
+            "format": "email"
           },
           "password": {
             "type": "string"
           },
-          "confirmPassword":{
+          "confirmPassword": {
             "type": "string"
           }
         }
@@ -731,7 +1109,8 @@
         "type": "object",
         "properties": {
           "email": {
-            "type": "string"
+            "type": "string",
+            "format": "email"
           },
           "password": {
             "type": "string"
@@ -787,6 +1166,12 @@
         }
       },
       "UpdateUserRequest": {
+        "required": [
+          "firstName",
+          "lastName",
+          "email",
+          "currentPassword"
+        ],
         "type": "object",
         "properties": {
           "firstName": {
@@ -796,7 +1181,8 @@
             "type": "string"
           },
           "email": {
-            "type": "string"
+            "type": "string",
+            "format": "email"
           },
           "currentPassword": {
             "type": "string"
@@ -954,6 +1340,38 @@
           }
         }
       },
+      "GetCommentById": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "media": {
+            "type": "string",
+            "nullable": true
+          },
+          "mediaType": {
+            "type": "string",
+            "nullable": true
+          },
+          "content": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date"
+          },
+          "User": {
+            "$ref": "#/components/schemas/User"
+          }
+        }
+      },
       "User": {
         "type": "object",
         "properties": {
@@ -985,10 +1403,10 @@
             "type": "string",
             "format": "binary"
           },
-          "mediaType":{
+          "mediaType": {
             "type": "string"
           },
-          "likes":{
+          "likes": {
             "type": "string"
           },
           "createdAt": {
