@@ -30,7 +30,7 @@ router.get('/:id', isGranted('ROLE_USER'), userController.getUserById);
 router.delete('/:id', isGranted('ROLE_USER'), userController.deleteUserById);
 
 /** Refresh token */
-router.post('/refresh-token', userController.refreshToken);
+router.post('/refresh-token', isGranted('ROLE_USER'), userController.refreshToken);
 
 /** Forgot password */
 router.post('/password-forgot', schemaValidator.body(forgotPasswordSchema), userController.forgotPassword);
