@@ -312,7 +312,7 @@ exports.resetPassowrd = async(req, res, next) => {
 
         res.clearCookie('refresh_token');
         res.clearCookie('access_token');
-        return res.http.Ok({message: 'User password has been successfully updated'});
+        return res.http.Created({message: 'User password has been successfully updated'});
 
     } catch (error) {
         return jsonErrors(error, res);
