@@ -10,14 +10,34 @@
     "back"
   ],
   "scripts": {
-    "back:start": "cd ./back& nodemon --experimental-specifier-resolution=node server.js",
-    "front:start": "cd ./front& parcel serve src/index.html --cache-dir ./.parcel-cache",
+    "back:start": "cd ./back & nodemon --experimental-specifier-resolution=node server.js",
+    "front:start": "cd ./front && parcel serve src/index.html --cache-dir ./.parcel-cache",
     "front:build": "cd ./front& parcel build src/index.html --dist-dir public --public-url ./",
     "db:create": "cd ./back& sequelize-cli db:create",
     "db:migrate": "cd ./back& sequelize-cli db:migrate",
     "db:migrations:generate": "cd ./back& node config/sequelize/db-migrations-generator.js",
-    "db:drop":"cd ./back& sequelize-cli db:drop",
+    "db:drop": "cd ./back& sequelize-cli db:drop",
     "postinstall": "npm run setup:help",
     "setup:help": "node setup.js"
+  },
+  "parcel-namer-rewrite": {
+    "developmentHashing": true,
+    "rules": {
+      "(.*)\\.(css)": "assets/css/app.{hash}.$2",
+      "(.*)\\.(js)": "assets/js/app.{hash}.$2",
+      "(.*)\\.(woff2?)": "assets/fonts/$1.{hash}.$2",
+      "(.*)\\.(svg|png|gif|jpg)": "assets/img/$1.{hash}.$2"
+    },
+    "silent": true
+  },
+  "devDependencies": {
+    "@parcel/transformer-sass": "^2.2.1",
+    "buffer": "^6.0.3",
+    "crypto-browserify": "^3.12.0",
+    "events": "^3.3.0",
+    "os-browserify": "^0.3.0",
+    "path-browserify": "^1.0.1",
+    "process": "^0.11.10",
+    "stream-http": "^3.2.0"
   }
 }
