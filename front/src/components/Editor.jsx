@@ -104,7 +104,7 @@ const Editor = () => {
                         <div className="ms-auto bd-highlight">
                             <button disabled={post.content || post.media.file ? false : true}
                                 type="submit"
-                                className="btn btn-primary btn-sm">Submit</button>
+                                className="btn btn-primary btn-sm">Poster</button>
                         </div>
                     </div>
                 </form>

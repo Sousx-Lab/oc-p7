@@ -3,13 +3,16 @@ import  ReactDOM from "react-dom";
 import {BrowserRouter, Routes, Route} from "react-router-dom";
 import ProtectedRoutes from "./components/ProtectedRoutes";
 import LoginPage from "./pages/LoginPage";
+import SignUpPage from "./pages/SignUpPage";
 import  HomePage from "./pages/HomePage";
 import { UserContext } from "./contexts/UserContext";
 import { ToastContainer } from 'react-toastify';
 import Header from "./components/Header";
+import AuthSideScreen from './components/AuthSideScreen';
 import 'react-toastify/dist/ReactToastify.css';
 import './assets/scss/app.scss';
 import { loadUser } from "./hooks/loadUser";
+
 
 function App(){
     
@@ -29,7 +32,10 @@ function App(){
     <UserContext.Provider value={{ user, setUser }}>
       <BrowserRouter >
         <Routes>
-          <Route path="/login" element={<LoginPage />}/>
+        <Route element={<AuthSideScreen />} >
+            <Route path="/login" element={<LoginPage />}/>
+            <Route path="/signup" element={<SignUpPage />} />
+        </Route>
             <Route element={<ProtectedRoutes />} >
               <Route element={<Header />} >
                 <Route index path="/" element={<HomePage/>} />
