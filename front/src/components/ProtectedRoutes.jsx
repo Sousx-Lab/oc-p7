@@ -1,7 +1,6 @@
-import React, {useContext, useState} from 'react';
-import {UserContext } from '../assets/contexts/UserContext';
+import React, {useContext} from 'react';
+import { UserContext } from '../contexts/UserContext';
 import { Outlet, Navigate} from 'react-router-dom';
-import NavBar from './NavBar';
 
 const ProtectedRoutes = ({ children, redirectPath = "login"}) => {
 
@@ -11,10 +10,9 @@ const ProtectedRoutes = ({ children, redirectPath = "login"}) => {
     }
     return (
         <>
-        <NavBar />
-            {children ? children: <Outlet/>}
+        {children ? children: <Outlet/>}
         </>
-        )
+    )
         
 }
 

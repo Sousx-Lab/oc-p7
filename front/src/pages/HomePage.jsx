@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
-import { UserContext } from "../assets/contexts/UserContext";
-import NewPost from "../components/NewPost";
+import { UserContext } from "../contexts/UserContext";
+import Editor from "../components/Editor";
 
 const HomePage = () => {
     const post = {
@@ -12,7 +12,7 @@ const HomePage = () => {
         <div className="container">
             <div className="row">
                 <div className="col-lg-6 mx-auto">
-                    <NewPost />
+                    <Editor />
                 </div>
             </div>
             <div className="row">

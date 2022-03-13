@@ -1,9 +1,9 @@
-import React, { useCallback, useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useState } from "react";
 import { useDropzone } from 'react-dropzone';
-import { UserContext } from "../assets/contexts/UserContext";
+import { UserContext } from "../contexts/UserContext";
 import media from '../assets/img/media.svg'
 
-const NewPost = () => {
+const Editor = () => {
     const { user } = useContext(UserContext);
     const [post, setPost] = useState({
         content: "",
@@ -23,7 +23,7 @@ const NewPost = () => {
                 reader.readAsDataURL(file);
             }
         });
-    }, [])
+    },[])
 
     const { getRootProps, getInputProps, fileRejections } = useDropzone({
         maxFiles: 1,
@@ -47,6 +47,7 @@ const NewPost = () => {
     const handleDeleteUpload = () => {
         setPost({ ...post.media, media: { file: null, type: null } })
     }
+
     const handleChange = ({ currentTarget }) => {
         const { value, name } = currentTarget;
         setPost({ ...post, [name]: value });
@@ -112,4 +113,4 @@ const NewPost = () => {
     )
 }
 
-export default NewPost
+export default Editor

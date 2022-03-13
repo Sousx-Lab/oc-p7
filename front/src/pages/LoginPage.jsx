@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { UserContext } from '../assets/contexts/UserContext';
+import { UserContext } from '../contexts/UserContext';
 import logo from '../assets/img/icon-top-font-monochrome-red.svg'
 import { Link } from 'react-router-dom';
 import { login }  from '../services/Api/security/authenticator';
@@ -14,20 +14,23 @@ const LoginPage = () => {
         email: '',
         password: ''
     })
-    
+    let submited = (credentials.email && credentials.password) ? false : true
     const handleChange = ({currentTarget}) => {
         const {value, name} = currentTarget
         setCredentials({...credentials, [name]: value})
+        
     }
 
     const [error, setError] = useState('');
     let navigate = useNavigate()
+
+    
     /**
      * @param {Event} event 
      */
     const handleSubmit = async event => {
-        event.preventDefault()
-
+        submited = !submited
+        event.preventDefault();
         const { user, error } = await login(credentials)
         if (error) {
             setError(error.message)
@@ -63,6 +66,7 @@ const LoginPage = () => {
                             className={"form-control " + (error && "is-invalid")}
                             placeholder='Email de connexion'
                             name="email"
+                            required
                         />
                         {error && <p className="invalid-feedback">{error}</p>}
                     </div>
@@ -75,11 +79,12 @@ const LoginPage = () => {
                             className={"form-control " + (error && "is-invalid")}
                             placeholder='Email de connexion'
                             name="password"
+                            required
                         />
                         {error && <p className="invalid-feedback">{error}</p>}
                     </div>
                     <div className='d-flex align-items-center justify-content-between mt-3 mb-5'>
-                        <button type="submit" className="btn btn-primary">Se connecter</button>
+                        <button type="submit" disabled={submited} className="btn btn-primary">Se connecter</button>
                         <div className='d-flex flex-column'>
                             <Link className='mb-2' to={"/signup"}>Créer un compte</Link>
                             <Link to={"/forgot-passowrd"}>Mot de passe oublié ?</Link>
