@@ -9,7 +9,7 @@ import { ToastContainer } from 'react-toastify';
 import Header from "./components/Header";
 import 'react-toastify/dist/ReactToastify.css';
 import './assets/scss/app.scss';
-import { loadUser } from "./hooks/useUser";
+import { loadUser } from "./hooks/loadUser";
 
 function App(){
     
