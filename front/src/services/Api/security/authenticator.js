@@ -1,19 +1,19 @@
-import {UserApi} from '../../../config/Api.config';
+import {UserApi} from '../../../config/Api/Api.Endpoint.config'
 
+const headers = {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json',
+    'X-Requested-With': 'XMLHttpRequest',
+}
 export const getUser = async () => {
     const user = JSON.parse(window.localStorage.getItem('user'));
-    if (typeof user === 'object' & Object.keys(user).length >1) {
+    if (user) {
         if (user?.expriesAt <= Date.now) {
             try {
-                const user = await fetch(UserApi.RefreshToken, {
+                const user = await fetch(UserApi.refreshToken, {
                     method: 'POST',
                     credentials: 'include',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'x-xsrf-token': user?.xsrfToken
-                    }
+                    headers: {...headers, 'x-xsrf-token': user?.xsrfToken}
                 })
                 saveUser(user);
                 return user
@@ -32,15 +32,11 @@ export const saveUser = (data) => {
 
 export const login = async credentials => {
    
-    const response = await fetch(UserApi.Login, {
+    const response = await fetch(UserApi.login, {
         body: JSON.stringify(credentials),
         method: 'POST',
         credentials: 'same-origin',
-        headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'X-Requested-With': 'XMLHttpRequest'
-        }
+        headers: headers
     })
     let data = await response.json()
     if (response.status === 200) {
