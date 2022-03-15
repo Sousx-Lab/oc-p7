@@ -6,28 +6,39 @@ const headers = {
     'X-Requested-With': 'XMLHttpRequest',
 }
 export const getUser = async () => {
-    const user = JSON.parse(window.localStorage.getItem('user'));
+    const user = JSON.parse(window.localStorage.getItem('user'))
     if (user) {
-        if (user?.expriesAt <= Date.now) {
+        if (user?.expriesAt <= Date.now()) {
             try {
-                const user = await fetch(UserApi.refreshToken, {
+                const response = await fetch(UserApi.refreshToken, {
                     method: 'POST',
                     credentials: 'include',
                     headers: {...headers, 'x-xsrf-token': user?.xsrfToken}
                 })
-                saveUser(user);
-                return user
+                
+                if(response.ok){
+                    let refreshedUser = await response.json();
+                    saveUser(refreshedUser);
+                    return refreshedUser;
+                }
+                window.localStorage.removeItem('user')
+                return null
             } catch (error) {
-                return null;
+                window.localStorage.removeItem('user')
             }
         }
-        return user
+        return user;
     }
     return null;
 }
 
 export const saveUser = (data) => {
-    localStorage.setItem('user', JSON.stringify(data));
+    try {
+        window.localStorage.setItem('user', JSON.stringify(data));
+    } catch (error) {
+        console.log(error)
+    }
+    
 }
 
 export const login = async credentials => {
@@ -35,11 +46,11 @@ export const login = async credentials => {
     const response = await fetch(UserApi.login, {
         body: JSON.stringify(credentials),
         method: 'POST',
-        credentials: 'same-origin',
+        credentials: 'include',
         headers: headers
     })
     let data = await response.json()
-    if (response.status === 200) {
+    if (response.status <= 200) {
         saveUser(data)
         return {
             user: data,
@@ -48,7 +59,21 @@ export const login = async credentials => {
     }
     return {
         user: null,
-        error: data.error
+        error: data.error,
+        status: response.status
     }
+}
 
+export const logout = async() => {
+
+    const user = JSON.parse(window.localStorage.getItem('user'))
+    if(user){
+        await fetch(UserApi.logout, {
+            method: 'GET',
+            credentials: 'include',
+            headers: {...headers, 'x-xsrf-token': user?.xsrfToken}
+        })
+        window.localStorage.removeItem('user')
+    }
+    
 }
