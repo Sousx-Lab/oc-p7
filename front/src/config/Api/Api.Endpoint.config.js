@@ -41,7 +41,7 @@ export const UserApi = {
      * @returns {string} Referesh token
      * POST: http://localhost:3000/api/user/refresh-token
      */
-    get refreshToken(){`${API.USER_ROUTE}/referesh-token`},
+    get refreshToken(){return `${API.USER_ROUTE}/refresh-token`},
 
     /**
      * @returns {string} Logout user
@@ -141,7 +141,7 @@ export const CommentsApi = {
      * @returns 
      * POST: http://localhost:3000/api/comments/{id}
      */
-    createByPostId(id){return `${API.COMMENTS_ROUTE}/{id}`},
+    createByPostId(id){return `${API.COMMENTS_ROUTE}/${id}`},
 
      /**
      * @param {string} id Comment id
