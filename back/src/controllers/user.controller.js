@@ -63,7 +63,7 @@ exports.login = async(req, res, next) => {
             firstName: user.firstName,
             lastName: user.lastName,
             profilePicture: user.profilePicture,
-            expriesAt: Date.now() + parseInt(process.env.JWT_TOKEN_EXPIRES_IN,10),
+            expiresAt: Date.now() + parseInt(process.env.JWT_TOKEN_EXPIRES_IN,10),
             xsrfToken: xsrfToken
         });
 
@@ -113,7 +113,7 @@ exports.login = async(req, res, next) => {
             firstName: user.firstName,
             lastName: user.lastName,
             profilePicture: user.profilePicture,
-            expriesAt: Date.now() + parseInt(process.env.JWT_TOKEN_EXPIRES_IN,10),
+            expiresAt: Date.now() + parseInt(process.env.JWT_TOKEN_EXPIRES_IN,10),
             xsrfToken: xsrfToken
         });
 
