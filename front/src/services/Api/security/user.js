@@ -1,29 +1,29 @@
 import {isEmptyObject} from '../../outils/outils';
 /**
  * @typedef User
- * @property {number} expiresAt
+ * @property {string} userId
  * @property {string} firstName
  * @property {string} lastName
  * @property {string} profilePicture
- * @property {string} userId
+ * @property {number} expiresAt
  * @property {string} xsrfToken
  */
 export const User = {
-    expiresAt: 0,
+    userId: '',
     firstName: '',
     lastName: '',
     profilePicture: '',
-    userId: '',
+    expiresAt: 0,
     xsrfToken: ''
 }
 
 /**
- * 
- * @param {User} user 
+ * @param {object} user object
+ * @returns {boolean} 
  */
 export function isUserObject(user){
     if(isEmptyObject(user)){
         return false;
     }
-    return Object.keys(user).every((key) => user.hasOwnProperty(key));
+    return Object.keys(User).every((key) => user.hasOwnProperty(key));
 }
