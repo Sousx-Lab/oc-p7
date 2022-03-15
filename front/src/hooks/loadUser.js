@@ -1,5 +1,5 @@
 import {useState, useEffect} from 'react';
-import { getUser } from '../services/Api/security/Authenticator';
+import { getUser } from '../services/Api/security/authenticator';
 
 export const loadUser = (initialValue = null) => {
     const [isLoading, setIsLoading] =  useState(true)
