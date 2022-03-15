@@ -1,38 +1,58 @@
 import {UserApi} from '../../../config/Api/Api.Endpoint.config'
+import {User, isUserObject} from './user';
 
 const headers = {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
     'X-Requested-With': 'XMLHttpRequest',
 }
-export const getUser = async () => {
+
+/**
+ * @returns {User|null} User | null
+ */
+export async function getUser(){
+    /**
+     * @type {User|null}
+     */
     const user = JSON.parse(window.localStorage.getItem('user'))
-    if (user) {
-        if (user?.expriesAt <= Date.now()) {
-            try {
-                const response = await fetch(UserApi.refreshToken, {
-                    method: 'POST',
-                    credentials: 'include',
-                    headers: {...headers, 'x-xsrf-token': user?.xsrfToken}
-                })
-                
-                if(response.ok){
-                    let refreshedUser = await response.json();
-                    saveUser(refreshedUser);
-                    return refreshedUser;
-                }
-                window.localStorage.removeItem('user')
-                return null
-            } catch (error) {
-                window.localStorage.removeItem('user')
-            }
+    if (isUserObject(user)) {
+        if (user.expiresAt <= Date.now()) {
+            return await refreshToken(user.xsrfToken)
         }
         return user;
     }
     return null;
 }
 
-export const saveUser = (data) => {
+/**
+ * 
+ * @param {string} xsrfToken 
+ */
+async function refreshToken(xsrfToken){
+    try {
+        const response = await fetch(UserApi.refreshToken, {
+            method: 'POST',
+            credentials: 'include',
+            headers: {...headers, 'x-xsrf-token': xsrfToken}
+        })
+        
+        if(response.ok){
+            let refreshedUser = await response.json();
+            saveUser(refreshedUser);
+            return refreshedUser;
+        }
+        window.localStorage.removeItem('user')
+        return null
+    } catch (error) {
+        window.localStorage.removeItem('user')
+        return null
+    }
+}
+
+/**
+ * @param {User} data
+ */
+export async function saveUser(data){
     try {
         window.localStorage.setItem('user', JSON.stringify(data));
     } catch (error) {
@@ -41,8 +61,12 @@ export const saveUser = (data) => {
     
 }
 
-export const login = async credentials => {
-   
+/**
+ * 
+ * @param {object} credentials
+ * @returns {array} array
+ */
+export async function login(credentials){
     const response = await fetch(UserApi.login, {
         body: JSON.stringify(credentials),
         method: 'POST',
@@ -64,8 +88,10 @@ export const login = async credentials => {
     }
 }
 
-export const logout = async() => {
-
+/**
+ * @returns {void}
+ */
+export async function logout(){
     const user = JSON.parse(window.localStorage.getItem('user'))
     if(user){
         await fetch(UserApi.logout, {

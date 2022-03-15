@@ -10,6 +10,7 @@ import { ToastContainer } from 'react-toastify';
 import Header from "./components/Header";
 import AuthSideScreen from './components/AuthSideScreen';
 import FullScreenLoader from './components/FullScreenLoader';
+import { QueryClient, QueryClientProvider } from 'react-query'
 import 'react-toastify/dist/ReactToastify.css';
 import './assets/scss/app.scss';
 import { loadUser } from "./hooks/loadUser";
@@ -18,8 +19,9 @@ function App(){
 
     // const [user, setUser] = useState(true)
     // const isLoading = true
-
     const [user, setUser, isLoading] = loadUser();
+    const queryClient = new QueryClient();
+    
     if(isLoading){
       return (
         <FullScreenLoader />
@@ -27,30 +29,32 @@ function App(){
     }
     return (
     <UserContext.Provider value={{ user, setUser }}>
-      <BrowserRouter >
-        <Routes>
-          <Route element={<AuthSideScreen />} >
-            <Route path="/login" element={<LoginPage />}/>
-            <Route path="/signup" element={<SignUpPage />} />
-          </Route>
-          <Route element={<ProtectedRoutes />} >
-            <Route element={<Header />} >
-              <Route index path="/" element={<HomePage/>} />
+      <QueryClientProvider client={queryClient}>
+        <BrowserRouter >
+          <Routes>
+            <Route element={<AuthSideScreen />} >
+              <Route path="/login" element={<LoginPage />}/>
+              <Route path="/signup" element={<SignUpPage />} />
             </Route>
-          </Route>
-        </Routes>
-        <ToastContainer 
-          position="bottom-left"
-            autoClose={5000}
-              hideProgressBar={false}
-                newestOnTop
-                  closeOnClick
-                    rtl={false}
-                  pauseOnVisibilityChange
-                draggable
-              pauseOnHover
-            />
-      </BrowserRouter>
+            <Route element={<ProtectedRoutes />} >
+              <Route element={<Header />} >
+                <Route index path="/" element={<HomePage/>} />
+              </Route>
+            </Route>
+          </Routes>
+          <ToastContainer 
+            position="top-right"
+              autoClose={5000}
+                hideProgressBar={false}
+                  newestOnTop={false}
+                    closeOnClick
+                      rtl={false}
+                    pauseOnVisibilityChange
+                  draggable
+                pauseOnHover
+              />
+        </BrowserRouter>
+      </QueryClientProvider>
     </UserContext.Provider>
     )
 }

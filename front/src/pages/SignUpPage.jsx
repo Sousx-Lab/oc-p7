@@ -106,12 +106,11 @@ const SignUpPage = () => {
                     {error && <p className="invalid-feedback">{error}</p>}
                 </div>
                 <div className='d-flex align-items-center justify-content-between mt-3 mb-5'>
-                    <button type="submit" disabled={submited} className="btn btn-primary">S'inscrire</button>
+                    <button type="submit" disabled={submited} className="btn btn-primary rounded-2">S'inscrire</button>
                     <div className='d-flex flex-column'>
                         <Link className='mb-2' to={"/login"}>Se connecter</Link>
                         <Link to={"/forgot-passowrd"}>Mot de passe oublié ?</Link>
                     </div>
-
                 </div>
             </form>
         </div>

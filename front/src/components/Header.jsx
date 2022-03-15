@@ -1,12 +1,27 @@
 import React, { useContext } from "react";
 import { UserContext } from "../contexts/UserContext";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import logo from '../assets/img/icon-left-font-monochrome-white.svg';
 import { Outlet } from "react-router-dom";
+import { logout } from "../services/Api/security/authenticator";
+import { toast } from 'react-toastify';
 
 const Header = () => {
-    const { user } = useContext(UserContext);
+    const { user, setUser } = useContext(UserContext);
 
+    const navigate = useNavigate();
+
+    const handleLogout = async () => {
+        try {
+            await logout()
+            setUser(null)
+            navigate('login', {replace: true})
+            toast.info('Vous êtes désormais déconnecté. 👋')
+        } catch (error) {
+            toast.error("Une erreur s'est produite! Veuillez réessayer plus tard")
+        }
+       
+    }
     return (
         <>
             <header>
@@ -32,7 +47,7 @@ const Header = () => {
                                     </a>
                                     <div className="dropdown-menu">
                                         <a className="dropdown-item" href="#">Profile</a>
-                                        <a className="dropdown-item bg-danger text-light" href="#">Logout</a>
+                                        <a className="dropdown-item bg-danger text-light" onClick={handleLogout} href="#">Logout</a>
                                     </div>
                                 </li>
                             </ul>

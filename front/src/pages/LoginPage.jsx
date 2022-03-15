@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { UserContext } from '../contexts/UserContext';
 import logo from '../assets/img/icon-top-font-monochrome-red.svg'
@@ -9,7 +9,7 @@ import { toast } from 'react-toastify';
 const LoginPage = () => {
 
     let { user, setUser } = useContext(UserContext);
-
+    
     const [credentials, setCredentials] = useState({
         email: '',
         password: ''
@@ -26,13 +26,17 @@ const LoginPage = () => {
 
 
     /**
-     * @param {Event} event 
+     * @param {SubmitEvent} event 
      */
     const handleSubmit = async event => {
         submited = !submited
         event.preventDefault();
-        const { user, error } = await login(credentials)
+        const { user, error, status } = await login(credentials)
         if (error) {
+            if(status >= 500){
+                toast.error("Une erreur s'est produite! Veuillez réessayer plus tard");
+                return;
+            }
             setError(error.message)
             toast.error(error.message);
             return;
@@ -49,7 +53,7 @@ const LoginPage = () => {
         <div className='d-flex flex-column mx-auto col-md-8 col-lg-5 mt-5 '>
             <div className='p-2 text-center'>
                 <img className='img-fluid' src={logo} alt="Logo Groupomania" />
-                <h2 className='pt-2'><small className='text-muted'>Se connecter</small>  </h2>
+                <h2 className='pt-2'><small className='text-muted'>Se connecter</small></h2>
             </div>
             <form className='col-sm-10 col-md-8 col-xl-7 mx-auto' onSubmit={handleSubmit}>
                 <div className="form-group mb-3">
@@ -79,7 +83,7 @@ const LoginPage = () => {
                     {error && <p className="invalid-feedback">{error}</p>}
                 </div>
                 <div className='d-flex align-items-center justify-content-between mt-3 mb-5'>
-                    <button type="submit" disabled={submited} className="btn btn-primary">Se connecter</button>
+                    <button type="submit" disabled={submited} className="btn btn-primary rounded-2">Se connecter</button>
                     <div className='d-flex flex-column'>
                         <Link className='mb-2' to={"/signup"}>Créer un compte</Link>
                         <Link to={"/forgot-passowrd"}>Mot de passe oublié ?</Link>

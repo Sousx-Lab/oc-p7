@@ -5,6 +5,7 @@ import { Outlet, Navigate} from 'react-router-dom';
 const ProtectedRoutes = ({ children, redirectPath = "login"}) => {
 
     const { user } = useContext(UserContext)
+    
     if(!user){
         return <Navigate to={redirectPath} replace />
     }

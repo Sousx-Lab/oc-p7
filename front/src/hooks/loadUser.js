@@ -1,7 +1,7 @@
 import {useState, useEffect} from 'react';
 import { getUser } from '../services/Api/security/authenticator';
 
-export const loadUser = (initialValue = null) => {
+export function loadUser (initialValue = null){
     const [isLoading, setIsLoading] =  useState(true)
     const [user, setUser] = useState(initialValue);
     
