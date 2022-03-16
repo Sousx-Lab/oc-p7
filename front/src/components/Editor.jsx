@@ -2,7 +2,7 @@ import React, { useCallback, useContext, useState } from "react";
 import { useDropzone } from 'react-dropzone';
 import { UserContext } from "../contexts/UserContext";
 import media from '../assets/img/media.svg'
-
+import defautlAvatar from '../assets/img/d-avatar.svg'
 const Editor = () => {
     const { user } = useContext(UserContext);
     const [data, setData] = useState({
@@ -63,12 +63,11 @@ const Editor = () => {
     }
 
     return (
-
         <div className="mx-auto pb-2 pt-3 mb-3">
             <div className="d-flex text-center p-0">
                 <div className="pe-2">
                     <img className="rounded-circle" width={54} alt={`profile picuture ${user.firstName}`}
-                        src="https://mdbootstrap.com/img/Photos/Avatars/img%20(30).jpg"
+                        src={user.profilePicture || defautlAvatar}
                         data-holder-rendered="true" />
                 </div>
                 <div className="w-100 d-flex-row p-0">

@@ -1,11 +1,6 @@
 import {UserApi} from '../../../config/Api/Api.Endpoint.config'
 import {User, isUserObject} from './user';
-
-const headers = {
-    'Content-Type': 'application/json',
-    'Accept': 'application/json',
-    'X-Requested-With': 'XMLHttpRequest',
-}
+import { headers } from '../headers';
 
 /**
  * @returns {User|null} User | null
