@@ -1,11 +1,11 @@
 'use strict';
 const crypto = require('crypto');
 const bcrypt = require('bcrypt');
+const {faker} = require('@faker-js/faker');
 
-
-async function* asyncGenerator(){
+async function* asyncGenerator(num){
   let i = 0;
-  while(i < 10){
+  while(i <= num){
     yield i++;
   }
 }
@@ -16,24 +16,24 @@ module.exports = {
     let posts = [];
     let comments = [];
     let date = new Date().toISOString().slice(0, 19).replace('T', ' ');
-    for await (let i of asyncGenerator()){
+    for await (let i of asyncGenerator(35)){
       users = [...users, {
         id: crypto.randomUUID(),
         email: `email${i}@domain.com`,
-        firstname: `John${i}`,
-        lastname: `Doe${i}`,
+        firstname: faker.name.firstName((i % 2) ? 0 : 1),
+        lastname: faker.name.lastName(),
         password: bcrypt.hashSync(`Password${i}`, 10),
         roles: (i === 1) ? JSON.stringify(['ROLE_ADMIN']) : JSON.stringify([]),
-        profile_picture: `image${i}.jpeg`,
+        profile_picture: (i > 30) ? null: `img${i}.jpg`,
         is_active: true,
         created_at: date,
         updated_at: date,
       }];
       posts = [...posts, {
         id: crypto.randomUUID(),
-        content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec fringilla eget lacus fringilla dapibus.",
-        media: (i > 5) ? `image${i}.jpg` : `video${i}.mp4`,
-        users_liked: (i > 5) ? 
+        content: faker.lorem.paragraph(faker.datatype.number({min:1, max:4})),
+        media: (i > 5) ? `postimage.jpg` : `postvideo.mp4`,
+        users_liked: (i > 10) ? 
           JSON.stringify([`${users[i].id}`,`${users[i-1].id}`,`${users[i-2].id}`])
           : JSON.stringify([`${users[i].id}`]),
         created_at: date,
