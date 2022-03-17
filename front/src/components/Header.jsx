@@ -6,6 +6,7 @@ import { Outlet } from "react-router-dom";
 import { logout } from "../services/Api/security/authenticator";
 import { toast } from 'react-toastify';
 import { useLocation } from "react-router-dom";
+import defautlAvatar from '../assets/img/d-avatar.svg';
 
 const Header = () => {
     const { user, setUser } = useContext(UserContext);
@@ -16,15 +17,15 @@ const Header = () => {
         try {
             await logout(user)
             setUser(null)
-            navigate('login', {replace: true})
+            navigate('login', { replace: true })
             toast.info('Vous êtes désormais déconnecté. 👋')
         } catch (error) {
             toast.error("Une erreur s'est produite! Veuillez réessayer plus tard")
         }
-       
+
     }
     const navLink = () => {
-        return 'nav-link ' + (location.pathname === '/' ? 'active': '')
+        return 'nav-link ' + (location.pathname === '/' ? 'active' : '')
     }
     return (
         <>
@@ -47,7 +48,7 @@ const Header = () => {
                                 </li>
                                 <li className="nav-item dropdown">
                                     <a className="nav-link dropdown-toggle text-light" data-bs-toggle="dropdown"
-                                        href="#" role="button" aria-haspopup="true" aria-expanded="false"><strong>{user?.firstName}</strong> 
+                                        href="#" role="button" aria-haspopup="true" aria-expanded="false"><strong>{user?.firstName}</strong>
                                     </a>
                                     <div className="dropdown-menu">
                                         <a className="dropdown-item" href="#">Profile</a>
@@ -55,7 +56,7 @@ const Header = () => {
                                     </div>
                                 </li>
                                 <li className="nav-item">
-                                    <img className="rounded-circle" src={user.profilePicture} width={32} alt="" />
+                                    <img className="rounded-circle" src={post.User.profilePicture || defautlAvatar} width={32} alt="" />
                                 </li>
                             </ul>
                         </div>
