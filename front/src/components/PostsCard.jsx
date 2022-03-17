@@ -65,17 +65,17 @@ const PostsCard = () => {
                                 <div className="d-flex align-items-center icon-like">
                                     {post.usersLiked.includes(user.userId) ? (
                                         <>
-                                        <div className="rounded-circle icon-like--bg-active p-2" >
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="#e02727" stroke="none" strokeWidth="1.0" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
-                                        </div>
-                                        <span className="ps-1 small icon-like--text-active"><small>{post.likes}</small></span>
+                                            <div className="rounded-circle icon-like--bg-active p-2" >
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="#e02727" stroke="none" strokeWidth="1.0" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                                            </div>
+                                            <span className="ps-1 small icon-like--text-active"><small>{post.likes}</small></span>
                                         </>
                                     ) : (
                                         <>
-                                        <div className="rounded-circle icon-like--bg p-2" >
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6c6a6a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
-                                        </div>
-                                        <span className="ps-1 small icon-like--text"><small>{post.likes}</small></span>
+                                            <div className="rounded-circle icon-like--bg p-2" >
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6c6a6a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                                            </div>
+                                            <span className="ps-1 small icon-like--text"><small>{post.likes}</small></span>
                                         </>
                                     )}
                                 </div>
