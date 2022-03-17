@@ -9,7 +9,7 @@ import { UserContext } from "./contexts/UserContext";
 import { ToastContainer } from 'react-toastify';
 import Header from "./components/Header";
 import AuthSideScreen from './components/AuthSideScreen';
-import FullScreenLoader from './components/FullScreenLoader';
+import Loader from './components/Loader';
 import { QueryClient, QueryClientProvider } from 'react-query'
 import 'react-toastify/dist/ReactToastify.css';
 import './assets/scss/app.scss';
@@ -24,7 +24,7 @@ function App(){
     
     if(isLoading){
       return (
-        <FullScreenLoader />
+        <Loader />
       )
     }
     return (

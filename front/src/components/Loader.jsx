@@ -1,5 +1,5 @@
 
-const FullScreenLoader = () => {
+const Loader = () => {
     return (
         <div className="row text-center justify-content-center h-100">
           <div className="col-6 align-self-center">
@@ -10,4 +10,4 @@ const FullScreenLoader = () => {
       )
 }
 
-export default FullScreenLoader;
+export default Loader;

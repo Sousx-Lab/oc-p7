@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { UserContext } from "../contexts/UserContext";
 import Editor from "../components/Editor";
-import PostCard from "../components/PostCard";
+import PostsCard from "../components/PostsCard";
 
 const HomePage = () => {
 
@@ -13,7 +13,7 @@ const HomePage = () => {
                     <Editor />
                 </div>
             </div>
-            <PostCard />
+            <PostsCard />
         </div>
     )
 }
