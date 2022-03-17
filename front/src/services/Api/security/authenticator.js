@@ -86,8 +86,7 @@ export async function login(credentials){
 /**
  * @returns {void}
  */
-export async function logout(){
-    const user = JSON.parse(window.localStorage.getItem('user'))
+export async function logout(user){
     if(user){
         await fetch(UserApi.logout, {
             method: 'GET',
