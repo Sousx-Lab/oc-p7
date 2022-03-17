@@ -1,0 +1,40 @@
+.icon-info{
+    &:hover{
+        .icon-info--bg{
+            background-color: #E1EEF6;
+        }
+        .icon-info--text{
+            color: #74bae9;
+        }
+        svg path{
+            stroke: #74bae9;
+            stroke-width: 1.5;
+        }
+    }
+    
+}
+
+.icon-like{
+    &--bg-active{
+        background-color: #F7E0EB;
+        svg path{
+            stroke: none!important;
+        }
+    }
+    &--text-active{
+        color: #F863A8;
+    }
+    &:hover{
+        .icon-like--bg{
+            background-color: #F7E0EB;
+        }
+        
+        .icon-like--text{
+            color: #F863A8;
+        }
+        svg path{
+            stroke: #F863A8;
+        }
+    }
+    
+}

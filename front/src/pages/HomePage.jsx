@@ -8,10 +8,8 @@ const HomePage = () => {
     const { user } = useContext(UserContext)    
     return (
         <div className="container">
-            <div className="row">
-                <div className="col-lg-6 mx-auto mb-3 border">
+            <div className="row mx-auto d-flex justify-content-center">
                     <Editor />
-                </div>
             </div>
             <PostsCard />
         </div>

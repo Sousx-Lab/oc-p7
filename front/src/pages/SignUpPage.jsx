@@ -47,7 +47,7 @@ const SignUpPage = () => {
         document.title = "Groupomania | S'inscrire"
     },[]);
     return (
-        <div className='d-flex flex-column mx-auto col-md-8 col-lg-5 mt-5 '>
+        <div id="signup-page" className='d-flex flex-column mx-auto col-md-8 col-lg-5 mt-5 '>
             <div className='p-2 text-center'>
                 <img className='img-fluid' src={logo} alt="Logo Groupomania" />
                 <h2 className='pt-2'><small className='text-muted'>Créer un compte</small>  </h2>
