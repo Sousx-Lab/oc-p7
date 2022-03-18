@@ -45,6 +45,9 @@ const SignUpPage = () => {
    
     useEffect(() => {
         document.title = "Groupomania | S'inscrire"
+        if(user){
+            navigate('/', {replace:true})
+        }
     },[]);
     return (
         <div id="signup-page" className='d-flex flex-column mx-auto col-md-8 col-lg-5 mt-5 '>

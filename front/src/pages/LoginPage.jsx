@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { UserContext } from '../contexts/UserContext';
-import logo from '../assets/img/icon-top-font-monochrome-red.svg'
+import logo from '../assets/img/icon-top-font-monochrome-purple.svg'
 import { Link } from 'react-router-dom';
 import { login } from '../services/Api/security/authenticator';
 import { toast } from 'react-toastify';
@@ -48,6 +48,9 @@ const LoginPage = () => {
 
     useEffect(() => {
         document.title = "Groupomania | Se connecter"
+        if(user){
+            navigate('/', {replace:true})
+        }
     }, []);
     return (
         <div id='login-page' className='d-flex flex-column mx-auto col-md-8 col-lg-5 mt-5 '>
