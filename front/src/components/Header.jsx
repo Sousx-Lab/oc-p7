@@ -56,7 +56,7 @@ const Header = () => {
                                     </div>
                                 </li>
                                 <li className="nav-item">
-                                    <img className="rounded-circle" src={post.User.profilePicture || defautlAvatar} width={32} alt="" />
+                                    <img className="rounded-circle" src={user.profilePicture || defautlAvatar} width={32} alt="" />
                                 </li>
                             </ul>
                         </div>
