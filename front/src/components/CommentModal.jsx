@@ -3,15 +3,14 @@ import { Link } from 'react-router-dom';
 import { useNavigate } from "react-router-dom";
 import defautlAvatar from '../assets/img/d-avatar.svg';
 import Editor from "./Editor";
+
 const CommentModal = ({ post }) => {
 
     const navigate = useNavigate()
-    useEffect(() => {
-        console.log(post.User?.id)
-    }, [post])
+    
     return (
         <div id="commentModal" className="modal fade" tabIndex="-1" aria-hidden="true">
-            <div className="modal-dialog" role="document">
+            <div className="modal-dialog modal-lg" role="document">
                 <div className="modal-content">
                     <div className="modal-header">
                         <h5 className="modal-title">Ajouter un commentaire
