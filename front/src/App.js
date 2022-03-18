@@ -24,7 +24,7 @@ function App(){
     
     if(isLoading){
       return (
-        <Loader />
+        <Loader text="Loading..." />
       )
     }
     return (
