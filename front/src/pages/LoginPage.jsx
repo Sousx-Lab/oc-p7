@@ -9,35 +9,36 @@ import { toast } from 'react-toastify';
 const LoginPage = () => {
 
     let { user, setUser } = useContext(UserContext);
-    
+
     const [credentials, setCredentials] = useState({
         email: '',
         password: ''
     })
-    let submited = (credentials.email && credentials.password) ? false : true
+    let isCredentials = !Object.keys(credentials).every((k) => credentials[k] !== '');
     const handleChange = ({ currentTarget }) => {
         const { value, name } = currentTarget
-        setCredentials({ ...credentials, [name]: value })
+        setCredentials({ ...credentials, [name]: value });
 
     }
 
     const [error, setError] = useState('');
-    let navigate = useNavigate()
-
+    const [isSubmited, setIsSubmited] = useState(false);
+    let navigate = useNavigate();
 
     /**
      * @param {SubmitEvent} event 
      */
     const handleSubmit = async event => {
-        submited = !submited
+        setIsSubmited(true)
         event.preventDefault();
         const { user, error, status } = await login(credentials)
-        if (error) {
-            if(status >= 500){
+        if(error) {
+            if(status >= 500) {
                 toast.error("Une erreur s'est produite! Veuillez réessayer plus tard");
                 return;
             }
             setError(error.message)
+            setIsSubmited(false);
             toast.error(error.message);
             return;
         }
@@ -48,8 +49,8 @@ const LoginPage = () => {
 
     useEffect(() => {
         document.title = "Groupomania | Se connecter"
-        if(user){
-            navigate('/', {replace:true})
+        if(user) {
+            navigate('/', { replace: true })
         }
     }, []);
     return (
@@ -65,7 +66,7 @@ const LoginPage = () => {
                         onChange={handleChange}
                         type="email"
                         value={credentials.email}
-                        className={"form-control " + (error && "is-invalid")}
+                        className={`form-control ${error && "is-invalid"}`}
                         placeholder='email@domain.com'
                         name="email"
                         required
@@ -78,7 +79,7 @@ const LoginPage = () => {
                         onChange={handleChange}
                         type="password"
                         value={credentials.password}
-                        className={"form-control " + (error && "is-invalid")}
+                        className={`form-control ${error && "is-invalid"}`}
                         placeholder='Mot de passe'
                         name="password"
                         required
@@ -86,12 +87,16 @@ const LoginPage = () => {
                     {error && <p className="invalid-feedback">{error}</p>}
                 </div>
                 <div className='d-flex align-items-center justify-content-between mt-3 mb-5'>
-                    <button type="submit" disabled={submited} className="btn btn-primary rounded-2">Se connecter</button>
+                    <button type="submit" disabled={(isSubmited || isCredentials) ? true : false} className="btn btn-primary rounded-2">
+                        {isSubmited && (
+                            <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                        )}
+                        Se connecter
+                    </button>
                     <div className='d-flex flex-column'>
                         <Link className='mb-2' to={"/signup"}>Créer un compte</Link>
                         <Link to={"/forgot-passowrd"}>Mot de passe oublié ?</Link>
                     </div>
-
                 </div>
             </form>
         </div>
