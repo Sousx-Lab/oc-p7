@@ -11,7 +11,7 @@ export async function getUser(){
      */
     const user = JSON.parse(window.localStorage.getItem('user'))
     if (isUserObject(user)) {
-        if (user.expiresAt <= Date.now()) {
+        if(user.expiresAt <= Date.now()) {
             return await refreshToken(user.xsrfToken)
         }
         return user;
@@ -59,7 +59,7 @@ export async function saveUser(data){
 /**
  * 
  * @param {object} credentials
- * @returns {array} array
+ * @returns {Promise} {user, error, status}
  */
 export async function login(credentials){
     const response = await fetch(UserApi.login, {
@@ -69,11 +69,12 @@ export async function login(credentials){
         headers: headers
     })
     let data = await response.json()
-    if (response.status <= 200) {
+    if(response.ok) {
         saveUser(data)
         return {
             user: data,
-            error: null
+            error: null,
+            status: null
         }
     }
     return {
@@ -81,6 +82,24 @@ export async function login(credentials){
         error: data.error,
         status: response.status
     }
+}
+
+/**
+ * 
+ * @param {*} credentials 
+ * @returns 
+ */
+export async function signup(credentials) {
+    const response = await fetch(UserApi.signUp, {
+        body: JSON.stringify(credentials),
+        method: 'POST',
+        headers: headers
+    });
+    let validationError = await response.json()
+    if(response.ok) {
+        validationError = null
+    }
+    return validationError;
 }
 
 /**

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { UserContext } from '../contexts/UserContext';
 import logo from '../assets/img/icon-top-font-monochrome-red.svg'
 import { Link } from 'react-router-dom';
-import { login } from '../services/Api/security/authenticator';
+import { signup, login } from '../services/Api/security/authenticator';
 import { toast } from 'react-toastify';
 
 const SignUpPage = () => {
@@ -11,38 +11,57 @@ const SignUpPage = () => {
     let { user, setUser } = useContext(UserContext);
     
     const [credentials, setCredentials] = useState({
-        firstName: '',
-        lastName: '',
-        email: '',
-        password: ''
+        firstName:'',
+        lastName:'',
+        email:'',
+        password:'',
+        confirmPassword:''
     })
-    let submited = (credentials.email && credentials.password) ? false : true
+    let isCredentials = !Object.keys(credentials).every((k) => credentials[k] !== '')
     const handleChange = ({ currentTarget }) => {
         const { value, name } = currentTarget
         setCredentials({ ...credentials, [name]: value })
 
     }
-
-    const [error, setError] = useState('');
     
+    
+    const [error, setError] = useState();
+    const [isSubmited, setIsSubmited] = useState(false)
     let navigate = useNavigate()
     /**
      * @param {Event} event 
      */
     const handleSubmit = async event => {
-        submited = !submited
+        setIsSubmited(true)
         event.preventDefault();
-        // const { user, error } = await login(credentials)
-        // if (error) {
-        //     setError(error.message)
-        //     toast.error(error.message);
-        //     return;
-        // }
-        // setUser(user);
-        // navigate('/', { replace: true })
-        // toast.success(`Bonjour ${user.firstName} 👋`)
+        
+        /** signup */
+        const validationError  = await signup(credentials)
+        if (validationError) {
+            setError(validationError.validationError)
+            setIsSubmited(false)
+            return;
+        }
+
+        /** try to login user  */
+        const { user, error, status } = await login({
+            email: credentials.email,
+            password: credentials.password
+        })
+        if (error) {
+            if(status >= 500){
+                toast.error("Une erreur s'est produite lors de la connexion !");
+                navigate('/login', { replace: true })
+            }
+            setIsSubmited(false);
+            toast.error(error.message);
+            return;
+        }
+        setUser(user);
+        navigate('/', { replace: true })
+        toast.success(`Bonjour ${user.firstName} 👋`);
     }
-   
+    
     useEffect(() => {
         document.title = "Groupomania | S'inscrire"
         if(user){
@@ -62,12 +81,12 @@ const SignUpPage = () => {
                         onChange={handleChange}
                         type="text"
                         value={credentials.firstName}
-                        className={"form-control " + (error && "is-invalid")}
+                        className={"form-control " + (error?.firstName && "is-invalid")}
                         placeholder='John'
                         name="firstName"
                         required
                     />
-                    {error && <p className="invalid-feedback">{error}</p>}
+                    {error?.firstName && <p className="invalid-feedback">{error?.firstName.message}</p>}
                 </div>
                 <div className="form-group mb-3">
                     <label htmlFor="lastName">Nom</label>
@@ -75,12 +94,12 @@ const SignUpPage = () => {
                         onChange={handleChange}
                         type="text"
                         value={credentials.lastName}
-                        className={"form-control " + (error && "is-invalid")}
+                        className={"form-control " + (error?.lastName && "is-invalid")}
                         placeholder='Doe'
                         name="lastName"
                         required
                     />
-                    {error && <p className="invalid-feedback">{error}</p>}
+                    {error?.lastName && <p className="invalid-feedback">{error?.lastName.message}</p>}
                 </div>
                 <div className="form-group mb-3">
                     <label htmlFor="email">Email</label>
@@ -88,28 +107,46 @@ const SignUpPage = () => {
                         onChange={handleChange}
                         type="email"
                         value={credentials.email}
-                        className={"form-control " + (error && "is-invalid")}
+                        className={"form-control " + (error?.email && "is-invalid")}
                         placeholder='email@domain.com'
                         name="email"
                         required
                     />
-                    {error && <p className="invalid-feedback">{error}</p>}
+                    {error?.email && <p className="invalid-feedback">{error?.email.message}</p>}
                 </div>
-                <div className="form-group">
+                <div className="form-group mb-3">
                     <label htmlFor="password">Mot de passe</label>
                     <input
                         onChange={handleChange}
                         type="password"
                         value={credentials.password}
-                        className={"form-control " + (error && "is-invalid")}
-                        placeholder='Mot de passe'
+                        className={"form-control " + (error?.password && "is-invalid")}
+                        placeholder='8 caractères minimums, une majuscule et un chiffre'
                         name="password"
                         required
                     />
-                    {error && <p className="invalid-feedback">{error}</p>}
+                    {error?.password && <p className="invalid-feedback">{error?.password.message}</p>}
+                </div>
+                <div className="form-group">
+                    <label htmlFor="password">Confirmez le mot de passe</label>
+                    <input
+                        onChange={handleChange}
+                        type="password"
+                        value={credentials.confirmPassword}
+                        className={"form-control " + (error?.confirmPassword && "is-invalid")}
+                        placeholder='Répétez le même mot de passe !'
+                        name="confirmPassword"
+                        required
+                    />
+                    {error?.confirmPassword && <p className="invalid-feedback">{error?.confirmPassword.message}</p>}
                 </div>
                 <div className='d-flex align-items-center justify-content-between mt-3 mb-5'>
-                    <button type="submit" disabled={submited} className="btn btn-primary rounded-2">S'inscrire</button>
+                    <button type="submit" disabled={(isSubmited || isCredentials) ? true: false} className="btn btn-primary rounded-2">
+                    {isSubmited && (
+                            <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                        )}
+                        S'inscrire
+                    </button>
                     <div className='d-flex flex-column'>
                         <Link className='mb-2' to={"/login"}>Se connecter</Link>
                         <Link to={"/forgot-passowrd"}>Mot de passe oublié ?</Link>
