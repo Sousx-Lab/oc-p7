@@ -1,19 +1,19 @@
 Groupomania Front +Groupomania
-    User #User   {c}
-        (A) Security @auth 
+    User #User   
+        (A) Security @auth  
             Login page {cm}
             Signup page {cm:2022-03-19}
             Logout {cm}
             Forgotten password page
             Reset password page
-        User profile pages @userOperations 
-            Public page  
+        User profile pages @userOperations    
+            Public page   
                 Fetch user & display all posts user
-            Private User page 
+            Private User page  
                 Update user
                 Delete user
 
-    Posts #Posts    {c}
+    Posts #Posts    
         Fetch all posts home page {cm}
         Post card {cm}
         Post Editor {cm}
@@ -23,7 +23,7 @@ Groupomania Front +Groupomania
         Delete post
         Lazy fetching posts on scrolling 
         
-    Comment #Comments   {c}
+    Comment #Comments   
         Modal new comment {cm}
         Create new comment 
         Update comment by id
