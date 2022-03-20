@@ -27,7 +27,7 @@ Create new database
 Apply migrations
 
 ```bash
-  npm db:create
+  npm db:migrate
 ```
 
 #### Load fixtures
