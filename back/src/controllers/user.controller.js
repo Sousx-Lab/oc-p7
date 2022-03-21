@@ -300,11 +300,11 @@ exports.resetPassowrd = async(req, res, next) => {
         
         if(new Date(`${resetToken.expiresAt}`).getTime() < Date.now()){
             await resetToken.destroy();
-            return res.http.UnprocessableEntity({error: {message: 'Reset password token expire !'}});
+            return res.http.UnprocessableEntity({error: {message: 'Reset password token expire. Please renew your request!'}});
         }
         const user = await userRespository.User.findOne({where: {id: resetToken.userId}});
         if(!user){
-            return res.http.UnprocessableEntity({error: {message: 'User not exist.'}});
+            return res.http.UnprocessableEntity();
         }
         user.password = await bcrypt.hash(req.body.password, 10);
         await user.save();
