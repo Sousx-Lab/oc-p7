@@ -1,18 +1,21 @@
-import React, { useState } from "react";
+import React from "react";
 import  ReactDOM from "react-dom";
 import {BrowserRouter, Routes, Route} from "react-router-dom";
+import { routes } from "./config/routes/routes.config";
 import ProtectedRoutes from "./components/ProtectedRoutes";
 import LoginPage from "./pages/LoginPage";
 import SignUpPage from "./pages/SignUpPage";
 import  HomePage from "./pages/HomePage";
 import { UserContext } from "./contexts/UserContext";
-import { ToastContainer } from 'react-toastify';
+import { ToastContainer } from "react-toastify";
 import Header from "./components/Header";
-import AuthSideScreen from './components/AuthSideScreen';
-import Loader from './components/Loader';
-import { QueryClient, QueryClientProvider } from 'react-query'
-import 'react-toastify/dist/ReactToastify.css';
-import './assets/scss/app.scss';
+import AuthSideScreen from "./components/AuthSideScreen";
+import PasswordForgotdPage from "./pages/PasswordForgotPage";
+import PasswordResetPage from "./pages/PasswordResetPage";
+import Loader from "./components/Loader";
+import { QueryClient, QueryClientProvider } from "react-query"
+import "react-toastify/dist/ReactToastify.css";
+import "./assets/scss/app.scss";
 import { loadUser } from "./hooks/loadUser";
 
 function App(){
@@ -33,8 +36,10 @@ function App(){
         <BrowserRouter >
           <Routes>
             <Route element={<AuthSideScreen />} >
-              <Route path="/login" element={<LoginPage />}/>
-              <Route path="/signup" element={<SignUpPage />} />
+              <Route path={routes.login} element={<LoginPage />}/>
+              <Route path={routes.signup} element={<SignUpPage />} />
+              <Route path={routes.passwordForgot} element={<PasswordForgotdPage />} />
+              <Route path={routes.passwordReset} element={<PasswordResetPage />} />
             </Route>
             <Route element={<ProtectedRoutes />} >
               <Route element={<Header />} >

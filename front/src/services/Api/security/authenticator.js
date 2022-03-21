@@ -116,3 +116,53 @@ export async function logout(user){
     }
     
 }
+
+/**
+ * 
+ * @param {object} credentials 
+ * @returns {Promise}
+ */
+export async function forgotPassword(credentials){
+    const response = await fetch(UserApi.forgottenPassword, {
+        method: 'POST',
+        body: JSON.stringify(credentials),
+        headers: headers
+    })
+    const data = await response.json()
+    if(response.ok){
+        return {
+            error: false,
+            status: response.status
+        }
+    }
+    return {
+        error: data?.error ?? true,
+        status: response.status
+    }
+}
+
+/**
+ * 
+ * @param {object} credentials 
+ * @returns {Promise}
+ */
+export async function resetPassword(credentials){
+    const response = await fetch(UserApi.resetPassword,{
+        method: 'POST',
+        body: JSON.stringify(credentials),
+        headers: headers
+    })
+
+    const data = await response.json();
+    if(response.ok){
+        return {
+            error: false,
+            status: response.status
+        }
+    }
+    return {
+        error: data,
+        status: response.status
+    }
+}
+

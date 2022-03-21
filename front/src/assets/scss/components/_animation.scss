@@ -1,8 +1,5 @@
 $AuthAnimation: entrancePages 1s cubic-bezier(0.33, 1, 0.68, 1) 0s 1 normal forwards;
-#signup-page{
-    animation: $AuthAnimation;
-}
-#login-page{
+.entrance-page{
     animation: $AuthAnimation;
 }
 

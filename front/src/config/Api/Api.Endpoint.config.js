@@ -72,9 +72,9 @@ export const UserApi = {
 
      /**
       * @returns {string} Password forgotten
-      * POST: http://localhost:3000/api/user/password-fogot
+      * POST: http://localhost:3000/api/user/password-forgot
       */
-    get forgottenPassword(){return `${API.USER_ROUTE}/password-fogot`},
+    get forgottenPassword(){return `${API.USER_ROUTE}/password-forgot`},
 
     /**
       * @returns {string} Password reset
