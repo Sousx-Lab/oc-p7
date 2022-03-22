@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { UserContext } from '../contexts/UserContext';
 import { Link } from "react-router-dom";
 import { useQuery } from 'react-query';
@@ -7,6 +7,7 @@ import Loader from './Loader';
 import defautlAvatar from '../assets/img/d-avatar.svg';
 import { useNavigate } from "react-router-dom";
 import CommentModal from "./CommentModal";
+import UserPopOver from "./UserPopOver";
 import { Heart, Comment } from "./IconSvg";
 import { toast } from 'react-toastify';
 
@@ -46,16 +47,35 @@ const PostsCard = () => {
             navigate(event.target.dataset.link)
         }
     }
-
     const [modalPost, setModalPost] = useState({});
 
+    const handlePopOver = (e) => {
+        let nextSibling = e.target.nextSibling
+        if (nextSibling.classList.contains('d-none')) {
+            setTimeout(() => {
+                nextSibling.classList.remove('d-none')
+                nextSibling.classList.add('d-block')
+            }, 900)
+        }
+    }
+    const hendlePopOverOut = (e) => {
+        let nextSibling = e.target.nextSibling
+        if (nextSibling.classList.contains('d-block')) {
+            if (nextSibling.dataset.hover === 'false') {
+                setTimeout(() => {
+                    nextSibling.classList.remove('d-block')
+                    nextSibling.classList.add('d-none')
+                },100)
+            }
+        }
+    }
     return (
         <>
             <CommentModal post={modalPost} />
             {posts.map((post, key) => {
                 return (
                     <div key={key} className="row mx-auto d-flex justify-content-center">
-                        <article className="col-lg-6 col-sm-12 border border-light bg-light-hover position-relative cursor-pointer"
+                        <article className="col-lg-6 col-sm-12 border border-light bg-light-hover cursor-pointer"
                             data-link={`/post/${post.id}`}
                             onClick={postLink}
                         >
@@ -70,14 +90,17 @@ const PostsCard = () => {
                                 </div>
 
                                 <div className="d-flex flex-column ms-2">
-                                    <div data-link={`/post/${post.id}`} className="text-start pb-3">
-                                        <Link className="fw-bold text-capitalize link-dark"
+                                    <div data-link={`/post/${post.id}`} className="text-start pb-3 ">
+                                        <Link className="fw-bold text-capitalize link-dark position-relative"
+                                            onMouseEnter={handlePopOver}
+                                            onMouseOut={hendlePopOverOut}
                                             to={`user/${post.User.id}`}>
                                             {`${post.User.firstName} ${post.User.lastName}`}
                                         </Link>
+                                        <UserPopOver user={post.User} defautlAvatar={defautlAvatar} />
                                     </div>
                                     <Link className=" text-decoration-none" to={`/post/${post.id}`}>
-                                        <p className="pe-4 pb-3 m-0  text-break text-body text-start">{post.content}</p>
+                                        <p className="pe-4 pb-3 m-0 text-break text-body text-start">{post.content}</p>
                                     </Link>
                                 </div>
                             </div>
