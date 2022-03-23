@@ -50,24 +50,26 @@ const PostsCard = () => {
     const [modalPost, setModalPost] = useState({});
 
     const handlePopOver = (e) => {
-        let nextSibling = e.target.nextSibling
-        if (nextSibling.classList.contains('d-none')) {
-            setTimeout(() => {
+        setTimeout(() => {
+            let nextSibling = e.target.nextSibling
+            if (nextSibling.classList.contains('d-none')) {
                 nextSibling.classList.remove('d-none')
                 nextSibling.classList.add('d-block')
-            }, 900)
-        }
-    }
-    const hendlePopOverOut = (e) => {
-        let nextSibling = e.target.nextSibling
-        if (nextSibling.classList.contains('d-block')) {
-            if (nextSibling.dataset.hover === 'false') {
-                setTimeout(() => {
-                    nextSibling.classList.remove('d-block')
-                    nextSibling.classList.add('d-none')
-                },100)
             }
-        }
+            return;
+        }, 800);
+    }
+
+    const handlePopOverLeave = (e) => {
+        setTimeout(() => {
+            let nextSibling = e.target.nextSibling
+            if (nextSibling.classList.contains('d-block')) {
+                nextSibling.classList.remove('d-block')
+                nextSibling.classList.add('d-none')
+            }
+            return;
+        }, 800)
+
     }
     return (
         <>
@@ -93,11 +95,11 @@ const PostsCard = () => {
                                     <div data-link={`/post/${post.id}`} className="text-start pb-3 ">
                                         <Link className="fw-bold text-capitalize link-dark position-relative"
                                             onMouseEnter={handlePopOver}
-                                            onMouseOut={hendlePopOverOut}
+                                            onMouseLeave={handlePopOverLeave}
                                             to={`user/${post.User.id}`}>
                                             {`${post.User.firstName} ${post.User.lastName}`}
                                         </Link>
-                                        <UserPopOver user={post.User} defautlAvatar={defautlAvatar} />
+                                        <UserPopOver user={post.User} />
                                     </div>
                                     <Link className=" text-decoration-none" to={`/post/${post.id}`}>
                                         <p className="pe-4 pb-3 m-0 text-break text-body text-start">{post.content}</p>

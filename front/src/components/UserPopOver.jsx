@@ -1,31 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import defautlAvatar from '../assets/img/d-avatar.svg';
 
-const UserPopOver = ({ user, defautlAvatar }) => {
+const UserPopOver = ({ user, linkHoverLeave }) => {
+
     const [isHover, setIsHover] = useState(false)
-    /**
-     * 
-     * @param {Event} event
-     */
-    const handleHover = (event) => {
-        setIsHover(!isHover)
-        console.log(isHover)
-        let popover = event.target
-        if (popover.classList.contains('d-block')) {
-            if (popover.dataset.hover === 'true') {
-                return
-            }
-            setTimeout(() => {
-                popover.classList.remove('d-block')
-                popover.classList.add('d-none')
-            }, 500);
-        }
-    }
+    
     return (
-        <div className="d-none position-absolute bg-white shadow p-3 user-popover mt-2" data-hover={!isHover}
-            onMouseLeave={handleHover}
-            onMouseEnter={handleHover}
-        >
+        <div className="d-none position-absolute bg-white shadow p-3 user-popover mt-2">
             <Link to={`user/${user.id}`}>
                 <img className="rounded-circle mb-1" width={54} alt={`profile picuture`}
                     src={user.profilePicture || defautlAvatar}
