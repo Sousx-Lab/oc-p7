@@ -33,23 +33,30 @@ const PasswordForgotPage = () => {
      * @param {SubmitEvent} event 
      */
     const handleSubmit = async event => {
-        setIsSubmited(true)
-        setIsLoading(true)
-        event.preventDefault();
-        const { error, status } = await forgotPassword(credentials)
-        if (error) {
-            if (status >= 500) {
-                toast.error("Une erreur s'est produite! Veuillez réessayer plus tard");
+        try {
+            setIsSubmited(true)
+            setIsLoading(true)
+            event.preventDefault();
+            const { error, status } = await forgotPassword(credentials)
+            if (error) {
+                if (status >= 500) {
+                    toast.error("Une erreur s'est produite! Veuillez réessayer plus tard");
+                    setIsSubmited(false);
+                    return;
+                }
+                setError(error?.message || "Veuillez indiquer votre email de connexion !");
                 setIsSubmited(false);
                 return;
             }
-            setError(error?.message || "Veuillez indiquer votre email de connexion !");
-            setIsSubmited(false);
-            return;
+            setSucess(`Veuillez vérifier votre boite de récéption. Un lien à été envoyé par email à l'adresse indiqué`)
+            toast.success(`Un lien à été envoyé par email à l'adresse indiqué 📥`)
+            setIsLoading(false);
+        } catch (error) {
+            toast.error("Une erreur s'est produite! Veuillez réessayer plus tard");
+            setIsSubmited(false)
+            setIsLoading(false)
         }
-        setSucess(`Veuillez vérifier votre boite de récéption. Un lien à été envoyé par email à l'adresse indiqué`)
-        toast.success(`Un lien à été envoyé par email à l'adresse indiqué 📥`)
-        setIsLoading(false);
+       
     }
 
     useEffect(() => {

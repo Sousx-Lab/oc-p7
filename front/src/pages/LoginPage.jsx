@@ -30,27 +30,33 @@ const LoginPage = () => {
      * @param {SubmitEvent} event 
      */
     const handleSubmit = async event => {
-        setIsSubmited(true)
-        event.preventDefault();
-        const { user, error, status } = await login(credentials)
-        if(error) {
-            if(status >= 500) {
-                toast.error("Une erreur s'est produite! Veuillez réessayer plus tard");
+        try {
+            setIsSubmited(true)
+            event.preventDefault();
+            const { user, error, status } = await login(credentials)
+            if (error) {
+                if (status >= 500) {
+                    toast.error("Une erreur s'est produite! Veuillez réessayer plus tard");
+                    return;
+                }
+                setError(error.message)
+                setIsSubmited(false);
+                toast.error(error.message);
                 return;
             }
-            setError(error.message)
-            setIsSubmited(false);
-            toast.error(error.message);
-            return;
+            setUser(user);
+            navigate('/', { replace: true })
+            toast.success(`Bonjour ${user.firstName} 👋`)
+        } catch (error) {
+            toast.error("Une erreur s'est produite! Veuillez réessayer plus tard");
+            setIsSubmited(false)
         }
-        setUser(user);
-        navigate('/', { replace: true })
-        toast.success(`Bonjour ${user.firstName} 👋`)
+
     }
 
     useEffect(() => {
         document.title = "Groupomania | Se connecter"
-        if(user) {
+        if (user) {
             navigate('/', { replace: true })
         }
     }, []);

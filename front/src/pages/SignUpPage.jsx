@@ -33,34 +33,40 @@ const SignUpPage = () => {
      * @param {Event} event 
      */
     const handleSubmit = async event => {
-        setIsSubmited(true)
-        event.preventDefault();
+        try {
+            setIsSubmited(true)
+            event.preventDefault();
 
-        /** signup */
-        const validationError = await signup(credentials)
-        if (validationError) {
-            setError(validationError.validationError)
-            setIsSubmited(false)
-            return;
-        }
-
-        /** try to login user  */
-        const { user, error, status } = await login({
-            email: credentials.email,
-            password: credentials.password
-        })
-        if (error) {
-            if (status >= 500) {
-                toast.error("Une erreur s'est produite lors de la connexion !");
-                navigate('/login', { replace: true })
+            /** signup */
+            const validationError = await signup(credentials)
+            if (validationError) {
+                setError(validationError.validationError)
+                setIsSubmited(false)
+                return;
             }
-            setIsSubmited(false);
-            toast.error(error.message);
-            return;
+
+            /** try to login user  */
+            const { user, error, status } = await login({
+                email: credentials.email,
+                password: credentials.password
+            })
+            if (error) {
+                if (status >= 500) {
+                    toast.error("Une erreur s'est produite lors de la connexion !");
+                    navigate('/login', { replace: true })
+                }
+                setIsSubmited(false);
+                toast.error(error.message);
+                return;
+            }
+            setUser(user);
+            navigate('/', { replace: true })
+            toast.success(`Bonjour ${user.firstName} 👋`);
+        } catch (error) {
+            toast.error("Une erreur s'est produite! Veuillez réessayer plus tard");
+            setIsSubmited(false)
         }
-        setUser(user);
-        navigate('/', { replace: true })
-        toast.success(`Bonjour ${user.firstName} 👋`);
+
     }
 
     useEffect(() => {

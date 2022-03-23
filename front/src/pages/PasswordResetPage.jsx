@@ -33,24 +33,30 @@ const PasswordResetPage = () => {
      * @param {SubmitEvent} event 
      */
     const handleSubmit = async event => {
-        setIsSubmited(true)
-        event.preventDefault();
-        const { error, status } = await resetPassword(credentials)
-        if (error) {
-            if (status >= 500) {
-                toast.error("Une erreur s'est produite! Veuillez réessayer plus tard");
+        try {
+            setIsSubmited(true)
+            event.preventDefault();
+            const { error, status } = await resetPassword(credentials)
+            if (error) {
+                if (status >= 500) {
+                    toast.error("Une erreur s'est produite! Veuillez réessayer plus tard");
+                    return;
+                }
+                if (status === 422) {
+                    navigate('/login', { replace: true })
+                    toast.error("Le nouveau mot de passe n'a pas pu être réinitialisé !");
+                }
+                setError(error?.validationError)
+                setIsSubmited(false);
                 return;
             }
-            if (status === 422) {
-                navigate('/login', { replace: true })
-                toast.error("Le nouveau mot de passe n'a pas pu être réinitialisé !");
-            }
-            setError(error?.validationError)
-            setIsSubmited(false);
-            return;
+            toast.success('Le nouveau mot de passe à bien été enregistré !')
+            navigate('/login', { replace: true })
+        } catch (error) {
+            toast.error("Une erreur s'est produite! Veuillez réessayer plus tard");
+            setIsSubmited(false)
         }
-        toast.success('Le nouveau mot de passe à bien été enregistré !')
-        navigate('/login', { replace: true })
+
 
     }
     useEffect(() => {
