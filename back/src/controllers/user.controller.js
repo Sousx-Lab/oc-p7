@@ -99,7 +99,7 @@ exports.login = async(req, res, next) => {
             await refreshToken.destroy();
             await Token.create({
                 token: newRefreshToken,
-                user_id: user.id,
+                userId: user.id,
                 expiresAt: Date.now() + parseInt(process.env.JWT_REFRESH_TOKEN_EXPIRE_IN, 10)
             });
             res.cookie("refresh_token", newRefreshToken, {...cookieOptions, path: '/api/user'});
