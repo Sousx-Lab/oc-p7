@@ -4,7 +4,7 @@ exports.findOneJoinPostsComment = async(id) =>{
     
     return await User.findOne({
         where : {id:  id},
-        attributes: ['firstName', 'lastName', 'profilePicture',
+        attributes: ['firstName', 'lastName', 'profilePicture', 'bio',
         ['created_at', 'createdAt'],['updated_at', 'updatedAt']
         ],
         include: [

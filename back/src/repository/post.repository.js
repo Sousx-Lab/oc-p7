@@ -8,14 +8,14 @@ exports.findOneJoinUserComment = async (id) =>{
         ['users_liked', 'usersLiked'],['created_at', 'createdAt'],['updated_at', 'updatedAt']],
         include: [{
                 model: User,
-                attributes: ['id', 'firstName', 'lastName', 'profilePicture']
+                attributes: ['id', 'firstName', 'lastName', 'profilePicture', 'bio']
             },
             {
                 model: Comment,
                 attributes: ['id', 'content'],
                 include: [{
                     model: User,
-                    attributes: ['id', 'firstName', 'lastName', 'profilePicture']
+                    attributes: ['id', 'firstName', 'lastName', 'profilePicture', 'bio']
                 }]
             }  
         ],
@@ -30,7 +30,7 @@ exports.findAllJoinUser = async () =>{
         [Sequelize.fn('count', Sequelize.col('post_id')), 'commentsCount']
         ],
         include: [
-            {model: User, attributes: ['id', 'firstName', 'lastName', 'profilePicture']},
+            {model: User, attributes: ['id', 'firstName', 'lastName', 'profilePicture', 'bio']},
             {model: Comment, attributes: []}
         ],
         group: ['post.id'],

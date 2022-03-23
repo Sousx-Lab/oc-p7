@@ -25,6 +25,7 @@ module.exports = {
         password: bcrypt.hashSync(`Password${i}`, 10),
         roles: (i === 1) ? JSON.stringify(['ROLE_ADMIN']) : JSON.stringify([]),
         profile_picture: (i > 30) ? null: `img${i}.jpg`,
+        bio: faker.lorem.sentence(faker.datatype.number({min: 5, max: 10})),
         is_active: true,
         created_at: date,
         updated_at: date,

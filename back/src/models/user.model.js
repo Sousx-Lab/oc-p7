@@ -144,6 +144,27 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     
+    /** Biographie */
+    bio: {
+      type: DataTypes.STRING(128) ,
+      field: 'bio',
+      allowNull: true,
+      validate: {
+        max: {
+          msg: "Biographie must not exceed 128 characters"
+        },
+      },
+      get(){
+        return this.getDataValue('bio');
+      },
+      set(value){
+        if(value){
+          this.setDataValue('bio', value);
+        }
+        
+      }
+    },
+
     /** Is active */
     isActive:{
       type: DataTypes.BOOLEAN,

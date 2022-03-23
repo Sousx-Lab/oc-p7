@@ -35,6 +35,11 @@ module.exports = {
         field: 'profile_picture',
         allowNull: true,
       },
+      bio: {
+        type: Sequelize.STRING(128),
+        field: 'bio',
+        allowNull: true,
+      },
       isActive: {
         type: Sequelize.TINYINT(1),
         field: 'is_active',

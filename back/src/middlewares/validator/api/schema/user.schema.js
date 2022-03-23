@@ -123,6 +123,14 @@ exports.updateUserSchema = Joi.object().keys({
         'string.empty': "lastname must not be empty",
         'string.max': "lastname must have max 64 characters"
       }),
+    bio: Joi
+    .string()
+    .max(128)
+    .allow('')
+    .messages({
+      'string.base': "biographie must be a string",
+      'string.max': "Biographie must not exceed 128 characters"
+    }),
     currentPassword: Joi
       .string()
       .trim()
