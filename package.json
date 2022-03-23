@@ -17,8 +17,8 @@
     "db:migrate": "cd ./back& sequelize-cli db:migrate",
     "db:migrations:generate": "cd ./back& node config/sequelize/db-migrations-generator.js",
     "db:seed:all": "cd ./back & sequelize db:seed:all",
-    "db:sedd:undo": "cd ./back & sequelize db:seed:undo:all",
-    "db:drop": "cd ./back& sequelize-cli db:drop",
+    "db:seed:undo": "cd ./back & sequelize db:seed:undo:all",
+    "db:drop": "cd ./back& sequelize db:drop",
     "postinstall": "npm run setup:help",
     "setup:help": "node setup.js"
   },
