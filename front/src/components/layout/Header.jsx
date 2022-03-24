@@ -1,12 +1,12 @@
 import React, { useContext } from "react";
-import { UserContext } from "../contexts/UserContext";
+import { UserContext } from "../../contexts/UserContext";
 import { Link, useNavigate } from "react-router-dom";
-import logo from '../assets/img/icon-left-font-monochrome-white.svg';
 import { Outlet } from "react-router-dom";
-import { logout } from "../services/Api/security/authenticator";
+import { logout } from "../../services/Api/security/authenticator";
 import { toast } from 'react-toastify';
 import { useLocation } from "react-router-dom";
-import defautlAvatar from '../assets/img/d-avatar.svg';
+import defautlAvatar from '../../assets/img/d-avatar.svg';
+import logo from '../../assets/img/icon-left-font-monochrome-white.svg';
 
 const Header = () => {
     const { user, setUser } = useContext(UserContext);

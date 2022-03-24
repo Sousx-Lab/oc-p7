@@ -70,10 +70,12 @@ const PasswordForgotPage = () => {
         <div className='d-flex flex-column mx-auto col-md-8 col-lg-5 mt-5 entrance-page'>
             <div className='p-2 text-center'>
                 <img className='img-fluid' src={logo} alt="Logo Groupomania" />
-                <h2 className='pt-2 pb-2'><small className='text-muted'>Mot de passe oublié</small></h2>
-                <p className='col-8 mx-auto '>Veuillez indiquer votre email de connexion.<br /> Un email vous seras envoyé pour renouveler votre mot de passe</p>
+                <h1 className='pt-2 fs-3 text-muted pb-3'>Mot de passe oublié</h1>
+                <p className='col-8 col-lg-7 mx-auto text-start'>Veuillez indiquer votre email de connexion.<br />
+                    Un email vous seras envoyé pour renouveler votre mot de passe.
+                </p>
             </div>
-            <form className='col-sm-10 col-md-8 col-xl-7 mx-auto' onSubmit={handleSubmit}>
+            <form className='col-8 col-lg-7 mx-auto' onSubmit={handleSubmit}>
                 <div className="form-group mb-3">
                     <label htmlFor="email">Email</label>
                     <input

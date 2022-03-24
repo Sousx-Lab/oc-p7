@@ -1,8 +1,10 @@
 import React, { useCallback, useContext, useState } from "react";
 import { useDropzone } from 'react-dropzone';
 import { UserContext } from "../contexts/UserContext";
-import media from '../assets/img/media.svg'
-import defautlAvatar from '../assets/img/d-avatar.svg'
+import { UploadMedia } from "./IconsSvg";
+import PostMedia from "./PostMedia";
+import defautlAvatar from '../assets/img/d-avatar.svg';
+
 const Editor = () => {
 
     const { user } = useContext(UserContext);
@@ -26,9 +28,11 @@ const Editor = () => {
         });
     }, [])
 
+    const fileAccept = '.jpeg,.jpg,.png,.gif,.webp,.webm,.mp4,.mpeg';
     const { getRootProps, getInputProps, fileRejections } = useDropzone({
         maxFiles: 1,
-        accept: '.jpeg,.jpg,.png,.gif,.webp,.webm,.mp4,.mpeg',
+        multiple: false,
+        accept: fileAccept,
         onDrop
     });
 
@@ -56,7 +60,7 @@ const Editor = () => {
 
     /**
      * @param {SubmitEvent} event 
-     * //Todo finir la création de data
+     * //Todo finir la création l'envoi du formulaire
      */
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -64,7 +68,6 @@ const Editor = () => {
     }
 
     return (
-
         <div className="mx-auto pb-2 pt-3 mb-3">
             <div className="d-flex text-center p-0">
                 <div className="pe-2">
@@ -85,22 +88,16 @@ const Editor = () => {
                             <div className="col-10 alert alert-dismissible w-100 mt-1 p-0">
                                 <button type="button" onClick={handleDeleteUpload} className="bg-danger btn-danger btn-close p-2"></button>
 
-                                {data.media.type.split('/')[0] === "image" && (
-                                    <img className="image-responsive w-100" height="auto" alt="100x100" src={data.media.file} />
-                                )}
-
-                                {data.media.type.split('/')[0] === "video" && (
-                                    <video className="w-100" controls >
-                                        <source src={data.media.file} type={data.media.type}></source>
-                                    </video>
-                                )}
+                                <PostMedia mediaType={data.media.type} media={data.media.file} />
                             </div>
                         )}
                         <div className="d-flex mt-2 bd-highlight" >
                             <div className="bd-highlight" {...getRootProps()}>
-                                <input {...getInputProps()} className="form-control" multiple={false} type="file" name="media"/>
-                                <div>
-                                    <img src={media} width={32} alt="upload image or video" />
+                                <input {...getInputProps()} className="form-control" type="file" name="media" accept={fileAccept} />
+                                <div className="icon-info">
+                                    <div className="rounded-circle icon-info--bg p-2 text-center">
+                                        {<UploadMedia size={24} strokeWidth={"1"} />}
+                                    </div>
                                     {fileError}
                                 </div>
                             </div>

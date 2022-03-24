@@ -2,13 +2,13 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import defautlAvatar from '../assets/img/d-avatar.svg';
 
-const UserPopOver = ({ user, linkHoverLeave }) => {
+const UserPopOver = ({ id, user, linkHoverLeave }) => {
 
     const [isHover, setIsHover] = useState(false)
     
     return (
-        <div className="d-none position-absolute bg-white shadow p-3 user-popover mt-2">
-            <Link to={`user/${user.id}`}>
+        <div id={`user-pop-${id}`} className="d-none position-absolute bg-white shadow p-3 user-popover mt-2 start-0">
+            <Link to={`user/${user.id}`} className="d-block overflow-auto">
                 <img className="rounded-circle mb-1" width={54} alt={`profile picuture`}
                     src={user.profilePicture || defautlAvatar}
                     data-holder-rendered="true" />

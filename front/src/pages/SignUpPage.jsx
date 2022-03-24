@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { UserContext } from '../contexts/UserContext';
-import logo from '../assets/img/icon-top-font-monochrome-red.svg'
+import logo from '../assets/img/icon-top-font-monochrome-purple.svg'
 import { Link } from 'react-router-dom';
 import { signup, login } from '../services/Api/security/authenticator';
 import { toast } from 'react-toastify';
@@ -78,10 +78,10 @@ const SignUpPage = () => {
     return (
         <div className='d-flex flex-column mx-auto col-md-8 col-lg-5 mt-5 entrance-page'>
             <div className='p-2 text-center'>
-                <img className='img-fluid' src={logo} alt="Logo Groupomania" />
-                <h2 className='pt-2'><small className='text-muted'>Créer un compte</small>  </h2>
+                <img className='img-fluid' src={logo} alt="Logo Groupomania"/>
+                <h1 className='pt-2 fs-3 text-muted '>Créer un compte</h1>
             </div>
-            <form className='col-sm-10 col-md-8 col-xl-7 mx-auto' onSubmit={handleSubmit}>
+            <form className='col-8 col-lg-7 mx-auto' onSubmit={handleSubmit}>
                 <div className="form-group mb-3">
                     <label htmlFor="firstName">Prénom</label>
                     <input
