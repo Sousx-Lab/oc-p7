@@ -102,7 +102,7 @@ exports.login = async(req, res, next) => {
                 userId: user.id,
                 expiresAt: Date.now() + parseInt(process.env.JWT_REFRESH_TOKEN_EXPIRE_IN, 10)
             });
-            res.cookie("refresh_token", newRefreshToken, {...cookieOptions, path: '/api/user'});
+            res.cookie("refresh_token", newRefreshToken, {...cookieOptions, path: '/api/user/'});
         };
 
         const xsrfToken = crypto.randomBytes(64).toString('hex');
