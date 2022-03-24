@@ -6,10 +6,13 @@
         .icon-info--text{
             color: #74bae9;
         }
-        svg path{
-            stroke: #74bae9;
-            stroke-width: 1.5;
+        svg {
+            path{
+                stroke: #74bae9;
+                stroke-width: 1.5;
+            }
         }
+        
     }
     
 }
@@ -17,8 +20,10 @@
 .icon-like{
     &--bg-active{
         background-color: #F7E0EB;
-        svg path{
-            stroke: none!important;
+        svg{
+            path{
+                stroke: none!important;
+            }
         }
     }
     &--text-active{
@@ -32,8 +37,10 @@
         .icon-like--text{
             color: #F863A8;
         }
-        svg path{
-            stroke: #F863A8;
+        svg {
+            path{
+                stroke: #F863A8;
+            }
         }
     }
     
