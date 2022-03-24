@@ -8,11 +8,11 @@ import SignUpPage from "./pages/SignUpPage";
 import  HomePage from "./pages/HomePage";
 import { UserContext } from "./contexts/UserContext";
 import { ToastContainer } from "react-toastify";
-import Header from "./components/Header";
-import AuthSideScreen from "./components/AuthSideScreen";
+import Header from "./components/layout/Header";
+import AuthSideScreen from "./components/layout/AuthSideScreen";
 import PasswordForgotdPage from "./pages/PasswordForgotPage";
 import PasswordResetPage from "./pages/PasswordResetPage";
-import Loader from "./components/Loader";
+import Loader from "./components/layout/Loader";
 import { QueryClient, QueryClientProvider } from "react-query"
 import "react-toastify/dist/ReactToastify.css";
 import "./assets/scss/app.scss";
@@ -20,8 +20,6 @@ import { loadUser } from "./hooks/loadUser";
 
 function App(){
 
-    // const [user, setUser] = useState(true)
-    // const isLoading = true
     const [user, setUser, isLoading] = loadUser();
     const queryClient = new QueryClient();
     
