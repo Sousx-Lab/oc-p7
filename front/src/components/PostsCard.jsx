@@ -102,7 +102,7 @@ const PostsCard = () => {
                                         >
                                             {`${post.User.firstName} ${post.User.lastName}`}
                                         </Link>
-                                        {(user.userId === post.User.id) && (
+                                        {(user.id === post.User.id) && (
                                             <div className="d-inline float-end icon-info" title="Plus...">
                                                 <i className="rounded-circle icon-info--bg pb-2 pt-1 ps-1 pe-1">
                                                 <MoreVertical />

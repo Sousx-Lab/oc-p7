@@ -3,7 +3,7 @@ import {User, isUserObject} from './user';
 import { headers } from '../headers';
 
 /**
- * @returns {User|null} User | null
+ * @returns {Promise|null} User | null
  */
 export async function getUser(){
     /**
@@ -51,7 +51,7 @@ export async function saveUser(data){
     try {
         window.localStorage.setItem('user', JSON.stringify(data));
     } catch (error) {
-        console.log(error)
+        throw error;
     }
     
 }
@@ -70,11 +70,13 @@ export async function login(credentials){
     })
     let data = await response.json()
     if(response.ok) {
+        if(isUserObject(data)) {
         saveUser(data)
         return {
             user: data,
             error: null,
             status: null
+            }
         }
     }
     return {
@@ -86,7 +88,7 @@ export async function login(credentials){
 
 /**
  * 
- * @param {*} credentials 
+ * @param {object} credentials 
  * @returns 
  */
 export async function signup(credentials) {
@@ -103,6 +105,7 @@ export async function signup(credentials) {
 }
 
 /**
+ * @param {User} user 
  * @returns {void}
  */
 export async function logout(user){

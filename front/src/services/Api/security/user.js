@@ -1,20 +1,26 @@
 import {isEmptyObject} from '../../outils/outils';
 /**
  * @typedef User
- * @property {string} userId
+ * @property {string} id
  * @property {string} firstName
  * @property {string} lastName
- * @property {string} profilePicture
+ * @property {array}  roles
+ * @property {string} createdAt
+ * @property {string} updatedAt
  * @property {number} expiresAt
  * @property {string} xsrfToken
+ * @property {string} profilePicture
  */
 export const User = {
-    userId: '',
+    id: '',
     firstName: '',
     lastName: '',
-    profilePicture: '',
+    roles: [],
+    createdAt: '',
+    updatedAt: '',
     expiresAt: 0,
-    xsrfToken: ''
+    xsrfToken: '',
+    profilePicture: '',
 }
 
 /**

@@ -58,11 +58,15 @@ exports.login = async(req, res, next) => {
         res.cookie("access_token", jwt.jwtSign(user, xsrfToken), cookieOptions);
         res.cookie("refresh_token", refreshToken, {...cookieOptions, path: '/api/user/'});
         
-        return res.http.Ok({
-            userId: user.id,
+        return res.http.Ok({ 
+            id: user.id,
             firstName: user.firstName,
             lastName: user.lastName,
+            roles: user.roles,
             profilePicture: user.profilePicture,
+            isActive: user.isActive,
+            createdAt: user.created_at,
+            updatedAt: user.updated_at,
             expiresAt: Date.now() + parseInt(process.env.JWT_TOKEN_EXPIRES_IN,10),
             xsrfToken: xsrfToken
         });
@@ -109,10 +113,14 @@ exports.login = async(req, res, next) => {
         res.cookie("access_token", jwt.jwtSign(user, xsrfToken), cookieOptions);
         
         return res.http.Ok({
-            userId: user.id,
+            id: user.id,
             firstName: user.firstName,
             lastName: user.lastName,
+            roles: user.roles,
             profilePicture: user.profilePicture,
+            isActive: user.isActive,
+            createdAt: user.created_at,
+            updatedAt: user.updated_at,
             expiresAt: Date.now() + parseInt(process.env.JWT_TOKEN_EXPIRES_IN,10),
             xsrfToken: xsrfToken
         });
@@ -209,11 +217,15 @@ exports.updateUserById = async(req, res, next) =>{
         res.cookie("access_token", jwt.jwtSign(user, xsrfToken), cookieOptions);
 
         return res.http.Ok({
-            userId: user.id,
+            id: user.id,
             firstName: user.firstName,
             lastName: user.lastName,
+            roles: user.roles,
             profilePicture: user.profilePicture,
-            expriesAt: Date.now() + parseInt(process.env.JWT_TOKEN_EXPIRES_IN,10),
+            isActive: user.isActive,
+            createdAt: user.created_at,
+            updatedAt: user.updated_at,
+            expiresAt: Date.now() + parseInt(process.env.JWT_TOKEN_EXPIRES_IN,10),
             xsrfToken: xsrfToken
         })
         
