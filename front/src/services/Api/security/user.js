@@ -10,6 +10,7 @@ import {isEmptyObject} from '../../outils/outils';
  * @property {number} expiresAt
  * @property {string} xsrfToken
  * @property {string} profilePicture
+ * @property {string} bio
  */
 export const User = {
     id: '',
@@ -21,6 +22,7 @@ export const User = {
     expiresAt: 0,
     xsrfToken: '',
     profilePicture: '',
+    bio: '',
 }
 
 /**

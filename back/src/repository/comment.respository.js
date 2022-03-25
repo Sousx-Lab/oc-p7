@@ -9,7 +9,8 @@ exports.findOneJoinUser = async (id) => {
         ],
         include: [{
             model: User,
-            attributes: ['id', 'firstName', 'lastName', 'profilePicture', 'bio']
+            attributes: ['id', 'firstName', 'lastName', 'profilePicture', 'bio' 
+            ['created_at', 'createdAt'],['updated_at', 'updatedAt']]
         }],
     })
 };
