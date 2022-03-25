@@ -1119,16 +1119,17 @@
       },
       "LoginResponse": {
         "type": "object",
-        "properties": {
-          "userId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "firstName": {
-            "type": "string"
-          },
-          "lastName": {
-            "type": "string"
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/User"
+          }
+        ],
+        "properties":{
+          "roles": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           },
           "expiresAt": {
             "type": "integer"
@@ -1376,7 +1377,8 @@
         "type": "object",
         "properties": {
           "id": {
-            "type": "string"
+            "type": "string",
+            "format": "uuid"
           },
           "firstName": {
             "type": "string"
@@ -1384,8 +1386,21 @@
           "lastName": {
             "type": "string"
           },
-          "profilePicture": {
-            "type": "string"
+          "createdAt":{
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt":{
+            "type": "string",
+            "format": "date-time"
+          },
+          "bio":{
+            "type": "string",
+            "nullable": true
+          },
+          "profilePicture":{
+            "type": "string",
+            "nullable": true
           }
         }
       },
