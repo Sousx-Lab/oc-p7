@@ -5,7 +5,8 @@ import { routes } from "./config/routes/routes.config";
 import ProtectedRoutes from "./components/ProtectedRoutes";
 import LoginPage from "./pages/LoginPage";
 import SignUpPage from "./pages/SignUpPage";
-import  HomePage from "./pages/HomePage";
+import HomePage from "./pages/HomePage";
+import PostPage from "./pages/PostPage";
 import { UserContext } from "./contexts/UserContext";
 import { ToastContainer } from "react-toastify";
 import Header from "./components/layout/Header";
@@ -16,6 +17,7 @@ import Loader from "./components/layout/Loader";
 import { QueryClient, QueryClientProvider } from "react-query"
 import "react-toastify/dist/ReactToastify.css";
 import "./assets/scss/app.scss";
+import "viewerjs/dist/viewer.css";
 import { loadUser } from "./hooks/loadUser";
 
 function App(){
@@ -41,7 +43,8 @@ function App(){
             </Route>
             <Route element={<ProtectedRoutes />} >
               <Route element={<Header />} >
-                <Route index path="/" element={<HomePage/>} />
+                <Route index path={routes.home} element={<HomePage/>}/>
+                <Route path={routes.post} element={<PostPage/>}/>
               </Route>
             </Route>
           </Routes>

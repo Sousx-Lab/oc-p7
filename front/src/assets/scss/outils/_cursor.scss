@@ -5,3 +5,13 @@
 .cursor-defaut{
     cursor: unset;
 }
+
+.cursor-zi{
+    cursor: unset;
+    cursor: zoom-in!important;
+}
+
+.cursor-not-allowed{
+    cursor: unset;
+    cursor: not-allowed;
+}

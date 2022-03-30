@@ -1,9 +1,11 @@
-import React, { useCallback, useContext, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { useDropzone } from 'react-dropzone';
 import { UserContext } from "../contexts/UserContext";
-import { UploadMedia } from "./IconsSvg";
-import PostMedia from "./PostMedia";
+import { EmojiSvg, MediasSvg } from "./IconsSvg";
+import MediaType from "./MediaType";
 import defautlAvatar from '../assets/img/d-avatar.svg';
+import { Link } from 'react-router-dom';
+import EmojiPicker from "./post/EmojiPicker";
 
 const Editor = () => {
 
@@ -60,7 +62,7 @@ const Editor = () => {
 
     /**
      * @param {SubmitEvent} event 
-     * //Todo finir la création l'envoi du formulaire
+     * //Todo finir l'envoi du formulaire
      */
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -71,37 +73,37 @@ const Editor = () => {
         <div className="mx-auto pb-2 pt-3 mb-3">
             <div className="d-flex text-center p-0">
                 <div className="pe-2">
-                    <img className="rounded-circle" width={54} alt={`profile picuture ${user.firstName}`}
-                        src={user.profilePicture || defautlAvatar}
-                        data-holder-rendered="true" />
+                    <Link to={`/user/${user.id}`}>
+                        <img className="rounded-circle" width={54} alt={`${user.firstName} ${user.lastName}`}
+                            src={user.profilePicture || defautlAvatar}
+                            title={`${user.firstName} ${user.lastName}`}
+                            data-holder-rendered="true" />
+                    </Link>
                 </div>
                 <div className="w-100 d-flex-row p-0">
                     <form onSubmit={handleSubmit} >
-                        <div className="">
-                            <textarea type="text" onChange={handleChange} value={data.content} name="content"
-                                className="form-control form-control-lg border-0 rounded ps-2"
-                                placeholder="Quoi de neuf ?"
-                                autoComplete="false"
-                            />
-                        </div>
+                        <textarea type="text" onChange={handleChange} value={data.content} name="content"
+                            className="form-control form-control-lg border-0 rounded ps-2 content"
+                            placeholder="Quoi de neuf ?"
+                            autoComplete="false"
+                        />
                         {data.media.file && (
                             <div className="col-10 alert alert-dismissible w-100 mt-1 p-0">
                                 <button type="button" onClick={handleDeleteUpload} className="bg-danger btn-danger btn-close p-2"></button>
-
-                                <PostMedia mediaType={data.media.type} media={data.media.file} />
+                                <MediaType mediaType={data.media.type} media={data.media.file} />
                             </div>
                         )}
                         <div className="d-flex mt-2 bd-highlight" >
                             <div className="bd-highlight" {...getRootProps()}>
                                 <input {...getInputProps()} className="form-control" type="file" name="media" accept={fileAccept} />
                                 <div className="icon-info">
-                                    <div className="rounded-circle icon-info--bg p-2 text-center">
-                                        {<UploadMedia size={24} strokeWidth={"1"} />}
+                                    <div className="rounded-circle icon-info--bg p-2 text-center" title="Médias">
+                                        {<MediasSvg size={24} strokeWidth={"1"} />}
                                     </div>
                                     {fileError}
                                 </div>
                             </div>
-
+                            <EmojiPicker />
                             <div className="ms-auto bd-highlight">
                                 <button disabled={data.content || data.media.file ? false : true}
                                     type="submit"
@@ -112,7 +114,6 @@ const Editor = () => {
                 </div>
             </div>
         </div>
-
     )
 }
 

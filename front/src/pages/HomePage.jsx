@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { UserContext } from "../contexts/UserContext";
 import Editor from "../components/Editor";
-import PostsCard from "../components/PostsCard";
+import PostsCard from "../components/post/PostsCard";
 
 const HomePage = () => {
 

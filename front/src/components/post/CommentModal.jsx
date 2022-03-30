@@ -1,8 +1,8 @@
-import React, { useEffect } from "react"
+import React from "react"
 import { Link } from 'react-router-dom';
 import { useNavigate } from "react-router-dom";
-import defautlAvatar from '../assets/img/d-avatar.svg';
-import Editor from "./Editor";
+import defautlAvatar from '../../assets/img/d-avatar.svg';
+import Editor from "../Editor";
 
 const CommentModal = ({ post }) => {
 

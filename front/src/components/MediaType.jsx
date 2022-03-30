@@ -1,16 +1,19 @@
 import React from "react";
+import ImageViewer from "./ImageViewer";
 
 /**
 * @param {string} mediaType 
 * @param {string} media
 */
-const PostMedia = ({ mediaType, media}) => {
+const MediaType = ({ mediaType, media, id = "img"}) => {
 
     mediaType = mediaType.split('/').shift()
     let imgAlt = media.split('/').pop()
     if(mediaType === 'image'){
         return(
-            <img loading="lazy" decoding="async" className="image-responsive w-100" height="auto" width="100%" src={media} alt={imgAlt}/> 
+        <ImageViewer imageId={id}>
+            <img id={`img-${id}`} loading="lazy" decoding="async" className="image-responsive w-100" height="auto" width="100%" src={media} alt={imgAlt}/>
+        </ImageViewer>
         )
     }else if(mediaType === "video"){
         return (
@@ -19,7 +22,7 @@ const PostMedia = ({ mediaType, media}) => {
             </video>
         )
     }
-    return {}
+    return [];
 }
 
-export default PostMedia;
+export default MediaType;

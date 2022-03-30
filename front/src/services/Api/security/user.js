@@ -1,4 +1,4 @@
-import {isEmptyObject} from '../../outils/outils';
+import {isEmptyObject} from '../../outils/objectValidator';
 /**
  * @typedef User
  * @property {string} id

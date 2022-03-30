@@ -1,5 +1,13 @@
 .icon-info{
-    &:hover{
+    &--bg-active{
+        background-color: #E1EEF6;
+        svg{
+            path{
+                 stroke: #74bae9;
+            }
+        }
+    }
+    &:hover, &:focus{
         .icon-info--bg{
             background-color: #E1EEF6;
         }
@@ -29,7 +37,7 @@
     &--text-active{
         color: #F863A8;
     }
-    &:hover{
+    &:hover,&:focus{
         .icon-like--bg{
             background-color: #F7E0EB;
         }

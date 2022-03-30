@@ -7,6 +7,7 @@ import { toast } from 'react-toastify';
 import { useLocation } from "react-router-dom";
 import defautlAvatar from '../../assets/img/d-avatar.svg';
 import logo from '../../assets/img/icon-left-font-monochrome-white.svg';
+import { ArrowOutSvg, UserCircleSvg } from "../IconsSvg";
 
 const Header = () => {
     const { user, setUser } = useContext(UserContext);
@@ -27,6 +28,7 @@ const Header = () => {
     const navLink = () => {
         return 'nav-link ' + (location.pathname === '/' ? 'active' : '')
     }
+
     return (
         <>
             <header>
@@ -51,12 +53,27 @@ const Header = () => {
                                         href="#" role="button" aria-haspopup="true" aria-expanded="false"><strong>{user?.firstName}</strong>
                                     </a>
                                     <div className="dropdown-menu">
-                                        <a className="dropdown-item" href="#">Profile</a>
-                                        <a className="dropdown-item bg-danger text-light" onClick={handleLogout} href="#">Logout</a>
+                                        <a className="dropdown-item" href="#">
+                                            Profile
+                                            <div className="d-inline ps-2 float-end">
+                                                <UserCircleSvg size={18} />
+                                            </div>
+                                        </a>
+                                        <a className="dropdown-item bg-danger text-light" onClick={handleLogout} href="#">
+                                            Déconnexion
+                                            <div className="d-inline ps-2 float-end">
+                                                <ArrowOutSvg stroke="#ffff" size={18} />
+                                            </div>
+                                        </a>
                                     </div>
                                 </li>
                                 <li className="nav-item">
-                                    <img className="rounded-circle" src={user.profilePicture || defautlAvatar} width={32} alt="" />
+                                    <Link to={`/user/${user.id}`} className="d-none d-md-inline">
+                                        <img className="rounded-circle" src={user.profilePicture || defautlAvatar} width={32}
+                                            alt={`${user.firstName} ${user.lastName}`}
+                                            title={`${user.firstName} ${user.lastName}`}
+                                        />
+                                    </Link>
                                 </li>
                             </ul>
                         </div>
