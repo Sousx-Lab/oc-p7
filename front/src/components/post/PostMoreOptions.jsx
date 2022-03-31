@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { UserContext } from "../../contexts/UserContext";
-import { EditSvg , MoreVerticalSvg, TrashSvg } from "../IconsSvg";
+import { EditSvg, MoreVerticalSvg, TrashSvg } from "../IconsSvg";
 import { Link } from "react-router-dom";
 
 const PostMoreOptions = ({ post }) => {
@@ -31,32 +31,36 @@ const PostMoreOptions = ({ post }) => {
                 </i>
             </div>
             <div id={`more-option-menu-${post.id}`}
-                className="d-none bg-white shadow p-2 position-absolute" 
-                style={{ top: "40px", right: "0", width: "200px", cursor: "default", borderRadius: "3px"}} >
+                className="d-none bg-white shadow position-absolute"
+                style={{ top: "40px", right: "0", width: "200px", cursor: "default", borderRadius: "3px" }} >
                 <ul className="list-unstyled mb-1">
-                    <li className="p-2">
+                    <li className="p-2 bg-light-hover">
                         {user.roles.includes('ROLE_ADMIN') ? (
-                            <a href="#" className="text-black text-decoration-none" title="Editer ce post">
+                            <a href="#" className="text-black text-decoration-none d-flex justify-content-between" 
+                                title="Editer ce post">
                                 Modérer ce post
-                                <i className="float-end"><EditSvg size={18} strokeWidth={"1"} /></i>
+                                <EditSvg size={18} strokeWidth={"1"} />
                             </a>
                         ) : (
-                            <div className="text-muted text-decoration-none cursor-not-allowed" title="Editer ce post">
+                            <div className="text-muted text-decoration-none cursor-not-allowed d-flex justify-content-between"
+                                title="Editer ce post">
                                 Modérer ce post
-                                <i className="float-end"><EditSvg size={18} strokeWidth={"1"}  /></i>
+                                <EditSvg size={18} strokeWidth={"1"} />
                             </div>
                         )}
                     </li>
-                    <li className="p-2">
+                    <li className="p-2 bg-light-hover">
                         {user.id === post.User.id || user.roles.includes('ROLE_ADMIN') ? (
-                            <a href="#" className="text-danger text-decoration-none" title="Supprimer ce post" >
+                            <a href="#" className="text-danger text-decoration-none d-flex justify-content-between" 
+                                title="Supprimer ce post" >
                                 Supprimer ce post
-                                <i className="float-end"><TrashSvg size={18} stroke={"red"} strokeWidth={"1"} /></i>
+                                <TrashSvg size={18} stroke={"red"} strokeWidth={"1"} />
                             </a>
                         ) : (
-                            <div className="text-muted text-decoration-none cursor-not-allowed" title="Supprimer ce post">
+                            <div className="text-muted text-decoration-none cursor-not-allowed d-flex justify-content-between"
+                                title="Supprimer ce post">
                                 Supprimer ce post
-                                <i className="float-end"><TrashSvg size={18} strokeWidth={"1"} /></i>
+                                <TrashSvg size={18} strokeWidth={"1"} />
                             </div>
                         )}
                     </li>
