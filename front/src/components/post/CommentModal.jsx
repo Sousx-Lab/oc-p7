@@ -2,12 +2,12 @@ import React from "react"
 import { Link } from 'react-router-dom';
 import { useNavigate } from "react-router-dom";
 import defautlAvatar from '../../assets/img/d-avatar.svg';
-import Editor from "../Editor";
+import Editor from "../editor/Editor";
 
 const CommentModal = ({ post }) => {
 
     const navigate = useNavigate()
-    
+    const editorContext = "commentary"
     return (
         <div id="commentModal" className="modal fade" tabIndex="-1" aria-hidden="true">
             <div className="modal-dialog modal-lg" role="document">
@@ -44,7 +44,7 @@ const CommentModal = ({ post }) => {
                                 </Link>
                             </div>
                         </div>
-                        <Editor />
+                        <Editor editorContext={editorContext} emojiTriggerContext={editorContext}/>
                     </div>
                     <div className="modal-footer">
                         <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>

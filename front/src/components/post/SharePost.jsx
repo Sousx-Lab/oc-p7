@@ -1,8 +1,11 @@
-import React from "react";
+import React, {useContext} from "react";
 import { CopySvg, MailSvg, ShareSvg } from "../IconsSvg";
+import { UserContext } from "../../contexts/UserContext";
 import { toast } from 'react-toastify';
 
 const SharePost = ({ post }) => {
+
+    const {user} = useContext(UserContext);
 
     const handleShareMenu = () => {
         const shareMenu = document.getElementById(`share-menu-${post.id}`);
@@ -30,18 +33,20 @@ const SharePost = ({ post }) => {
         <div className="d-flex align-items-center position-relative" title="Partager..." onClick={handleShareMenu}>
             <ShareSvg />
             <div id={`share-menu-${post.id}`}
-                className="d-none position-absolute bg-white shadow p-2"
+                className="d-none position-absolute bg-white shadow"
                 style={{ top: "40px", right: "0", width: "200px", cursor: "default", borderRadius: "3px", zIndex: "1080" }}>
                 <ul className="list-unstyled mb-1">
-                    <li className="p-2">
-                        <a href="/#" className="text-black text-decoration-none" title="Partager par email" >Partager par email
-                            <i className="float-end"><MailSvg size={18} /></i>
+                    <li className="p-2 bg-light-hover">
+                        <a href={`mailto:?subject=${user.firstName} ${user.lastName}Partagee avec vous un post&amp;body=Regarde ce post ${window.location.href}posts/${post.id}`} 
+                            className="text-black text-decoration-none d-flex justify-content-between" 
+                            title="Partager par email" >Partager par email
+                            <MailSvg size={18} />
                         </a>
                     </li>
-                    <li className="p-2">
-                        <a href="/#" className="text-black text-decoration-none"
+                    <li className="p-2 bg-light-hover">
+                        <a href="/#" className="text-black text-decoration-none d-flex justify-content-between"
                             title="Copier le lien" data-uri={`post/${post.id}`} onClick={handleCopyLink}>Copier le lien...
-                            <i className="float-end"><CopySvg size={18} /></i>
+                            <CopySvg size={18} />
                         </a>
                     </li>
                 </ul>

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { EmojiSvg } from "../IconsSvg";
 import { EmojiButton } from '@joeattardi/emoji-button';
 
-const EmojiPicker = ({ insertInto = ".content" }) => {
+const EmojiPicker = ({ insertInto, TriggerElem}) => {
 
     const [picker, setPicker] = useState('');
     const [trigger, setTrigger] = useState('');
@@ -13,24 +13,31 @@ const EmojiPicker = ({ insertInto = ".content" }) => {
     }
 
     const InsertEmoji = (emoji) => {
-        const target = document.querySelector(insertInto);
+        const target = document.querySelector(`[data-context=${insertInto}]`);
         const [start, end] = [target.selectionStart, target.selectionEnd];
         target.setRangeText(emoji, start, end, 'end');
+        const event = new Event('change', { bubbles: true });
+        target.dispatchEvent(event);
     };
 
     useEffect(() => {
-        if (!picker) {
-            setPicker(new EmojiButton({ position: 'bottom-start' }))
-            setTrigger(document.querySelector("[data-picker='emoji']"));
+        if (false === picker instanceof EmojiButton) {
+            setPicker(new EmojiButton({ 
+                position: 'bottom-start', 
+                emojiSize: "22px", 
+                zIndex: "1080", 
+                recentsCount: "10" 
+            }));
+            setTrigger(document.querySelector(`[data-trigger=${TriggerElem}]`));
         }
-        if (picker) {
+        if (picker instanceof EmojiButton) {
             picker.on('emoji', ({ emoji }) => {
                 InsertEmoji(emoji);
             })
         }
-    }, [picker, insertInto])
+    }, [picker, insertInto, TriggerElem]);
     return (
-        <div role="button" className="icon-info" onClick={handleTogglePicker} data-picker="emoji">
+        <div role="button" className="icon-info" onClick={handleTogglePicker} data-trigger={TriggerElem}>
             <div className="rounded-circle icon-info--bg p-2 text-center" title="Emoji">
                 <EmojiSvg size={22} strokeWidth={"0.6"} />
             </div>

@@ -1,13 +1,13 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { useDropzone } from 'react-dropzone';
-import { UserContext } from "../contexts/UserContext";
-import { EmojiSvg, MediasSvg } from "./IconsSvg";
-import MediaType from "./MediaType";
-import defautlAvatar from '../assets/img/d-avatar.svg';
+import { UserContext } from "../../contexts/UserContext";
+import { MediasSvg } from "../IconsSvg";
+import MediaType from "../MediaType";
+import defautlAvatar from '../../assets/img/d-avatar.svg';
 import { Link } from 'react-router-dom';
-import EmojiPicker from "./post/EmojiPicker";
+import EmojiPicker from "./EmojiPicker";
 
-const Editor = () => {
+const Editor = ({ editorContext, emojiTriggerContext }) => {
 
     const { user } = useContext(UserContext);
     const [data, setData] = useState({
@@ -56,8 +56,7 @@ const Editor = () => {
     }
 
     const handleChange = ({ currentTarget }) => {
-        const { value, name } = currentTarget;
-        setData({ ...data, [name]: value });
+        setData({ ...data, [currentTarget.name]: currentTarget.value })
     }
 
     /**
@@ -67,6 +66,7 @@ const Editor = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
         const form = new FormData(event.target);
+        console.log(form.get('content'))
     }
 
     return (
@@ -82,10 +82,11 @@ const Editor = () => {
                 </div>
                 <div className="w-100 d-flex-row p-0">
                     <form onSubmit={handleSubmit} >
-                        <textarea type="text" onChange={handleChange} value={data.content} name="content"
-                            className="form-control form-control-lg border-0 rounded ps-2 content"
+                        <textarea onChange={handleChange} value={data.content} name="content"
+                            className="form-control form-control border-0 rounded ps-2 editor-textarea"
                             placeholder="Quoi de neuf ?"
                             autoComplete="false"
+                            data-context={editorContext}
                         />
                         {data.media.file && (
                             <div className="col-10 alert alert-dismissible w-100 mt-1 p-0">
@@ -103,7 +104,7 @@ const Editor = () => {
                                     {fileError}
                                 </div>
                             </div>
-                            <EmojiPicker />
+                            <EmojiPicker insertInto={editorContext} TriggerElem={emojiTriggerContext} />
                             <div className="ms-auto bd-highlight">
                                 <button disabled={data.content || data.media.file ? false : true}
                                     type="submit"
