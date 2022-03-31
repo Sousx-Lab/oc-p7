@@ -35,16 +35,16 @@ const SharePost = ({ post }) => {
             <div id={`share-menu-${post.id}`}
                 className="d-none position-absolute bg-white shadow"
                 style={{ top: "40px", right: "0", width: "200px", cursor: "default", borderRadius: "3px", zIndex: "1080" }}>
-                <ul className="list-unstyled mb-1">
-                    <li className="p-2 bg-light-hover">
+                <ul className="list-unstyled mb-0">
+                    <li className="p-1 bg-light-hover">
                         <a href={`mailto:?subject=${user.firstName} ${user.lastName}Partagee avec vous un post&amp;body=Regarde ce post ${window.location.href}posts/${post.id}`} 
-                            className="text-black text-decoration-none d-flex justify-content-between" 
+                            className="text-black text-decoration-none d-flex justify-content-between p-2" 
                             title="Partager par email" >Partager par email
                             <MailSvg size={18} />
                         </a>
                     </li>
-                    <li className="p-2 bg-light-hover">
-                        <a href="/#" className="text-black text-decoration-none d-flex justify-content-between"
+                    <li className="p-1 bg-light-hover">
+                        <a href="/#" className="text-black text-decoration-none d-flex justify-content-between p-2"
                             title="Copier le lien" data-uri={`post/${post.id}`} onClick={handleCopyLink}>Copier le lien...
                             <CopySvg size={18} />
                         </a>

@@ -33,31 +33,31 @@ const PostMoreOptions = ({ post }) => {
             <div id={`more-option-menu-${post.id}`}
                 className="d-none bg-white shadow position-absolute"
                 style={{ top: "40px", right: "0", width: "200px", cursor: "default", borderRadius: "3px" }} >
-                <ul className="list-unstyled mb-1">
-                    <li className="p-2 bg-light-hover">
+                <ul className="list-unstyled mb-0">
+                    <li className="p-1 bg-light-hover">
                         {user.roles.includes('ROLE_ADMIN') ? (
-                            <a href="#" className="text-black text-decoration-none d-flex justify-content-between" 
+                            <a href="#" className="text-black text-decoration-none d-flex justify-content-between p-2" 
                                 title="Editer ce post">
                                 Modérer ce post
                                 <EditSvg size={18} strokeWidth={"1"} />
                             </a>
                         ) : (
-                            <div className="text-muted text-decoration-none cursor-not-allowed d-flex justify-content-between"
+                            <div className="text-muted text-decoration-none cursor-not-allowed d-flex justify-content-between p-2"
                                 title="Editer ce post">
                                 Modérer ce post
                                 <EditSvg size={18} strokeWidth={"1"} />
                             </div>
                         )}
                     </li>
-                    <li className="p-2 bg-light-hover">
+                    <li className="p-1 bg-light-hover">
                         {user.id === post.User.id || user.roles.includes('ROLE_ADMIN') ? (
-                            <a href="#" className="text-danger text-decoration-none d-flex justify-content-between" 
+                            <a href="#" className="text-danger text-decoration-none d-flex justify-content-between p-2" 
                                 title="Supprimer ce post" >
                                 Supprimer ce post
                                 <TrashSvg size={18} stroke={"red"} strokeWidth={"1"} />
                             </a>
                         ) : (
-                            <div className="text-muted text-decoration-none cursor-not-allowed d-flex justify-content-between"
+                            <div className="text-muted text-decoration-none cursor-not-allowed d-flex justify-content-between p-2"
                                 title="Supprimer ce post">
                                 Supprimer ce post
                                 <TrashSvg size={18} strokeWidth={"1"} />
