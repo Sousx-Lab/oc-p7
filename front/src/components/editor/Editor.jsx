@@ -94,8 +94,8 @@ const Editor = ({ editorContext, emojiTriggerContext }) => {
                                 <MediaType mediaType={data.media.type} media={data.media.file} />
                             </div>
                         )}
-                        <div className="d-flex mt-2 bd-highlight" >
-                            <div className="bd-highlight" {...getRootProps()}>
+                        <div className="d-flex mt-2 align-items-center" >
+                            <div className="d-flex" {...getRootProps()}>
                                 <input {...getInputProps()} className="form-control" type="file" name="media" accept={fileAccept} />
                                 <div className="icon-info">
                                     <div className="rounded-circle icon-info--bg p-2 text-center" title="Médias">
@@ -105,11 +105,9 @@ const Editor = ({ editorContext, emojiTriggerContext }) => {
                                 </div>
                             </div>
                             <EmojiPicker insertInto={editorContext} TriggerElem={emojiTriggerContext} />
-                            <div className="ms-auto bd-highlight">
-                                <button disabled={data.content || data.media.file ? false : true}
-                                    type="submit"
-                                    className="btn btn-primary btn-sm rounded-2 shadow">Poster</button>
-                            </div>
+                            <button disabled={data.content || data.media.file ? false : true}
+                                type="submit"
+                                className="btn btn-primary btn-sm rounded-2 shadow ms-auto" tabIndex="0">Poster</button>
                         </div>
                     </form>
                 </div>

@@ -27,7 +27,7 @@ export const ShareSvg = ({ size = 22, stroke = "#6c6a6a", fill = "none", strokeW
 );
 
 export const MediasSvg = ({ size = 22, stroke = "#6c6a6a", fill = "none", strokeWidth = "1.5" }) =>
-(<svg xmlns="http://www.w3.org/2000/svg" width={size} height={size}
+(<svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24"
     fill={fill} stroke={stroke} strokeLinejoin="round" strokeLinecap="round" strokeWidth={strokeWidth} >
     <path stroke={stroke}
         d="m3,5c0,-1.08676 0.91324,-2 2,-2l14,0c1.08676,0 2,0.91324 2,2l0,14c0,1.08676 -0.91324,2 -2,2l-14,0c-1.08676,0 -2,-0.91324 -2,-2l0,-14z"
@@ -97,13 +97,12 @@ export const CopySvg = ({ size = 22, stroke = "#6c6a6a", fill = "none", strokeWi
 );
 
 export const EmojiSvg = ({ size = 22, stroke = "#6c6a6a", fill = "none", strokeWidth = "1.5" }) =>
-(<svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 26 26"
-    
+(<svg xmlns="http://www.w3.org/2000/svg"  width={size} height={size} viewBox="0 0 24 24"
     fill={fill} stroke={stroke} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round">
-    <path d="M12 0c6.623 0 12 5.377 12 12s-5.377 12-12 12-12-5.377-12-12 5.377-12 12-12zm0 1c6.071 0 11 
-        4.929 11 11s-4.929 11-11 11-11-4.929-11-11 4.929-11 11-11zm-.045 17.51h-.015c-2.285 0-4.469-1.189-6.153-3.349l.789-.614c1.489 
-            1.911 3.394 2.963 5.364 2.963h.013c1.987-.004 3.907-1.078 5.408-3.021l.791.611c-1.693 2.194-3.894 3.405-6.197 
-                3.41zm-3.468-10.01c.552 0 1 .448 1 1s-.448 1-1 1-1-.448-1-1 .448-1 1-1zm7.013 0c.552 0 1 .448 1 1s-.448 1-1 1-1-.448-1-1 .448-1 1-1z"/>
+        <path d="M3,12a9,9 0 1,0 18,0a9,9 0 1,0 -18,0" />
+        <path d="M9 10, L9.01 10"/>
+        <path d="M15 10, L15.01 10"/>
+        <path d="M9.5 15a3.5 3.5 0 0 0 5 0"/>
 </svg>
 );
 
