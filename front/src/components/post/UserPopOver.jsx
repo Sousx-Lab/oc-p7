@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import defautlAvatar from '../../assets/img/d-avatar.svg';
 
-const UserPopOver = ({ id, user, linkHoverLeave }) => {
+const UserPopOver = ({ id, user}) => {
     
     return (
         <div id={`user-pop-${id}`} className="d-none position-absolute bg-white shadow p-3 user-popover mt-2 start-0">

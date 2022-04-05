@@ -1,15 +1,14 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import { UserContext } from '../../contexts/UserContext';
-import { Link } from "react-router-dom";
 import { useQuery } from 'react-query';
 import { getAll } from "../../services/Api/posts/postsApi";
 import Loader from '../layout/Loader';
 import defautlAvatar from '../../assets/img/d-avatar.svg';
-import { useNavigate } from "react-router-dom";
 import CommentModal from "./CommentModal";
 import UserPopOver from "./UserPopOver";
 import MediaType from "../MediaType";
-import { HeartSvg, CommentSvg} from "../IconsSvg";
+import { HeartSvg, CommentSvg } from "../IconsSvg";
 import PostMoreOptions from "./PostMoreOptions";
 import { toast } from 'react-toastify';
 import { dateDiff } from "../../services/outils/dateHandler";
@@ -19,20 +18,15 @@ const PostsCard = () => {
 
     const { user } = useContext(UserContext)
     const [posts, setPosts] = useState([])
-    const { isLoading, error, data } = useQuery('Posts', () => getAll(), {
+    const { isLoading } = useQuery('Posts', () => getAll(), {
         refetchOnWindowFocus: false,
-        staleTime: 60000
+        onSuccess: (data) => {
+            setPosts(data);
+        },
+        onError(err) {
+            toast.error("Une erreur s'est produite lors du chargement !...");
+        }
     })
-
-    useEffect(() => {
-        if (error) {
-            toast.error("Une erreur s'est produite lors du chargement!...")
-        }
-        if (data) {
-            setPosts(data)
-        }
-    }, [isLoading])
-
     const navigate = useNavigate()
     /**
      * @param {Event} event
@@ -82,14 +76,11 @@ const PostsCard = () => {
                             data-link={`/post/${post.id}`}
                             onClick={postLink} >
                             {/* User Info */}
-                            <div className="d-flex mb-3 mt-4 position-relative">
+                            <div id={`post-${post.id}`} className="d-flex mb-3 mt-4 position-relative">
                                 <div data-link={`/post/${post.id}`} className="pe-2">
                                     <Link to={`/user/${post.User.id}`}
                                         className="d-block overflow-auto "
-                                        data-popover="true"
-                                        onMouseEnter={() => handlePopOver(key)}
-                                        onMouseLeave={() => handlePopOverLeave(key)}
-                                    >
+                                        data-popover="true">
                                         <img className="rounded-circle" width={54} alt={`photo de profile de ${post.User.firstName} ${post.User.lastName}`}
                                             src={post.User.profilePicture || defautlAvatar}
                                             data-holder-rendered="true" />
@@ -108,8 +99,8 @@ const PostsCard = () => {
                                         <div className="d-inline text-muted fs-6 ps-2"><small>- {dateDiff(post.createdAt)}</small></div>
                                         <UserPopOver id={key} user={post.User} />
                                     </div>
-                                    <PostMoreOptions post={post}/>
-                                    
+                                    <PostMoreOptions post={post} />
+
                                     {/* End User Info */}
                                     <Link className=" text-decoration-none" to={`/post/${post.id}`}>
                                         <p className="pe-4 pb-3 m-0 text-break text-body text-start">{post.content}</p>
@@ -149,7 +140,7 @@ const PostsCard = () => {
                                                 </>
                                             )}
                                         </div>
-                                        <SharePost post={post}/>
+                                        <SharePost post={post} />
                                     </div>
                                 </div>
                             </div>

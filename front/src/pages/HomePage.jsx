@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { UserContext } from "../contexts/UserContext";
 import Editor from "../components/editor/Editor";
 import PostsCard from "../components/post/PostsCard";
@@ -6,6 +6,9 @@ import PostsCard from "../components/post/PostsCard";
 const HomePage = () => {
 
     const { user } = useContext(UserContext)
+    useEffect(() => {
+        document.title = "Groupomania"
+    },[])
     return (
         <div className="container">
             <div className="row mx-auto d-flex justify-content-center mt-2">

@@ -44,7 +44,7 @@ const CommentModal = ({ post }) => {
                                 </Link>
                             </div>
                         </div>
-                        <Editor editorContext={editorContext} emojiTriggerContext={editorContext}/>
+                        <Editor editorContext={editorContext} emojiTriggerContext={editorContext} placeholder="Réagissez à ce post" />
                     </div>
                     <div className="modal-footer">
                         <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>

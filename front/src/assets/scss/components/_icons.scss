@@ -1,55 +1,141 @@
-.icon-info{
-    &--bg-active{
+.icon-info {
+    &--bg-active {
         background-color: #E1EEF6;
-        svg{
-            path{
-                 stroke: #74bae9;
+
+        svg {
+            path {
+                stroke: #74bae9;
             }
         }
     }
-    &:hover, &:focus{
-        .icon-info--bg{
+
+    &--text-active {
+        color: #74bae9;
+    }
+
+    &:hover,
+    &:focus {
+        .icon-info--bg {
             background-color: #E1EEF6;
         }
-        .icon-info--text{
+
+        .icon-info--text {
             color: #74bae9;
         }
+
         svg {
-            path{
+            path {
                 stroke: #74bae9;
                 stroke-width: 1.5;
             }
         }
-        
+
     }
-    
+
 }
 
-.icon-like{
-    &--bg-active{
+.icon-like {
+    &--bg-active {
         background-color: #F7E0EB;
-        svg{
-            path{
-                stroke: none!important;
+
+        svg {
+            path {
+                stroke: none !important;
             }
         }
     }
-    &--text-active{
+
+    &--text-active {
         color: #F863A8;
     }
-    &:hover,&:focus{
-        .icon-like--bg{
+
+    &:hover,
+    &:focus {
+        .icon-like--bg {
             background-color: #F7E0EB;
         }
-        
-        .icon-like--text{
+
+        .icon-like--text {
             color: #F863A8;
         }
+
         svg {
-            path{
+            path {
                 stroke: #F863A8;
             }
         }
     }
-    
+
+}
+
+.icon-success {
+    &--bg-active {
+        background-color: rgba(0, 186, 124, 0.1);
+
+        svg {
+            path {
+                stroke: #00BA7C;
+            }
+        }
+    }
+
+    &--text-active {
+        color: #00BA7C;
+    }
+
+    &:hover,
+    &:focus {
+        .icon-success--bg {
+            background-color: rgba(0, 186, 124, 0.1);
+        }
+
+        .icon-success--text {
+            color: #00BA7C;
+        }
+
+        svg {
+            path {
+                stroke: #109D48;
+                stroke-width: 1.5;
+            }
+        }
+
+    }
+
+}
+
+.icon-nav {
+    &--bg-active {
+        background-color: transparent;
+
+        svg {
+            path {
+                stroke: #593196;
+            }
+        }
+    }
+
+    &--text-active {
+        color: #593196;
+    }
+
+    &:hover,
+    &:focus {
+        .icon-nav--bg {
+            background-color: transparent;
+        }
+
+        .icon-nav--text {
+            color: #593196;
+        }
+
+        svg {
+            path {
+                stroke: #593196;
+                stroke-width: 1.5;
+            }
+        }
+
+    }
+
 }

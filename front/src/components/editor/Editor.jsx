@@ -7,7 +7,7 @@ import defautlAvatar from '../../assets/img/d-avatar.svg';
 import { Link } from 'react-router-dom';
 import EmojiPicker from "./EmojiPicker";
 
-const Editor = ({ editorContext, emojiTriggerContext }) => {
+const Editor = ({ editorContext, emojiTriggerContext, placeholder = "Quoi de neuf ?" }) => {
 
     const { user } = useContext(UserContext);
     const [data, setData] = useState({
@@ -84,7 +84,7 @@ const Editor = ({ editorContext, emojiTriggerContext }) => {
                     <form onSubmit={handleSubmit} >
                         <textarea onChange={handleChange} value={data.content} name="content"
                             className="form-control form-control border-0 rounded ps-2 editor-textarea"
-                            placeholder="Quoi de neuf ?"
+                            placeholder={placeholder}
                             autoComplete="false"
                             data-context={editorContext}
                         />

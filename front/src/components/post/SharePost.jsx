@@ -30,8 +30,10 @@ const SharePost = ({ post }) => {
 
     }
     return (
-        <div className="d-flex align-items-center position-relative" title="Partager..." onClick={handleShareMenu}>
-            <ShareSvg />
+        <div className="d-flex align-items-center position-relative" title="Partager..." onClick={handleShareMenu} role="button">
+            <div className="icon-success">
+                <i className="rounded-circle icon-success--bg p-2"><ShareSvg /></i>
+            </div>
             <div id={`share-menu-${post.id}`}
                 className="d-none position-absolute bg-white shadow"
                 style={{ top: "40px", right: "0", width: "200px", cursor: "default", borderRadius: "3px", zIndex: "1080" }}>

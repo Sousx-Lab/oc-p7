@@ -26,7 +26,8 @@ const EmojiPicker = ({ insertInto, TriggerElem}) => {
                 position: 'bottom-start', 
                 emojiSize: "22px", 
                 zIndex: "1080", 
-                recentsCount: "10" 
+                recentsCount: "10",
+                autoHide: false,
             }));
             setTrigger(document.querySelector(`[data-trigger=${TriggerElem}]`));
         }

@@ -1,7 +1,6 @@
 import React, { useContext, useState } from "react";
 import { UserContext } from "../../contexts/UserContext";
 import { EditSvg, MoreVerticalSvg, TrashSvg } from "../IconsSvg";
-import { Link } from "react-router-dom";
 
 const PostMoreOptions = ({ post }) => {
 
@@ -24,7 +23,7 @@ const PostMoreOptions = ({ post }) => {
     }
 
     return (
-        <div className="position-absolute end-0" title="Plus..." onClick={handleMoreOptionMenu}>
+        <div className="position-absolute end-0" title="Plus..." onClick={handleMoreOptionMenu} role="button">
             <div className="icon-info position-relative">
                 <i className={`float-end rounded-circle icon-info--bg${menuActive} p-1`}>
                     <MoreVerticalSvg />
