@@ -13,7 +13,7 @@ exports.findOneJoinUserComment = async (id) =>{
             },
             {
                 model: Comment,
-                attributes: ['id', 'content'],
+                attributes: ['id', 'content', 'media', 'mediaType', ['created_at', 'createdAt'],['updated_at', 'updatedAt']],
                 include: [{
                     model: User,
                     attributes: ['id', 'firstName', 'lastName', 'profilePicture', 'bio',

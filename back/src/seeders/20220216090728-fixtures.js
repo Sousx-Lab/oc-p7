@@ -45,7 +45,7 @@ module.exports = {
       comments = [...comments, {
         id: crypto.randomUUID(),
         content: `Commentary post, consectetur adipiscing elit. Donec fringilla ${i}`,
-        media: `image${i}.jpg`,
+        media: (i % 2) ? `postimage.jpg` : `postvideo.mp4`,
         created_at: date,
         updated_at: date,
         user_id: users[i].id,
