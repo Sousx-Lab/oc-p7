@@ -40,7 +40,7 @@ const EmojiPicker = ({ insertInto, TriggerElem}) => {
     return (
         <div className="d-flex icon-info" role="button" onClick={handleTogglePicker} tabIndex="0" data-trigger={TriggerElem}>
             <div className="rounded-circle icon-info--bg p-2 text-center" title="Emoji">
-                <EmojiSvg size={26} strokeWidth={"1.3"} />
+                <EmojiSvg size={26} strokeWidth={"1.5"} stroke={"#74bae9"} />
             </div>
         </div>
     )

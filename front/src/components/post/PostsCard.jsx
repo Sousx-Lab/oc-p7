@@ -8,11 +8,12 @@ import defautlAvatar from '../../assets/img/d-avatar.svg';
 import CommentModal from "./CommentModal";
 import UserPopOver from "./UserPopOver";
 import MediaType from "../MediaType";
-import { HeartSvg, CommentSvg } from "../IconsSvg";
+import { CommentSvg } from "../IconsSvg";
 import PostMoreOptions from "./PostMoreOptions";
 import { toast } from 'react-toastify';
 import { dateDiff } from "../../services/outils/dateHandler";
 import SharePost from "./SharePost";
+import LikesPost from "./LikesPost";
 
 const PostsCard = () => {
 
@@ -39,9 +40,9 @@ const PostsCard = () => {
     const [modalPost, setModalPost] = useState({});
     const [popOver, setPopOver] = useState(false);
 
-    const handlePopOver = async (key) => {
+    const handlePopOver = async (id) => {
         setPopOver(true)
-        let userPop = document.getElementById(`user-pop-${key}`)
+        let userPop = document.getElementById(`user-pop-${id}`)
         if (userPop && !popOver) {
             setTimeout(() => {
                 if (userPop.classList.contains('d-none')) {
@@ -53,9 +54,9 @@ const PostsCard = () => {
         }
     }
 
-    const handlePopOverLeave = (key) => {
+    const handlePopOverLeave = (id) => {
         setPopOver(false)
-        let userPop = document.getElementById(`user-pop-${key}`)
+        let userPop = document.getElementById(`user-pop-${id}`)
         if (userPop && popOver) {
             setTimeout(() => {
                 if (userPop.classList.contains('d-block')) {
@@ -89,15 +90,15 @@ const PostsCard = () => {
                                 <div className="d-flex flex-column ms-2">
                                     <div data-link={`/post/${post.id}`} className="text-start pb-3">
                                         <Link to={`user/${post.User.id}`}
-                                            className="fw-bold text-capitalize link-dark"
+                                            className="fw-bold text-capitalize link-dark text-decoration-none"
                                             data-popover="true"
-                                            onMouseEnter={() => handlePopOver(key)}
-                                            onMouseLeave={() => handlePopOverLeave(key)}
+                                            onMouseEnter={() => handlePopOver(post.User.id)}
+                                            onMouseLeave={() => handlePopOverLeave(post.User.id)}
                                         >
                                             {`${post.User.firstName} ${post.User.lastName}`}
                                         </Link>
                                         <div className="d-inline text-muted fs-6 ps-2"><small>- {dateDiff(post.createdAt)}</small></div>
-                                        <UserPopOver id={key} user={post.User} />
+                                        <UserPopOver user={post.User} />
                                     </div>
                                     <PostMoreOptions post={post} />
 
@@ -123,23 +124,8 @@ const PostsCard = () => {
                                         </div>
 
                                         {/* likes*/}
-                                        <div className="d-flex align-items-center icon-like cursor-pointer">
-                                            {post.usersLiked.includes(user.id) ? (
-                                                <>
-                                                    <div className="rounded-circle icon-like--bg-active p-2" title="Annuler le like" >
-                                                        {<HeartSvg fill="#e02727" stroke="none" strokeWidth="1.0" />}
-                                                    </div>
-                                                    <span className="ps-1 small icon-like--text-active"><small>{post.likes}</small></span>
-                                                </>
-                                            ) : (
-                                                <>
-                                                    <div className="rounded-circle icon-like--bg p-2" title="Ajouter une like" >
-                                                        {<HeartSvg />}
-                                                    </div>
-                                                    <span className="ps-1 small icon-like--text"><small>{post.likes}</small></span>
-                                                </>
-                                            )}
-                                        </div>
+                                        <LikesPost usersLiked={post.usersLiked} postId={post.id} />
+
                                         <SharePost post={post} />
                                     </div>
                                 </div>

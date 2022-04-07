@@ -14,7 +14,7 @@ export async function getAll(){
         credentials: 'include',
         headers: {...headers, 'x-xsrf-token': xsrfToken}
         })
-        return (await response).json()
+        return (await response).json();
     }
    return {}
 }
@@ -33,7 +33,26 @@ export async function getPostById(id){
         credentials: 'include',
         headers: {...headers, 'x-xsrf-token': xsrfToken}
         })
-        return (await response).json()
+        return (await response).json();
+    }
+   return {}
+}
+
+/**
+ * 
+ * @param {string} id 
+ * @returns {Promise<any>}
+ */
+export async function LikePost(id){
+
+    let { xsrfToken } = await getUser();
+    if(xsrfToken){
+        const response = fetch(PostsApi.like(id), {
+        method: 'POST',
+        credentials: 'include',
+        headers: {...headers, 'x-xsrf-token': xsrfToken}
+        })
+        return response;
     }
    return {}
 }

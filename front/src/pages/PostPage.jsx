@@ -8,11 +8,12 @@ import { toast } from 'react-toastify';
 import UserPopOver from '../components/post/UserPopOver';
 import PostMoreOptions from '../components/post/PostMoreOptions';
 import MediaType from '../components/MediaType';
-import { CommentSvg, HeartSvg, ArrowLeftCircleSvg } from '../components/IconsSvg';
+import { CommentSvg, ArrowLeftSvg } from '../components/IconsSvg';
 import defautlAvatar from '../assets/img/d-avatar.svg';
 import SharePost from '../components/post/SharePost';
 import { dateDiff } from '../services/outils/dateHandler';
 import Editor from "../components/editor/Editor";
+import LikesPost from "../components/post/LikesPost";
 
 const PostPage = () => {
 
@@ -30,8 +31,8 @@ const PostPage = () => {
         },
     });
     useEffect(() => {
-        document.title = 
-        `${post.User?.firstName} ${post.User?.lastName} sur Groupomania: "${post.content?.slice(0, 15)}..."`;  
+        document.title =
+            `${post.User?.firstName} ${post.User?.lastName} sur Groupomania: "${post.content?.slice(0, 15)}..."`;
     }, [post.id])
     const editorContext = "commentary";
     return (
@@ -40,9 +41,11 @@ const PostPage = () => {
                 {post.id && (
                     <>
                         <article className="border-start border-end border-1 ">
-                            <Link className="icon-nav" to={`../#post-${post.id}`}>
-                                <ArrowLeftCircleSvg strokeWidth="1" size={30} />
-                            </Link>
+                            <div className="mt-3">
+                                <Link className="rounded-circle bg-grey-hover icon-nav" to={`../#post-${post.id}`} style={{padding: "0.5rem 0.4rem"}}>
+                                    <ArrowLeftSvg strokeWidth="1" size={26} />
+                                </Link>
+                            </div>
                             <div className="d-flex mb-3 mt-4 position-relative">
                                 <div className="pe-2">
                                     <Link to={`../user/${post.User.id}`}
@@ -90,23 +93,7 @@ const PostPage = () => {
                                         </div>
 
                                         {/* likes*/}
-                                        <div className="d-flex align-items-center icon-like cursor-pointer">
-                                            {post.usersLiked.includes(user.id) ? (
-                                                <>
-                                                    <div className="rounded-circle icon-like--bg-active p-2" title="Annuler le like">
-                                                        {<HeartSvg fill="#e02727" stroke="none" strokeWidth="1.0" />}
-                                                    </div>
-                                                    <span className="ps-1 icon-like--text-active">{post.likes}</span>
-                                                </>
-                                            ) : (
-                                                <>
-                                                    <div className="rounded-circle icon-like--bg p-2" title="Ajouter une like" >
-                                                        {<HeartSvg />}
-                                                    </div>
-                                                    <span className="ps-1 icon-like--text">{post.likes}</span>
-                                                </>
-                                            )}
-                                        </div>
+                                        <LikesPost usersLiked={post.usersLiked} postId={post.id} />
                                         <SharePost post={post} />
                                     </div>
                                 </div>
@@ -117,15 +104,12 @@ const PostPage = () => {
                         </div>
                         {post.Comments.map((comment, key) => {
                             return (
-                                <div key={key} className="border-start border-end border-1 mb-5 pt-3 ">
+                                <div key={key} className="border-start border-end border-bottom border-1 mb-5 pt-4 pb-5 bg-light-hover">
                                     <div className="d-flex position-relative">
                                         <div className="pe-2">
                                             <Link to={`../user/${comment.User.id}`}
                                                 className="d-block overflow-auto "
-                                                data-popover="true"
-                                            // onMouseEnter={() => handlePopOver(key)}
-                                            // onMouseLeave={() => handlePopOverLeave(key)}
-                                            >
+                                                data-popover="true" >
                                                 <img className="rounded-circle" width={54} alt={`photo de profile de ${comment.User.firstName} ${comment.User.lastName}`}
                                                     src={comment.User.profilePicture || defautlAvatar}
                                                     data-holder-rendered="true" />
@@ -158,7 +142,6 @@ const PostPage = () => {
                 {isLoading && <Loader />}
             </div>
         </div>
-
     )
 }
 

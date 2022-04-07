@@ -114,11 +114,8 @@ export const GifSvg = ({ size = 22, stroke = "#6c6a6a", fill = "none", strokeWid
 </svg>
 );
 
-export const ArrowLeftCircleSvg = ({ size=22, stroke="#6c6a6a", fill="none", strokeWidth="1.5"}) => 
-(<svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" 
-    fill={fill} stroke={stroke} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round">
-        {/* <circle cx="12" cy="12" r="10"/> */}
-        <path d="M2,12a10,10 0 1,0 20,0a10,10 0 1,0 -20,0" />
-        <path d="M12 8l-4 4 4 4M16 12H9"/>
-</svg>
-);
+export const ArrowLeftSvg = ({size=22, stroke="#6c6a6a", fill="none", strokeWidth="1.5"}) => 
+(<svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 26" 
+    fill={fill} stroke={stroke} strokeWidth={strokeWidth} strokeLinecap="square" strokeLinejoin="bevel">
+        <path d="M19 12H6M12 5l-7 7 7 7"/>
+</svg>);

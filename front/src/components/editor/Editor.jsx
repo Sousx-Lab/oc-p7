@@ -99,7 +99,7 @@ const Editor = ({ editorContext, emojiTriggerContext, placeholder = "Quoi de neu
                                 <input {...getInputProps()} className="form-control" type="file" name="media" accept={fileAccept} />
                                 <div className="icon-info">
                                     <div className="rounded-circle icon-info--bg p-2 text-center" title="Médias">
-                                        {<MediasSvg size={24} strokeWidth={"1"} />}
+                                        {<MediasSvg size={24} strokeWidth={"1.5"} stroke={"#74bae9"} />}
                                     </div>
                                     {fileError}
                                 </div>

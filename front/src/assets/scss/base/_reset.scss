@@ -18,6 +18,12 @@ body {
     height: 100%;
 }
 
-.bg-light-hover:hover{
-    background-color: #F9F8FC;
+.bg{
+    &-light-hover:hover{
+        background-color: #F9F8FC!important;
+    }
+    &-grey-hover:hover{
+        background-color: #E7E7E8!important;
+    }
 }
+
