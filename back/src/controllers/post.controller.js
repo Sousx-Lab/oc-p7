@@ -49,7 +49,7 @@ exports.createPost = async (req, res, next) => {
         
         await post.validate()
         await post.save();
-        post = await postRespository.findOneJoinUserComment(post.id)
+        post = await postRespository.findOneJoinUser(post.id)
 
         return res.http.Created(post)
     } catch (error) {
