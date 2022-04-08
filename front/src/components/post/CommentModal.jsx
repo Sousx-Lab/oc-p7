@@ -10,7 +10,7 @@ const CommentModal = ({ post }) => {
     const editorContext = "commentary"
     return (
         <div id="commentModal" className="modal fade" tabIndex="-1" aria-hidden="true">
-            <div className="modal-dialog modal-lg" role="document">
+            <div className="modal-dialog modal-md" role="document">
                 <div className="modal-content">
                     <div className="modal-header">
                         <h5 className="modal-title">Ajouter un commentaire

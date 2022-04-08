@@ -20,7 +20,6 @@ export async function getAll(){
 }
 
 /**
- * 
  * @param {string} id 
  * @returns {Promise<any>}
  */
@@ -39,7 +38,27 @@ export async function getPostById(id){
 }
 
 /**
- * 
+ * @param {FormData} data
+ * @returns {Promise<any>}
+ */
+export async function createPost(data){
+    
+    let { xsrfToken } = await getUser();
+    if(xsrfToken){
+        const response = fetch(PostsApi.create, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+            'x-xsrf-token': xsrfToken
+        },
+        body: data
+        })
+        return response;
+    }
+return {}
+}
+
+/**
  * @param {string} id 
  * @returns {Promise<any>}
  */

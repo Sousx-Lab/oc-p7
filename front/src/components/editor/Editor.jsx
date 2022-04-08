@@ -7,14 +7,15 @@ import defautlAvatar from '../../assets/img/d-avatar.svg';
 import { Link } from 'react-router-dom';
 import EmojiPicker from "./EmojiPicker";
 
-const Editor = ({ editorContext, emojiTriggerContext, placeholder = "Quoi de neuf ?" }) => {
+const Editor = ({ editorContext, emojiTriggerContext, placeholder = "Quoi de neuf ?", handleSubmit }) => {
 
     const { user } = useContext(UserContext);
     const [data, setData] = useState({
         content: "",
         media: {
-            file: null,
-            type: null
+            file: "",
+            type: null,
+            fileBlob: null
         }
     });
 
@@ -22,7 +23,7 @@ const Editor = ({ editorContext, emojiTriggerContext, placeholder = "Quoi de neu
         uploadedFiles.forEach(file => {
             const reader = new FileReader()
             reader.onloadend = () => {
-                setData({ ...data.media, media: { file: reader.result, type: file.type } });
+                setData({ ...data, media:{ file: reader.result, type: file.type, fileBlob: file } });
             }
             if (file) {
                 reader.readAsDataURL(file);
@@ -41,7 +42,7 @@ const Editor = ({ editorContext, emojiTriggerContext, placeholder = "Quoi de neu
     const fileError = fileRejections.reduce((_, errors) => {
         if (errors.errors[0].code === "file-invalid-type") {
             return (
-                <div className="text-danger pt-2">{errors.errors[0].message}</div>
+                <div className="d-flex text-danger pt-2">{errors.errors[0].message}</div>
             )
         }
         if (errors.errors[0].code === "too-many-files") {
@@ -52,23 +53,19 @@ const Editor = ({ editorContext, emojiTriggerContext, placeholder = "Quoi de neu
     }, "")
 
     const handleDeleteUpload = () => {
-        setData({ ...data.media, media: { file: null, type: null } })
+        setData({ ...data.media, media: { file: '', type: null } })
     }
 
     const handleChange = ({ currentTarget }) => {
         setData({ ...data, [currentTarget.name]: currentTarget.value })
     }
-
-    /**
-     * @param {SubmitEvent} event 
-     * //Todo finir l'envoi du formulaire
-     */
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-        const form = new FormData(event.target);
-        console.log(form.get('content'))
+    const preSubmit = async (e) => {
+        e.preventDefault();
+        let submited = await handleSubmit(e, data);
+        if(submited){
+            setData({ content: "", media: { file: "", type: null, fileBlob: null } })
+        }
     }
-
     return (
         <div className="mx-auto pb-2 pt-3 mb-3">
             <div className="d-flex text-center p-0">
@@ -81,7 +78,7 @@ const Editor = ({ editorContext, emojiTriggerContext, placeholder = "Quoi de neu
                     </Link>
                 </div>
                 <div className="w-100 d-flex-row p-0">
-                    <form onSubmit={handleSubmit} >
+                    <form onSubmit={preSubmit} encType={"multipart/form-data"}>
                         <textarea onChange={handleChange} value={data.content} name="content"
                             className="form-control form-control border-0 rounded ps-2 editor-textarea"
                             placeholder={placeholder}
@@ -101,7 +98,7 @@ const Editor = ({ editorContext, emojiTriggerContext, placeholder = "Quoi de neu
                                     <div className="rounded-circle icon-info--bg p-2 text-center" title="Médias">
                                         {<MediasSvg size={24} strokeWidth={"1.5"} stroke={"#74bae9"} />}
                                     </div>
-                                    {fileError}
+
                                 </div>
                             </div>
                             <EmojiPicker insertInto={editorContext} TriggerElem={emojiTriggerContext} />
@@ -109,6 +106,7 @@ const Editor = ({ editorContext, emojiTriggerContext, placeholder = "Quoi de neu
                                 type="submit"
                                 className="btn btn-primary btn-sm rounded-2 shadow ms-auto" tabIndex="0">Poster</button>
                         </div>
+                        {fileError}
                     </form>
                 </div>
             </div>

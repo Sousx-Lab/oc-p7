@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { UserContext } from '../../contexts/UserContext';
 import { useQuery } from 'react-query';
@@ -15,7 +15,7 @@ import { dateDiff } from "../../services/outils/dateHandler";
 import SharePost from "./SharePost";
 import LikesPost from "./LikesPost";
 
-const PostsCard = () => {
+const PostsCard = ({ newPost = null}) => {
 
     const { user } = useContext(UserContext)
     const [posts, setPosts] = useState([])
@@ -67,6 +67,11 @@ const PostsCard = () => {
             }, 800)
         }
     }
+    useEffect(() =>{
+        if(newPost){
+            setPosts([newPost, ...posts])
+        };
+    },[newPost])
     return (
         <>
             <CommentModal post={modalPost} />
@@ -87,7 +92,7 @@ const PostsCard = () => {
                                             data-holder-rendered="true" />
                                     </Link>
                                 </div>
-                                <div className="d-flex flex-column ms-2">
+                                <div className="d-flex flex-column ms-2 w-100">
                                     <div data-link={`/post/${post.id}`} className="text-start pb-3">
                                         <Link to={`user/${post.User.id}`}
                                             className="fw-bold text-capitalize link-dark text-decoration-none"

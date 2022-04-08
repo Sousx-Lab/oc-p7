@@ -26,7 +26,10 @@ const LikesPost = ({ usersLiked = [], postId }) => {
             toast.error("Une erreur s'est produite lors du chargement !...");
         }
     }
-
+    
+    useEffect(() => {
+        setIsLiked(usersLiked.includes(user.id));
+    }, [usersLiked])
 
     return (
         <div className="d-flex align-items-center icon-like" role="button" onClick={handleLikes}>
