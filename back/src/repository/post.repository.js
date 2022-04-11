@@ -18,8 +18,8 @@ exports.findOneJoinUserComment = async (id) =>{
                     model: User,
                     attributes: ['id', 'firstName', 'lastName', 'profilePicture', 'bio',
                     ['created_at', 'createdAt'],['updated_at', 'updatedAt']]
-                }]
-            }  
+                }],
+            },
         ],
         order: [['created_at', 'DESC']]
     });
