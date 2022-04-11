@@ -85,12 +85,6 @@ const Editor = ({ editorContext, emojiTriggerContext, placeholder = "Quoi de neu
                             autoComplete="false"
                             data-context={editorContext}
                         />
-                        {data.media.file && (
-                            <div className="col-10 alert alert-dismissible w-100 mt-1 p-0">
-                                <button type="button" onClick={handleDeleteUpload} className="bg-danger btn-danger btn-close p-2"></button>
-                                <MediaType mediaType={data.media.type} media={data.media.file} />
-                            </div>
-                        )}
                         <div className="d-flex mt-2 align-items-center" >
                             <div className="d-flex" {...getRootProps()}>
                                 <input {...getInputProps()} className="form-control" type="file" name="media" accept={fileAccept} />
@@ -106,6 +100,12 @@ const Editor = ({ editorContext, emojiTriggerContext, placeholder = "Quoi de neu
                                 type="submit"
                                 className="btn btn-primary btn-sm rounded-2 shadow ms-auto" tabIndex="0">Poster</button>
                         </div>
+                        {data.media.file && (
+                            <div className="col-10 alert alert-dismissible w-100 mt-1 p-0">
+                                <button type="button" onClick={handleDeleteUpload} className="bg-danger btn-danger btn-close p-2"></button>
+                                <MediaType mediaType={data.media.type} media={data.media.file} />
+                            </div>
+                        )}
                         {fileError}
                     </form>
                 </div>

@@ -1,8 +1,8 @@
 import React, { useContext, useState } from "react";
-import { UserContext } from "../../contexts/UserContext";
-import { EditSvg, MoreVerticalSvg, TrashSvg } from "../IconsSvg";
+import { UserContext } from "../contexts/UserContext";
+import { EditSvg, MoreVerticalSvg, TrashSvg } from "./IconsSvg";
 
-const PostMoreOptions = ({ post }) => {
+const MoreOptionsMenu = ({ post }) => {
 
     const { user } = useContext(UserContext);
 
@@ -23,7 +23,9 @@ const PostMoreOptions = ({ post }) => {
     }
 
     return (
-        <div className="position-absolute end-0" title="Plus..." onClick={handleMoreOptionMenu} role="button">
+        <div className="position-absolute end-0" title="Plus..." onClick={handleMoreOptionMenu} 
+            role="button"
+            style={{zIndex: 1080}}>
             <div className="icon-info position-relative">
                 <i className={`float-end rounded-circle icon-info--bg${menuActive} p-1`}>
                     <MoreVerticalSvg />
@@ -70,4 +72,4 @@ const PostMoreOptions = ({ post }) => {
 
 }
 
-export default PostMoreOptions;
+export default MoreOptionsMenu;

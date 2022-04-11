@@ -3,7 +3,7 @@ import { CopySvg, MailSvg, ShareSvg } from "../IconsSvg";
 import { UserContext } from "../../contexts/UserContext";
 import { toast } from 'react-toastify';
 
-const SharePost = ({ post }) => {
+const SharePostMenu = ({ post }) => {
 
     const {user} = useContext(UserContext);
 
@@ -30,7 +30,9 @@ const SharePost = ({ post }) => {
 
     }
     return (
-        <div className="d-flex align-items-center position-relative" title="Partager..." onClick={handleShareMenu} role="button">
+        <div className="d-flex align-items-center position-relative" title="Partager..." onClick={handleShareMenu} 
+            role="button" 
+            style={{zIndex: 1050}}>
             <div className="icon-success">
                 <i className="rounded-circle icon-success--bg p-2"><ShareSvg strokeWidth="1"/></i>
             </div>
@@ -57,4 +59,4 @@ const SharePost = ({ post }) => {
     )
 }
 
-export default SharePost;
+export default SharePostMenu;

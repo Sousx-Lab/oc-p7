@@ -55,7 +55,7 @@ export async function createPost(data){
         })
         return response;
     }
-return {}
+return null;
 }
 
 /**
@@ -73,5 +73,5 @@ export async function LikePost(id){
         })
         return response;
     }
-   return {}
+   return null;
 }

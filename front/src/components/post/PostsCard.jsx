@@ -9,11 +9,12 @@ import CommentModal from "./CommentModal";
 import UserPopOver from "./UserPopOver";
 import MediaType from "../MediaType";
 import { CommentSvg } from "../IconsSvg";
-import PostMoreOptions from "./PostMoreOptions";
+import MoreOptionsMenu from "../MoreOptionsMenu";
 import { toast } from 'react-toastify';
 import { dateDiff } from "../../services/outils/dateHandler";
-import SharePost from "./SharePost";
+import SharePostMenu from "./SharePostMenu";
 import LikesPost from "./LikesPost";
+
 
 const PostsCard = ({ newPost = null}) => {
 
@@ -105,7 +106,7 @@ const PostsCard = ({ newPost = null}) => {
                                         <div className="d-inline text-muted fs-6 ps-2"><small>- {dateDiff(post.createdAt)}</small></div>
                                         <UserPopOver user={post.User} />
                                     </div>
-                                    <PostMoreOptions post={post} />
+                                    <MoreOptionsMenu post={post} />
 
                                     {/* End User Info */}
                                     <Link className=" text-decoration-none" to={`/post/${post.id}`}>
@@ -131,7 +132,7 @@ const PostsCard = ({ newPost = null}) => {
                                         {/* likes*/}
                                         <LikesPost usersLiked={post.usersLiked} postId={post.id} />
 
-                                        <SharePost post={post} />
+                                        <SharePostMenu post={post} />
                                     </div>
                                 </div>
                             </div>
