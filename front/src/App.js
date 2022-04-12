@@ -3,13 +3,14 @@ import  ReactDOM from "react-dom";
 import {BrowserRouter, Routes, Route} from "react-router-dom";
 import { routes } from "./config/routes/routes.config";
 import ProtectedRoutes from "./components/ProtectedRoutes";
+import Header from "./components/layout/Header";
 import LoginPage from "./pages/LoginPage";
 import SignUpPage from "./pages/SignUpPage";
 import HomePage from "./pages/HomePage";
 import PostPage from "./pages/PostPage";
+import UserPage from "./pages/UserPage";
 import { UserContext } from "./contexts/UserContext";
 import { ToastContainer } from "react-toastify";
-import Header from "./components/layout/Header";
 import AuthSideScreen from "./components/layout/AuthSideScreen";
 import PasswordForgotdPage from "./pages/PasswordForgotPage";
 import PasswordResetPage from "./pages/PasswordResetPage";
@@ -45,6 +46,7 @@ function App(){
               <Route element={<Header />} >
                 <Route index path={routes.home} element={<HomePage/>}/>
                 <Route path={routes.post} element={<PostPage/>}/>
+                <Route path={routes.user} element={<UserPage/>}/>
               </Route>
             </Route>
           </Routes>
