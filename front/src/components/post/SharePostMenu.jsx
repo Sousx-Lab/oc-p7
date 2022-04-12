@@ -8,11 +8,17 @@ const SharePostMenu = ({ post }) => {
     const {user} = useContext(UserContext);
 
     const handleShareMenu = () => {
-        const shareMenu = document.getElementById(`share-menu-${post.id}`);
+        const shareMenu = document.getElementById(`share-post-menu-${post.id}`);
         if (shareMenu) {
             if (shareMenu.classList.contains('d-none')) {
                 shareMenu.classList.remove('d-none')
                 shareMenu.classList.add('d-block')
+                document.addEventListener('click', ({ target }) => {
+                    if (!target.closest(`#share-post-${post.id}`)) {
+                        shareMenu.classList.add('d-none')
+                        shareMenu.classList.remove('d-block')
+                    }
+                })
             } else {
                 shareMenu.classList.remove('d-block')
                 shareMenu.classList.add('d-none')
@@ -30,13 +36,13 @@ const SharePostMenu = ({ post }) => {
 
     }
     return (
-        <div className="d-flex align-items-center position-relative" title="Partager..." onClick={handleShareMenu} 
+        <div id={`share-post-${post.id}`} className="d-flex align-items-center position-relative" title="Partager..." onClick={handleShareMenu} 
             role="button" 
             style={{zIndex: 1050}}>
             <div className="icon-success">
                 <i className="rounded-circle icon-success--bg p-2"><ShareSvg strokeWidth="1"/></i>
             </div>
-            <div id={`share-menu-${post.id}`}
+            <div id={`share-post-menu-${post.id}`}
                 className="d-none position-absolute bg-white shadow"
                 style={{ top: "40px", right: "0", width: "200px", cursor: "default", borderRadius: "3px", zIndex: "1080" }}>
                 <ul className="list-unstyled mb-0">

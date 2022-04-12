@@ -14,6 +14,13 @@ const MoreOptionsMenu = ({ post }) => {
                 setMenuActive('-active')
                 moreOptionMenu.classList.remove('d-none')
                 moreOptionMenu.classList.add('d-block')
+                document.addEventListener('click' , ({ target }) =>{
+                    if (!target.closest(`#more-options-${post.id}`)) {
+                        moreOptionMenu.classList.add('d-none')
+                        moreOptionMenu.classList.remove('d-block')
+                        setMenuActive('')
+                    }
+                })
             } else {
                 setMenuActive('')
                 moreOptionMenu.classList.remove('d-block')
@@ -23,7 +30,7 @@ const MoreOptionsMenu = ({ post }) => {
     }
 
     return (
-        <div className="position-absolute end-0" title="Plus..." onClick={handleMoreOptionMenu} 
+        <div id={`more-options-${post.id}`} className="position-absolute end-0" title="Plus..." onClick={handleMoreOptionMenu} 
             role="button"
             style={{zIndex: 1080}}>
             <div className="icon-info position-relative">
