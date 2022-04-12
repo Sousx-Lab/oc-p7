@@ -2,7 +2,7 @@ import React, { useContext, useState, useEffect } from "react";
 import { UserContext } from "../contexts/UserContext";
 import Editor from "../components/editor/Editor";
 import PostsCard from "../components/post/PostsCard";
-import { createPost } from "../services/Api/posts/postsApi";
+import { createPost } from "../services/Api/post/postsApi";
 import { toast } from "react-toastify";
 
 const HomePage = () => {

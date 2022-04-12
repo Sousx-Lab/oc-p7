@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { UserContext } from "../contexts/UserContext";
 import { useQuery } from 'react-query';
 import { useParams, Link } from "react-router-dom";
-import { getPostById } from "../services/Api/posts/postsApi";
+import { getPostById } from "../services/Api/post/postsApi";
 import Loader from "../components/layout/Loader";
 import { toast } from 'react-toastify';
 import UserPopOver from '../components/post/UserPopOver';
@@ -14,7 +14,7 @@ import SharePostMenu from "../components/post/SharePostMenu";
 import { dateDiff } from '../services/outils/dateHandler';
 import Editor from "../components/editor/Editor";
 import LikesPost from "../components/post/LikesPost";
-import { createComment } from "../services/Api/comments/commentsApi";
+import { createComment } from "../services/Api/commentary/commentsApi";
 
 
 const PostPage = () => {
@@ -23,7 +23,7 @@ const PostPage = () => {
     const [post, setPost] = useState({});
     const { id } = useParams();
 
-    const { isLoading } = useQuery('Posts', () => getPostById(id), {
+    const { isLoading } = useQuery(['Posts', id], () => getPostById(id), {
         refetchOnWindowFocus: false,
         onSuccess: (data) => {
             setPost(data);
@@ -53,12 +53,13 @@ const PostPage = () => {
     useEffect(() => {
         document.title =
             `${post.User?.firstName} ${post.User?.lastName} sur Groupomania: "${post.content?.slice(0, 15)}..."`;
-    }, [post.id]);
+    }, [!isLoading]);
 
     const editorContext = "commentary";
     return (
         <div className="container">
             <div className="row mx-auto d-flex justify-content-center col-md-6 col-sm-12 border-bottom border-top mt-1 border-light">
+            {/* post */ }
                 {post.id && (
                     <>
                         <article className="border-start border-end border-1 ">
@@ -72,12 +73,13 @@ const PostPage = () => {
                                     <Link to={`../user/${post.User.id}`}
                                         className="d-block overflow-auto "
                                         data-popover="true">
-                                        <img className="rounded-circle" width={54} alt={`photo de profile de ${post.User.firstName} ${post.User.lastName}`}
+                                        <img className="rounded-circle" width={54} 
+                                            alt={`photo de profile de ${post.User.firstName} ${post.User.lastName}`}
                                             src={post.User.profilePicture || defautlAvatar}
                                             data-holder-rendered="true" />
                                     </Link>
                                 </div>
-                                <div className="d-flex flex-column ms-2">
+                                <div className="d-flex flex-column ms-2 w-100">
                                     <div className="text-start pb-3">
                                         <Link to={`../user/${post.User.id}`}
                                             className="fw-bold text-capitalize link-dark"
@@ -118,6 +120,9 @@ const PostPage = () => {
                             <Editor editorContext={editorContext} emojiTriggerContext={editorContext} 
                                 placeholder="Réagissez à ce post" handleSubmit={handleSubmitComment} />
                         </div>
+                        {/* End Post */ }
+                        
+                        {/* Commentaries */ }
                         {post.Comments.map((comment, key) => {
                             return (
                                 <div key={key} className="border-start border-end border-bottom border-1 pt-4 pb-5 bg-light-hover">

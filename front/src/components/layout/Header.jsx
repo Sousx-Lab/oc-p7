@@ -53,12 +53,12 @@ const Header = () => {
                                         href="#" role="button" aria-haspopup="true" aria-expanded="false"><strong>{user?.firstName}</strong>
                                     </a>
                                     <div className="dropdown-menu">
-                                        <a className="dropdown-item" href="#">
+                                        <Link className="dropdown-item" to={`/user/${user.id}`}>
                                             Profile
                                             <div className="d-inline ps-2 float-end">
                                                 <UserCircleSvg size={18} />
                                             </div>
-                                        </a>
+                                        </Link>
                                         <a className="dropdown-item bg-danger text-light" onClick={handleLogout} href="#">
                                             Déconnexion
                                             <div className="d-inline ps-2 float-end">

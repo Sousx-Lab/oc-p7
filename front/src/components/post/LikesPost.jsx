@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { UserContext } from '../../contexts/UserContext';
 import { HeartSvg } from '../IconsSvg';
-import { LikePost } from '../../services/Api/posts/postsApi';
+import { LikePost } from '../../services/Api/post/postsApi';
 import { toast } from 'react-toastify';
 
 const LikesPost = ({ usersLiked = [], postId }) => {

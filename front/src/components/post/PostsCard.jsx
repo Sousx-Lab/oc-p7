@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { UserContext } from '../../contexts/UserContext';
 import { useQuery } from 'react-query';
-import { getAll } from "../../services/Api/posts/postsApi";
+import { getAll } from "../../services/Api/post/postsApi";
 import Loader from '../layout/Loader';
 import defautlAvatar from '../../assets/img/d-avatar.svg';
 import CommentModal from "./CommentModal";

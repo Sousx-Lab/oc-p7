@@ -1,5 +1,5 @@
 import {UserApi} from '../../../config/Api/Api.Endpoint.config'
-import {User, isUserObject} from './user';
+import {User, isUserObject} from '../user/user';
 import { headers } from '../headers';
 
 /**

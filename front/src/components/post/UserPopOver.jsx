@@ -15,7 +15,7 @@ const UserPopOver = ({ id, user}) => {
                 className="d-block text-capitalize fw-bold text-break mb-3 text-decoration-none link-dark">
                 {`${user.firstName} ${user.lastName}`}
             </Link>
-            <div className="mt-2 text-break">{user?.bio || "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque pen"}</div>
+            <div className="mt-2 text-break">{user?.bio || ""}</div>
         </div>
     )
 }
