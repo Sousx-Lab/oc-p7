@@ -23,7 +23,8 @@ const Editor = ({ editorContext, emojiTriggerContext, placeholder = "Quoi de neu
         uploadedFiles.forEach(file => {
             const reader = new FileReader()
             reader.onloadend = () => {
-                setData({ ...data, media:{ file: reader.result, type: file.type, fileBlob: file } });
+                console.log(data.content)
+                setData({...data.media, media:{ file: reader.result, type: file.type, fileBlob: file }});
             }
             if (file) {
                 reader.readAsDataURL(file);
