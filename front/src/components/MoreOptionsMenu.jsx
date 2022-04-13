@@ -2,20 +2,20 @@ import React, { useContext, useState } from "react";
 import { UserContext } from "../contexts/UserContext";
 import { EditSvg, MoreVerticalSvg, TrashSvg } from "./IconsSvg";
 
-const MoreOptionsMenu = ({ post }) => {
+const MoreOptionsMenu = ({ postId, postUserId }) => {
 
     const { user } = useContext(UserContext);
 
     const [menuActive, setMenuActive] = useState('')
     handleMoreOptionMenu = () => {
-        const moreOptionMenu = document.getElementById(`more-option-menu-${post.id}`);
+        const moreOptionMenu = document.getElementById(`more-option-menu-${postId}`);
         if (moreOptionMenu) {
             if (moreOptionMenu.classList.contains('d-none')) {
                 setMenuActive('-active')
                 moreOptionMenu.classList.remove('d-none')
                 moreOptionMenu.classList.add('d-block')
                 document.addEventListener('click' , ({ target }) =>{
-                    if (!target.closest(`#more-options-${post.id}`)) {
+                    if (!target.closest(`#more-options-${postId}`)) {
                         moreOptionMenu.classList.add('d-none')
                         moreOptionMenu.classList.remove('d-block')
                         setMenuActive('')
@@ -30,7 +30,7 @@ const MoreOptionsMenu = ({ post }) => {
     }
 
     return (
-        <div id={`more-options-${post.id}`} className="position-absolute end-0" title="Plus..." onClick={handleMoreOptionMenu} 
+        <div id={`more-options-${postId}`} className="position-absolute end-0" title="Plus..." onClick={handleMoreOptionMenu} 
             role="button"
             style={{zIndex: 1080}}>
             <div className="icon-info position-relative">
@@ -38,7 +38,7 @@ const MoreOptionsMenu = ({ post }) => {
                     <MoreVerticalSvg />
                 </i>
             </div>
-            <div id={`more-option-menu-${post.id}`}
+            <div id={`more-option-menu-${postId}`}
                 className="d-none bg-white shadow position-absolute"
                 style={{ top: "40px", right: "0", width: "200px", cursor: "default", borderRadius: "3px" }} >
                 <ul className="list-unstyled mb-0">
@@ -58,7 +58,7 @@ const MoreOptionsMenu = ({ post }) => {
                         )}
                     </li>
                     <li className="p-1 bg-light-hover">
-                        {user.id === post.User.id || user.roles.includes('ROLE_ADMIN') ? (
+                        {user.id === postUserId || user.roles.includes('ROLE_ADMIN') ? (
                             <a href="#" className="text-danger text-decoration-none d-flex justify-content-between p-2" 
                                 title="Supprimer ce post" >
                                 Supprimer ce post

@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useContext } from "react";
-import { UserContext } from "../contexts/UserContext";
 import { useQuery } from 'react-query';
 import { useParams, Link } from "react-router-dom";
 import { getPostById } from "../services/Api/post/postsApi";
@@ -19,10 +18,10 @@ import { createComment } from "../services/Api/commentary/commentsApi";
 
 const PostPage = () => {
 
-    const { user } = useContext(UserContext)
     const [post, setPost] = useState({});
     const { id } = useParams();
-
+    
+    console.log(location)
     const { isLoading } = useQuery(['Posts', id], () => getPostById(id), {
         refetchOnWindowFocus: false,
         onSuccess: (data) => {
@@ -64,7 +63,8 @@ const PostPage = () => {
                     <>
                         <article className="border-start border-end border-1 ">
                             <div className="mt-3">
-                                <Link className="rounded-circle bg-grey-hover icon-nav" to={`../#post-${post.id}`} style={{ padding: "0.5rem 0.4rem" }}>
+                                <Link to="#" className="rounded-circle bg-grey-hover icon-nav" style={{ padding: "0.5rem 0.4rem" }} 
+                                    onClick={() => window.history.back()}>
                                     <ArrowLeftSvg strokeWidth="1" size={26} />
                                 </Link>
                             </div>
@@ -73,7 +73,7 @@ const PostPage = () => {
                                     <Link to={`../user/${post.User.id}`}
                                         className="d-block overflow-auto "
                                         data-popover="true">
-                                        <img className="rounded-circle" width={54} 
+                                        <img className="rounded-circle border border-3" width={54} 
                                             alt={`photo de profile de ${post.User.firstName} ${post.User.lastName}`}
                                             src={post.User.profilePicture || defautlAvatar}
                                             data-holder-rendered="true" />
@@ -89,7 +89,7 @@ const PostPage = () => {
                                         <div className="d-inline text-muted fs-6 ps-2"><small>- {dateDiff(post.createdAt)}</small></div>
                                         <UserPopOver id={post.User.id} user={post.User} />
                                     </div>
-                                    <MoreOptionsMenu post={post} />
+                                    <MoreOptionsMenu postId={post.id} postUserId={post.User.id} />
 
                                     {/* End User Info */}
                                     <div className=" text-decoration-none">
@@ -131,7 +131,7 @@ const PostPage = () => {
                                             <Link to={`../user/${comment.User.id}`}
                                                 className="d-block overflow-auto "
                                                 data-popover="true" >
-                                                <img className="rounded-circle" width={54} alt={`photo de profile de ${comment.User.firstName} ${comment.User.lastName}`}
+                                                <img className="rounded-circle border border-3" width={54} alt={`photo de profile de ${comment.User.firstName} ${comment.User.lastName}`}
                                                     src={comment.User.profilePicture || defautlAvatar}
                                                     data-holder-rendered="true" />
                                             </Link>
@@ -147,7 +147,7 @@ const PostPage = () => {
                                                 <div className="d-inline text-muted fs-6 ps-2"><small>- {dateDiff(comment.createdAt)}</small></div>
                                                 <UserPopOver id={comment.User.id} user={comment.User} />
                                             </div>
-                                            <MoreOptionsMenu post={comment} />
+                                            <MoreOptionsMenu postId={comment.id} postUserId={comment.User.id}/>
                                             <div className=" text-decoration-none">
                                                 <p className="pe-4 pb-3 m-0 text-break text-body text-start">{comment.content}</p>
                                             </div>

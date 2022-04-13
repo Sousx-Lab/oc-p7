@@ -1,19 +1,25 @@
-import React, { useContext, useState, useEffect } from "react";
-import { UserContext } from "../contexts/UserContext";
+import React, {useState, useEffect } from "react";
 import Editor from "../components/editor/Editor";
+import { useQuery } from 'react-query';
+import { getAll } from "../services/Api/post/postsApi";
 import PostsCard from "../components/post/PostsCard";
 import { createPost } from "../services/Api/post/postsApi";
 import { toast } from "react-toastify";
 
 const HomePage = () => {
 
-    const { user } = useContext(UserContext)
-    useEffect(() => {
-        document.title = "Groupomania"
-    }, []);
-
-    const [newPost, setNewPost] = useState(null);
-
+    const [posts, setPosts] = useState([])
+    // const [newPost, setNewPost] = useState(null);
+    const { isLoading } = useQuery('Posts', () => getAll(), {
+        refetchOnWindowFocus: false,
+        onSuccess: (data) => {
+            setPosts(data);
+        },
+        onError(err) {
+            toast.error("Une erreur s'est produite lors du chargement !...");
+        }
+    })
+    
     /**
      * @param {SubmitEvent} event
      */
@@ -26,20 +32,23 @@ const HomePage = () => {
         const response = await createPost(form);
         if (response.ok) {
             let post = await response.json();
-            setNewPost(post);
+            setPosts([post, ...posts]);
             return response.ok;
         } else {
             toast.error("Une erreur s'est produite lors de la création du post");
         }
     }
+    useEffect(() => {
+        document.title = "Groupomania"
+    }, []);
     return (
         <div className="container">
             <div className="row mx-auto d-flex justify-content-center mt-2">
-                <div className="col-lg-6 mb-3 border">
+                <div className="col-lg-8 col-xl-6 col-sm-12 mb-3 border">
                     <Editor editorContext={'post'} emojiTriggerContext={"post"} handleSubmit={handleSubmit} />
                 </div>
             </div>
-            <PostsCard  newPost={newPost}/>
+            <PostsCard posts={posts} isLoading={isLoading}/>
         </div>
     )
 }

@@ -71,7 +71,7 @@ const Editor = ({ editorContext, emojiTriggerContext, placeholder = "Quoi de neu
             <div className="d-flex text-center p-0">
                 <div className="pe-2">
                     <Link to={`/user/${user.id}`}>
-                        <img className="rounded-circle" width={54} alt={`${user.firstName} ${user.lastName}`}
+                        <img className="rounded-circle border border-3 border-success" width={54} alt={`${user.firstName} ${user.lastName}`}
                             src={user.profilePicture || defautlAvatar}
                             title={`${user.firstName} ${user.lastName}`}
                             data-holder-rendered="true" />
