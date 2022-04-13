@@ -4,13 +4,13 @@ exports.findOneJoinPostsComment = async(id) =>{
     
     return await User.findOne({
         where : {id:  id},
-        attributes: ['firstName', 'lastName', 'profilePicture', 'bio',
+        attributes: ['id', 'firstName', 'lastName', 'profilePicture', 'bio',
         ['created_at', 'createdAt'],['updated_at', 'updatedAt']
         ],
         include: [
             {
             model: Post,
-            attributes: ['id', 'content', "media", 'likes', 
+            attributes: ['id', 'content', 'media', 'mediaType', 'likes', 
             ['users_liked', 'usersLiked'],['created_at', 'createdAt'],['updated_at', 'updatedAt'],
             [Sequelize.fn('count', Sequelize.col('post_id')), 'commentsCount'], 
             ],
