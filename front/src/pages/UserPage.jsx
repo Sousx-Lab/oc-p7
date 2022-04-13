@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useQuery } from 'react-query';
 import { getUserById } from "../services/Api/user/usersApi";
@@ -10,19 +10,20 @@ import MoreOptionsMenu from '../components/MoreOptionsMenu';
 import MediaType from '../components/MediaType';
 import LikesPost from '../components/post/LikesPost';
 import SharePostMenu from '../components/post/SharePostMenu';
+import PostsCard from "../components/post/PostsCard";
 
 
 const UserPage = () => {
 
     const { id } = useParams();
-    const [user, setUser] = useState({});
+    const [userData, setUserData] = useState({});
 
     const { isLoading } = useQuery(['User', id], () => getUserById(id), {
         refetchOnWindowFocus: false,
-        onSuccess: (data) => {
-            setUser(data);
+        onSuccess: data => {
+            setUserData(data);
         },
-        onError: (error) => {
+        onError: error => {
             toast.error("Une erreur s'est produite lors du chargement !...");
         }
     })
@@ -33,9 +34,10 @@ const UserPage = () => {
             navigate(event.target.dataset.link)
         }
     }
+
     return (
         <div className="container pb-5">
-            {user.id && (
+            {userData.id && (
                 <>
                     <div className="row col-sm-12 col-md-8 col-xl-6 mx-auto pb-5 mt-1 bg-light-hover border border-1">
                         <div className="mt-3 mb-3">
@@ -45,41 +47,41 @@ const UserPage = () => {
                         </div>
                         <div className="d-block overflow-auto">
                             <img className="rounded-circle mb-1 border border-3" width={64} alt={`profile picuture`}
-                                src={user.profilePicture || defautlAvatar}
+                                src={userData.profilePicture || defautlAvatar}
                                 data-holder-rendered="true" />
                         </div>
                         <div className="d-block text-capitalize fw-bold text-break mb-3 text-decoration-none link-dark">
-                            {`${user.firstName} ${user.lastName}`}
+                            {`${userData.firstName} ${userData.lastName}`}
                         </div>
-                        <p className="text-break col-xl-6 col-sm-10 mb-1">{user?.bio || ""}</p>
+                        <p className="text-break col-xl-6 col-sm-10 mb-1">{userData?.bio || ""}</p>
                         <div className="text-muted fs-6">
-                            <small> Inscrit depuis le {new Date(user.createdAt).toLocaleDateString()}</small>
+                            <small> Inscrit depuis le {new Date(userData.createdAt).toLocaleDateString()}</small>
                         </div>
                     </div>
-                    {user.Posts.map((post, key) => (
+                    {userData.Posts.map((post, key) => (
                         <div className="row col-sm-12 col-md-8 col-xl-6 mx-auto bg-light-hover" key={key}>
                             <article className="border-start border-end border-1 cursor-pointer" data-link={`/post/${post.id}`}
                                 onClick={postLink}>
                                 <div className="d-flex mb-3 mt-4 position-relative">
                                     <div className="pe-2" data-link={`/post/${post.id}`}>
-                                        <Link className="d-block overflow-auto" to={`/user/${user.id}`}
+                                        <Link className="d-block overflow-auto" to={`/userData/${userData.id}`}
                                             data-popover="true">
                                             <img className="rounded-circle border border-3" width={54}
-                                                alt={`photo de profile de ${user.firstName} ${user.lastName}`}
-                                                src={user.profilePicture || defautlAvatar}
+                                                alt={`photo de profile de ${userData.firstName} ${userData.lastName}`}
+                                                src={userData.profilePicture || defautlAvatar}
                                                 data-holder-rendered="true" />
                                         </Link>
                                     </div>
                                     <div className="d-flex flex-column ms-2 w-100">
                                         <div className="text-start pb-3" data-link={`/post/${post.id}`}>
-                                            <Link to={`../user/${user.id}`}
+                                            <Link to={`../userData/${userData.id}`}
                                                 className="fw-bold text-capitalize link-dark"
                                                 data-popover="true">
-                                                {`${user.firstName} ${user.lastName}`}
+                                                {`${userData.firstName} ${userData.lastName}`}
                                             </Link>
                                             <div className="d-inline text-muted fs-6 ps-2"><small>- {dateDiff(post.createdAt)}</small></div>
                                         </div>
-                                        <MoreOptionsMenu postId={post.id} postUserId={user.id} />
+                                        <MoreOptionsMenu postId={post.id} postUserId={userData.id} />
 
                                         {/* End User Info */}
                                         <Link className=" text-decoration-none" to={`/post/${post.id}`} >
@@ -109,8 +111,8 @@ const UserPage = () => {
                         </div>
                     ))}
                 </>
-            )}
 
+            )}
         </div>
     );
 }

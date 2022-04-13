@@ -59,12 +59,12 @@ const Header = () => {
                                                 <UserCircleSvg size={18} />
                                             </div>
                                         </Link>
-                                        <a className="dropdown-item bg-danger text-light" onClick={handleLogout} href="#">
+                                        <div className="dropdown-item bg-danger text-light" onClick={handleLogout} role="button">
                                             Déconnexion
                                             <div className="d-inline ps-2 float-end">
                                                 <ArrowOutSvg stroke="#ffff" size={18} />
                                             </div>
-                                        </a>
+                                        </div>
                                     </div>
                                 </li>
                                 <li className="nav-item">

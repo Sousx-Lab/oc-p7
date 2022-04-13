@@ -53,7 +53,6 @@ const PostsCard = ({ posts = [], isLoading = true }) => {
             }, 800)
         }
     }
-
     return (
         <>
             <CommentModal post={modalPost} />
