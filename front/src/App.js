@@ -9,6 +9,7 @@ import SignUpPage from "./pages/SignUpPage";
 import HomePage from "./pages/HomePage";
 import PostPage from "./pages/PostPage";
 import UserPage from "./pages/UserPage";
+import Footer from "./components/layout/Footer";
 import { UserContext } from "./contexts/UserContext";
 import { ToastContainer } from "react-toastify";
 import AuthSideScreen from "./components/layout/AuthSideScreen";
@@ -44,9 +45,11 @@ function App(){
             </Route>
             <Route element={<ProtectedRoutes />} >
               <Route element={<Header />} >
+                <Route element={<Footer />} >
                 <Route index path={routes.home} element={<HomePage/>}/>
                 <Route path={routes.post} element={<PostPage/>}/>
                 <Route path={routes.user} element={<UserPage/>}/>
+                </Route>
               </Route>
             </Route>
           </Routes>
