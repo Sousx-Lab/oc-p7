@@ -1,16 +1,39 @@
-import React from "react"
+import React, {useState} from "react";
+import {createComment} from '../../services/Api/commentary/commentsApi'
 import { Link } from 'react-router-dom';
 import { useNavigate } from "react-router-dom";
 import defautlAvatar from '../../assets/img/d-avatar.svg';
 import Editor from "../editor/Editor";
+import LikesPost from '../post/LikesPost';
+import { toast } from 'react-toastify';
+
 
 const CommentModal = ({ post }) => {
 
-    const navigate = useNavigate()
+    const navigate = useNavigate();
     const editorContext = "commentary"
+
+    const SubmitComment = async (event, data) => {
+        event.preventDefault();
+        const form = new FormData(event.target);
+        if(data.media.fileBlob){
+            form.set('media', data.media.fileBlob);
+        }
+        try {
+            const response = await createComment(post?.id, form);
+            if(response.ok){
+               let newComment = await response.json();
+            //    setPost({...post, Comments: [newComment, ...post.Comments]});
+               toast.success("Votre commentaire à été ajouté !");
+               return response.ok
+            }
+        } catch (error) {
+            toast.error("Une erreur s'est produite lors de la création du commentaire");
+        }
+    }
     return (
-        <div id="commentModal" className="modal fade" tabIndex="-1" aria-hidden="true">
-            <div className="modal-dialog modal-lg" role="document">
+        <div id="commentModal" className="modal fade" tabIndex="-1" aria-hidden="true" style={{zIndex: 1090}}>
+            <div className="modal-dialog modal-dialog-scrollable modal-lg" role="document">
                 <div className="modal-content">
                     <div className="modal-header">
                         <h5 className="modal-title">Ajouter un commentaire
@@ -22,7 +45,7 @@ const CommentModal = ({ post }) => {
                         </button>
                     </div>
                     <div className="modal-body">
-                        <div className="d-flex text-center mb-3 mt-4">
+                        <div className="d-flex text-center mb-5 mt-4">
                             <div data-link={`/post/${post.id}`} className="pe-2">
                                 <Link to={`/user/${post.User?.id}`}>
                                     <img className="rounded-circle" width={54} alt={`profile picuture ${'qsd'}`}
@@ -30,7 +53,7 @@ const CommentModal = ({ post }) => {
                                         data-holder-rendered="true" />
                                 </Link>
                             </div>
-                            <div className="d-flex flex-column ms-2">
+                            <div className="d-flex flex-column ms-2 w-100">
                                 <div data-link={`/post/${post.id}`} className="text-start pb-3">
                                     <Link className="fw-bold text-capitalize link-dark" data-bs-dismiss="modal"
                                         to={`user/${post.User?.id}`} onClick={() => navigate(`user/${post.User?.id}`)}>
@@ -44,7 +67,7 @@ const CommentModal = ({ post }) => {
                                 </Link>
                             </div>
                         </div>
-                        <Editor editorContext={editorContext} emojiTriggerContext={editorContext} placeholder="Réagissez à ce post" />
+                        <Editor editorContext={editorContext} emojiTriggerContext={editorContext} placeholder="Réagissez à ce post" handleSubmit={SubmitComment} />
                     </div>
                     <div className="modal-footer">
                         <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>

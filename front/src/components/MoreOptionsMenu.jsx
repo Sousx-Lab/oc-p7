@@ -32,7 +32,7 @@ const MoreOptionsMenu = ({ postId, postUserId }) => {
     return (
         <div id={`more-options-${postId}`} className="position-absolute end-0" title="Plus..." onClick={handleMoreOptionMenu} 
             role="button"
-            style={{zIndex: 1080}}>
+            style={{zIndex: 1060}}>
             <div className="icon-info position-relative">
                 <i className={`float-end rounded-circle icon-info--bg${menuActive} p-1`}>
                     <MoreVerticalSvg />

@@ -25,10 +25,12 @@ const SharePostMenu = ({ post }) => {
             }
         }
     }
+    
     const handleCopyLink = (e) => {
         e.preventDefault();
         if (navigator.clipboard) {
-            navigator.clipboard.writeText(`${window.location.href}${e.target.dataset.uri}`);
+            navigator.clipboard.writeText(`
+                ${location.protocol}://${location.host}${e.target.dataset.uri}`);
             toast.success("Le lien a été copié dans le presse-papier!")
         } else {
             toast.error("Votre navigateur ne supporte pas le copier/coller")
@@ -55,7 +57,7 @@ const SharePostMenu = ({ post }) => {
                     </li>
                     <li className="p-1 bg-light-hover">
                         <a href="/#" className="text-black text-decoration-none d-flex justify-content-between p-2"
-                            title="Copier le lien" data-uri={`post/${post.id}`} onClick={handleCopyLink}>Copier le lien...
+                            title="Copier le lien" data-uri={`/post/${post.id}`} onClick={handleCopyLink}>Copier le lien...
                             <CopySvg size={18} />
                         </a>
                     </li>

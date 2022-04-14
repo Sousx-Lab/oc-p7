@@ -25,7 +25,7 @@ const EmojiPicker = ({ insertInto, TriggerElem}) => {
             setPicker(new EmojiButton({ 
                 position: 'bottom-start', 
                 emojiSize: "22px", 
-                zIndex: "1080", 
+                zIndex: "2000", 
                 recentsCount: "10",
                 autoHide: false,
             }));

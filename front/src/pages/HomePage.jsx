@@ -42,14 +42,14 @@ const HomePage = () => {
         document.title = "Groupomania"
     }, []);
     return (
-        <div className="container">
+        <main className="container" role="main">
             <div className="row mx-auto d-flex justify-content-center mt-2">
                 <div className="col-lg-8 col-xl-6 col-sm-12 mb-3 border">
                     <Editor editorContext={'post'} emojiTriggerContext={"post"} handleSubmit={handleSubmit} />
                 </div>
             </div>
             <PostsCard posts={posts} isLoading={isLoading}/>
-        </div>
+        </main>
     )
 }
 

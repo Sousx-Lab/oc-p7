@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect} from "react";
 import { useQuery } from 'react-query';
 import { useParams, Link } from "react-router-dom";
 import { getPostById } from "../services/Api/post/postsApi";
@@ -20,8 +20,7 @@ const PostPage = () => {
 
     const [post, setPost] = useState({});
     const { id } = useParams();
-    
-    console.log(location)
+
     const { isLoading } = useQuery(['Posts', id], () => getPostById(id), {
         refetchOnWindowFocus: false,
         onSuccess: (data) => {

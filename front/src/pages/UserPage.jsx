@@ -46,7 +46,7 @@ const UserPage = () => {
                             </Link>
                         </div>
                         <div className="d-block overflow-auto">
-                            <img className="rounded-circle mb-1 border border-3" width={64} alt={`profile picuture`}
+                            <img className="rounded-circle mb-1 border border-3 border-primary" width={64} alt={`profile picuture`}
                                 src={userData.profilePicture || defautlAvatar}
                                 data-holder-rendered="true" />
                         </div>
