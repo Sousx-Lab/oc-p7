@@ -59,6 +59,26 @@ return null;
 }
 
 /**
+ * 
+ * @param {string} id 
+ * @returns {Promise<any>}
+ */
+export async function deletePost(id){
+    let { xsrfToken } = await getUser();
+    if(xsrfToken){
+        const response = fetch(PostsApi.deleteById(id), {
+        method: 'DELETE',
+        credentials: 'include',
+        headers: {
+            'x-xsrf-token': xsrfToken
+        }
+        })
+        return response;
+    }
+    return null;
+}
+
+/**
  * @param {string} id 
  * @returns {Promise<any>}
  */

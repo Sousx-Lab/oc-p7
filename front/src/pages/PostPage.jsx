@@ -1,7 +1,7 @@
-import React, { useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { useQuery } from 'react-query';
-import { useParams, Link } from "react-router-dom";
-import { getPostById } from "../services/Api/post/postsApi";
+import { useParams, Link, useNavigate } from "react-router-dom";
+import { getPostById, deletePost } from "../services/Api/post/postsApi";
 import Loader from "../components/layout/Loader";
 import { toast } from 'react-toastify';
 import UserPopOver from '../components/post/UserPopOver';
@@ -14,6 +14,7 @@ import { dateDiff } from '../services/outils/dateHandler';
 import Editor from "../components/editor/Editor";
 import LikesPost from "../components/post/LikesPost";
 import { createComment } from "../services/Api/commentary/commentsApi";
+import CommentariesSection from "../components/comment/CommentariesSection";
 
 
 const PostPage = () => {
@@ -34,35 +35,51 @@ const PostPage = () => {
     const handleSubmitComment = async (event, data) => {
         event.preventDefault();
         const form = new FormData(event.target);
-        if(data.media.fileBlob){
+        if (data.media.fileBlob) {
             form.set('media', data.media.fileBlob);
         }
         try {
             const response = await createComment(post?.id, form);
-            if(response.ok){
-               let newComment = await response.json();
-               setPost({...post, Comments: [newComment, ...post.Comments]});
-               return response.ok
+            if (response.ok) {
+                let newComment = await response.json();
+                setPost({ ...post, Comments: [newComment, ...post.Comments] });
+                return response.ok
             }
         } catch (error) {
             toast.error("Une erreur s'est produite lors de la création du commentaire");
         }
     }
+
+    const navigate = useNavigate();
+    const [deleteLoader, setDeleteLoader] = useState(null)
+    const DeletePost = async (id) => {
+        setDeleteLoader(id)
+        try {
+            await deletePost(id);
+            toast.success("Post supprimé avec succès");
+            setDeleteLoader(null);
+            navigate("/", { replace: true });
+        } catch (error) {
+            setDeleteLoader(null)
+            toast.error("Une erreur est survenue lors de la suppression du post");
+        }
+
+    }
     useEffect(() => {
         document.title =
             `${post.User?.firstName} ${post.User?.lastName} sur Groupomania: "${post.content?.slice(0, 15)}..."`;
-    }, [!isLoading]);
+    }, [post.User]);
 
     const editorContext = "commentary";
     return (
         <div className="container">
             <div className="row mx-auto d-flex justify-content-center col-md-6 col-sm-12 border-bottom border-top mt-1 border-light">
-            {/* post */ }
+                {/* post */}
                 {post.id && (
                     <>
                         <article className="border-start border-end border-1 ">
                             <div className="mt-3">
-                                <Link to="#" className="rounded-circle bg-grey-hover icon-nav" style={{ padding: "0.5rem 0.4rem" }} 
+                                <Link to="#" className="rounded-circle bg-grey-hover icon-nav" style={{ padding: "0.5rem 0.4rem" }}
                                     onClick={() => window.history.back()}>
                                     <ArrowLeftSvg strokeWidth="1" size={26} />
                                 </Link>
@@ -72,7 +89,7 @@ const PostPage = () => {
                                     <Link to={`../user/${post.User.id}`}
                                         className="d-block overflow-auto "
                                         data-popover="true">
-                                        <img className="rounded-circle border border-3" width={54} 
+                                        <img className="rounded-circle border border-3" width={54}
                                             alt={`photo de profile de ${post.User.firstName} ${post.User.lastName}`}
                                             src={post.User.profilePicture || defautlAvatar}
                                             data-holder-rendered="true" />
@@ -88,7 +105,12 @@ const PostPage = () => {
                                         <div className="d-inline text-muted fs-6 ps-2"><small>- {dateDiff(post.createdAt)}</small></div>
                                         <UserPopOver id={post.User.id} user={post.User} />
                                     </div>
-                                    <MoreOptionsMenu postId={post.id} postUserId={post.User.id} />
+                                    <div className="position-absolute" style={{ left: '95%', top: '-20px' }}>
+                                        {deleteLoader === post.id &&
+                                            <Loader width="1" height="1" />
+                                        }
+                                    </div>
+                                    <MoreOptionsMenu postId={post.id} postUserId={post.User.id} handleDelete={DeletePost} />
 
                                     {/* End User Info */}
                                     <div className=" text-decoration-none">
@@ -116,48 +138,14 @@ const PostPage = () => {
                             </div>
                         </article>
                         <div className="border pt-3 pb-3">
-                            <Editor editorContext={editorContext} emojiTriggerContext={editorContext} 
+                            <Editor editorContext={editorContext} emojiTriggerContext={editorContext}
                                 placeholder="Réagissez à ce post" handleSubmit={handleSubmitComment} />
                         </div>
-                        {/* End Post */ }
-                        
-                        {/* Commentaries */ }
-                        {post.Comments.map((comment, key) => {
-                            return (
-                                <div key={key} className="border-start border-end border-bottom border-1 pt-4 pb-5 bg-light-hover">
-                                    <div className="d-flex position-relative">
-                                        <div className="pe-2">
-                                            <Link to={`../user/${comment.User.id}`}
-                                                className="d-block overflow-auto "
-                                                data-popover="true" >
-                                                <img className="rounded-circle border border-3" width={54} alt={`photo de profile de ${comment.User.firstName} ${comment.User.lastName}`}
-                                                    src={comment.User.profilePicture || defautlAvatar}
-                                                    data-holder-rendered="true" />
-                                            </Link>
-                                        </div>
-                                        <div className="d-flex flex-column ms-2">
-                                            <div className="text-start pb-3">
-                                                <Link to={`../user/${comment.User.id}`}
-                                                    className="fw-bold text-capitalize link-dark"
-                                                    data-popover="true">
-                                    
-                                                    {`${comment.User.firstName} ${comment.User.lastName}`}
-                                                </Link>
-                                                <div className="d-inline text-muted fs-6 ps-2"><small>- {dateDiff(comment.createdAt)}</small></div>
-                                                <UserPopOver id={comment.User.id} user={comment.User} />
-                                            </div>
-                                            <MoreOptionsMenu postId={comment.id} postUserId={comment.User.id}/>
-                                            <div className=" text-decoration-none">
-                                                <p className="pe-4 pb-3 m-0 text-break text-body text-start">{comment.content}</p>
-                                            </div>
-                                            {comment.media && (
-                                                <MediaType mediaType={comment.mediaType} media={comment.media} id={comment.id} />
-                                            )}
-                                        </div>
-                                    </div>
-                                </div>
-                            )
-                        })}
+                        {/* End Post */}
+
+                        {/* Commentaries */}
+                        <CommentariesSection commentaries={post.Comments} />
+                        {/* End Commentaries */}
                     </>
                 )}
                 {isLoading && <Loader />}

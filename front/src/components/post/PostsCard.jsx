@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import Loader from '../layout/Loader';
 import defautlAvatar from '../../assets/img/d-avatar.svg';
@@ -10,9 +10,10 @@ import MoreOptionsMenu from "../MoreOptionsMenu";
 import { dateDiff } from "../../services/outils/dateHandler";
 import SharePostMenu from "./SharePostMenu";
 import LikesPost from "./LikesPost";
+import { deletePost } from '../../services/Api/post/postsApi';
+import { toast } from "react-toastify";
 
-
-const PostsCard = ({ posts = [], isLoading = true }) => {
+const PostsCard = ({ posts = [], isLoading = true, handleDelete, deleteLoader }) => {
 
     const navigate = useNavigate()
     /**
@@ -53,11 +54,14 @@ const PostsCard = ({ posts = [], isLoading = true }) => {
             }, 800)
         }
     }
+    
+    
+    
     return (
         <>
             <CommentModal post={modalPost} />
-            {(isLoading ) ? (
-                <Loader />
+            {(isLoading) ? (
+                <Loader width="3" height="3" />
             ) : (
                 <>
                     {posts.map((post, key) => {
@@ -90,7 +94,12 @@ const PostsCard = ({ posts = [], isLoading = true }) => {
                                                 <div className="d-inline text-muted fs-6 ps-2"><small>- {dateDiff(post.createdAt)}</small></div>
                                                 <UserPopOver user={post.User} />
                                             </div>
-                                            <MoreOptionsMenu postId={post.id} postUserId={post.User.id} />
+                                            <div className="position-absolute" style={{ left: '95%', top: '-20px' }}>
+                                                {deleteLoader === post.id &&
+                                                    <Loader width="1" height="1" />
+                                                }
+                                            </div>
+                                            <MoreOptionsMenu postId={post.id} postUserId={post.User.id} handleDelete={handleDelete} />
                                             {/* End User Info */}
 
                                             {/* Post Content */}
@@ -106,7 +115,7 @@ const PostsCard = ({ posts = [], isLoading = true }) => {
                                             <div data-link={`/post/${post.id}`} className="d-flex justify-content-evenly pb-3 pt-3">
                                                 <div className="d-flex align-items-center icon-info" role="button"
                                                     data-bs-toggle="modal"
-                                                    data-bs-target="#commentModal"
+                                                    data-bs-target="#add-comment-modal"
                                                     onClick={() => setModalPost(post)} >
 
                                                     {/* comments  */}

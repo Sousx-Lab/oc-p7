@@ -119,3 +119,26 @@ export const ArrowLeftSvg = ({size=22, stroke="#6c6a6a", fill="none", strokeWidt
     fill={fill} stroke={stroke} strokeWidth={strokeWidth} strokeLinecap="square" strokeLinejoin="bevel">
         <path d="M19 12H6M12 5l-7 7 7 7"/>
 </svg>);
+
+export const HomeSvg = ({size=22, stroke="#6c6a6a"}) => 
+(<svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" 
+    fill="none" stroke={stroke} strokeWidth="1.5" 
+        strokeLinecap="square" strokeLinejoin="bevel">
+        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+</svg>);
+
+export const InfoSvg = ({size=22, stroke="#6c6a6a"}) => 
+(<svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" 
+    fill="none" stroke={stroke} strokeWidth="1.5" strokeLinecap="square" strokeLinejoin="bevel">
+    <circle cx="12" cy="12" r="10"></circle>
+    <line x1="12" y1="16" x2="12" y2="12"></line>
+    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+</svg>);
+
+export const CodeSvg = ({size=22, stroke="#6c6a6a"}) => 
+(<svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" 
+    fill="none" stroke={stroke} strokeWidth="1.5" strokeLinecap="square" strokeLinejoin="bevel">
+    <polyline points="16 18 22 12 16 6"></polyline>
+    <polyline points="8 6 2 12 8 18"></polyline>
+</svg>);

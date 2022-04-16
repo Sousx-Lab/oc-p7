@@ -1,5 +1,6 @@
 .editor-textarea{
-    height: 100px;
+    height: 130px;
+    resize: none;
     &::placeholder{
         font-size: 1.2rem;
     }

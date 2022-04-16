@@ -1,7 +1,7 @@
 import React, {useState, useEffect } from "react";
 import Editor from "../components/editor/Editor";
 import { useQuery } from 'react-query';
-import { getAll } from "../services/Api/post/postsApi";
+import { getAll, deletePost  } from "../services/Api/post/postsApi";
 import PostsCard from "../components/post/PostsCard";
 import { createPost } from "../services/Api/post/postsApi";
 import { toast } from "react-toastify";
@@ -38,6 +38,22 @@ const HomePage = () => {
             toast.error("Une erreur s'est produite lors de la création du post");
         }
     }
+
+    const [deleteLoader, setDeleteLoader] = useState(null)
+    const DeletePost = async (id) => {
+        setDeleteLoader(id)
+        try {
+            await deletePost(id);
+            toast.success("Post supprimé avec succès");
+            setDeleteLoader(null);
+            setPosts(posts.filter(post => post.id !== id));
+        } catch (error) {
+            setDeleteLoader(null)
+            toast.error("Une erreur est survenue lors de la suppression du post");
+        }
+
+    }
+    
     useEffect(() => {
         document.title = "Groupomania"
     }, []);
@@ -48,7 +64,7 @@ const HomePage = () => {
                     <Editor editorContext={'post'} emojiTriggerContext={"post"} handleSubmit={handleSubmit} />
                 </div>
             </div>
-            <PostsCard posts={posts} isLoading={isLoading}/>
+            <PostsCard posts={posts} isLoading={isLoading} handleDelete={DeletePost} deleteLoader={deleteLoader} />
         </main>
     )
 }

@@ -44,7 +44,7 @@ const Header = () => {
                             </Link>
                             <ul className="nav navbar-nav ms-auto justify-content-end">
                                 <li className="nav-item">
-                                    <Link to={"/"} className={navLink()}>Accueil
+                                    <Link id="accueil" to={"/"} className={navLink()}>Accueil
                                         <span className="visually-hidden">(current)</span>
                                     </Link>
                                 </li>

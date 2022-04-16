@@ -34,14 +34,18 @@ const UserPage = () => {
             navigate(event.target.dataset.link)
         }
     }
-
+    useEffect(() => {
+        document.title =
+            `${userData?.firstName} ${userData?.lastName} sur Groupomania`;
+    }, [userData]);
     return (
         <div className="container pb-5">
             {userData.id && (
                 <>
                     <div className="row col-sm-12 col-md-8 col-xl-6 mx-auto pb-5 mt-1 bg-light-hover border border-1">
                         <div className="mt-3 mb-3">
-                            <Link className="rounded-circle bg-grey-hover icon-nav" to={`/`} style={{ padding: "0.5rem 0.4rem" }}>
+                            <Link to="#" className="rounded-circle bg-grey-hover icon-nav" style={{ padding: "0.5rem 0.4rem" }}
+                                onClick={() => window.history.back()}>
                                 <ArrowLeftSvg strokeWidth="1" size={26} />
                             </Link>
                         </div>

@@ -1,11 +1,11 @@
-import React, {useState} from "react";
-import {createComment} from '../../services/Api/commentary/commentsApi'
+import React from "react";
+import { createComment } from '../../services/Api/commentary/commentsApi'
 import { Link } from 'react-router-dom';
 import { useNavigate } from "react-router-dom";
 import defautlAvatar from '../../assets/img/d-avatar.svg';
 import Editor from "../editor/Editor";
-import LikesPost from '../post/LikesPost';
 import { toast } from 'react-toastify';
+import { CommentSvg } from "../IconsSvg";
 
 
 const CommentModal = ({ post }) => {
@@ -16,30 +16,29 @@ const CommentModal = ({ post }) => {
     const SubmitComment = async (event, data) => {
         event.preventDefault();
         const form = new FormData(event.target);
-        if(data.media.fileBlob){
+        if (data.media.fileBlob) {
             form.set('media', data.media.fileBlob);
         }
         try {
             const response = await createComment(post?.id, form);
-            if(response.ok){
-               let newComment = await response.json();
-            //    setPost({...post, Comments: [newComment, ...post.Comments]});
-               toast.success("Votre commentaire à été ajouté !");
-               return response.ok
+            if (response.ok) {
+                let newComment = await response.json();
+                //    setPost({...post, Comments: [newComment, ...post.Comments]});
+                toast.success("Votre commentaire à été ajouté !");
+                return response.ok
             }
         } catch (error) {
             toast.error("Une erreur s'est produite lors de la création du commentaire");
         }
     }
     return (
-        <div id="commentModal" className="modal fade" tabIndex="-1" aria-hidden="true" style={{zIndex: 1090}}>
+        <div id="add-comment-modal" className="modal fade" tabIndex="-1" aria-hidden="true" style={{ zIndex: 1090 }}>
             <div className="modal-dialog modal-dialog-scrollable modal-lg" role="document">
-                <div className="modal-content">
-                    <div className="modal-header">
-                        <h5 className="modal-title">Ajouter un commentaire
-                            <svg className="ms-2" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24"
-                                fill="none" stroke="#000000" strokeWidth="1.0" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-                        </h5>
+                <div className="modal-content rounded-2">
+                    <div className="modal-header text-white bg-primary">
+                        <h6 className="modal-title">Ajouter un commentaire
+                            <i className="ps-2"><CommentSvg stroke="#ffff" /></i>
+                        </h6>
                         <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true"></span>
                         </button>
@@ -70,7 +69,9 @@ const CommentModal = ({ post }) => {
                         <Editor editorContext={editorContext} emojiTriggerContext={editorContext} placeholder="Réagissez à ce post" handleSubmit={SubmitComment} />
                     </div>
                     <div className="modal-footer">
-                        <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                        <button type="button" className="btn btn-primary rounded-2 shadow" data-bs-dismiss="modal">
+                            Fermer
+                        </button>
                     </div>
                 </div>
             </div>
