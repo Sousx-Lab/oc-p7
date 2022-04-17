@@ -1,15 +1,13 @@
 import React, { useContext, useEffect, useState } from "react";
 import { UserContext } from "../contexts/UserContext";
 import { EditSvg, MoreVerticalSvg, TrashSvg } from "./IconsSvg";
-import ConfiramtionDeleteModal from "./ConfiramtionDeleteModal";
-import {deletePost} from '../services/Api/post/postsApi';
 
-const MoreOptionsMenu = ({ postId, postUserId, handleDelete }) => {
+const MoreOptionsMenu = ({ postId, postUserId}) => {
 
     const { user } = useContext(UserContext);
 
     const [menuActive, setMenuActive] = useState('')
-    handleMoreOptionMenu = () => {
+    handleMoreOptionMenu =  async () => {
         const moreOptionMenu = document.getElementById(`more-option-menu-${postId}`);
         if (moreOptionMenu) {
             if (moreOptionMenu.classList.contains('d-none')) {
@@ -30,13 +28,9 @@ const MoreOptionsMenu = ({ postId, postUserId, handleDelete }) => {
             }
         }
     }
-    
-    /**todo finir le handleDelete */
-    const deletePublication = async (e) => {
-        e.preventDefault();
-        await handleDelete(postId);
-    }
-    
+    useEffect(() => {
+        document.removeEventListener('click', handleMoreOptionMenu)
+    },[])
     return (
         <>
             <div id={`more-options-${postId}`} className="position-absolute end-0" title="Plus..." onClick={handleMoreOptionMenu}
@@ -71,7 +65,7 @@ const MoreOptionsMenu = ({ postId, postUserId, handleDelete }) => {
                                 <div href="#" className="text-danger text-decoration-none d-flex justify-content-between p-2" role="button"
                                     title="Supprimer ce post"
                                     data-bs-toggle="modal"
-                                    data-bs-target={`#delete-post-modal-${postId}`}>
+                                    data-bs-target="#delete-post-modal">
                                     Supprimer ce post
                                     <TrashSvg size={18} stroke={"red"} strokeWidth={"1"} />
                                 </div>
@@ -87,7 +81,6 @@ const MoreOptionsMenu = ({ postId, postUserId, handleDelete }) => {
                     </ul>
                 </div>
             </div>
-            <ConfiramtionDeleteModal postId={postId} deletePublication={deletePublication} />
         </>
     )
 

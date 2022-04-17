@@ -10,8 +10,7 @@ import MoreOptionsMenu from "../MoreOptionsMenu";
 import { dateDiff } from "../../services/outils/dateHandler";
 import SharePostMenu from "./SharePostMenu";
 import LikesPost from "./LikesPost";
-import { deletePost } from '../../services/Api/post/postsApi';
-import { toast } from "react-toastify";
+import ConfiramtionDeleteModal from "../ConfiramtionDeleteModal";
 
 const PostsCard = ({ posts = [], isLoading = true, handleDelete, deleteLoader }) => {
 
@@ -54,12 +53,11 @@ const PostsCard = ({ posts = [], isLoading = true, handleDelete, deleteLoader })
             }, 800)
         }
     }
-
-
-
+    
     return (
         <>
             <CommentModal post={modalPost} />
+            <ConfiramtionDeleteModal deletePublication={handleDelete} />
             {(isLoading) ? (
                 <Loader width="3" height="3" />
             ) : (
