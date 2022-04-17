@@ -3,20 +3,21 @@ import { UserContext } from "../contexts/UserContext";
 import { EditSvg, MoreVerticalSvg, TrashSvg } from "./IconsSvg";
 import ConfiramtionDeleteModal from "./ConfiramtionDeleteModal";
 
-const MoreOptionsMenu = ({ postId, postUserId, handleDelete }) => {
+const MoreOptionsMenu = ({ publicationId, publicationUserId, handleDelete }) => {
 
     const { user } = useContext(UserContext);
-
+    const [id , setId] = useState('');
     const [menuActive, setMenuActive] = useState('')
     handleMoreOptionMenu = async () => {
-        const moreOptionMenu = document.getElementById(`more-option-menu-${postId}`);
+        const moreOptionMenu = document.getElementById(`more-option-menu-${publicationId}`);
         if (moreOptionMenu) {
-            if (moreOptionMenu.classList.contains('d-none')) {
+            if (moreOptionMenu.classList.contains('d-none') && menuActive !== "-active") {
                 setMenuActive('-active')
                 moreOptionMenu.classList.remove('d-none')
                 moreOptionMenu.classList.add('d-block')
+                console.log('ici')
                 document.addEventListener('click', ({ target }) => {
-                    if (!target.closest(`#more-options-${postId}`)) {
+                    if (!target.closest(`#more-options-${publicationId}`)) {
                         moreOptionMenu.classList.add('d-none')
                         moreOptionMenu.classList.remove('d-block')
                         setMenuActive('')
@@ -29,17 +30,22 @@ const MoreOptionsMenu = ({ postId, postUserId, handleDelete }) => {
             }
         }
     }
-    useEffect(() => {
-        document.removeEventListener('click', handleMoreOptionMenu)
-    }, [])
 
     const deletePublication = async (e) => {
         e.preventDefault()
-        await handleDelete(postId)
+        await handleDelete(publicationId)
     }
+
+    useEffect(() => {
+        document.removeEventListener('click', handleMoreOptionMenu)
+    }, []);
+
+    useEffect(() => {
+        setId(publicationId)
+    },[publicationId])
     return (
         <>
-            <div id={`more-options-${postId}`} className="position-absolute end-0" title="Plus..." onClick={handleMoreOptionMenu}
+            <div id={`more-options-${id}`} className="position-absolute end-0" title="Plus..." onClick={handleMoreOptionMenu}
                 role="button"
                 style={{ zIndex: 1060 }}>
                 <div className="icon-info position-relative">
@@ -47,7 +53,7 @@ const MoreOptionsMenu = ({ postId, postUserId, handleDelete }) => {
                         <MoreVerticalSvg />
                     </i>
                 </div>
-                <div id={`more-option-menu-${postId}`}
+                <div id={`more-option-menu-${id}`}
                     className="d-none bg-white shadow position-absolute"
                     style={{ top: "40px", right: "0", width: "200px", cursor: "default", borderRadius: "3px" }} >
                     <ul className="list-unstyled mb-0">
@@ -69,11 +75,11 @@ const MoreOptionsMenu = ({ postId, postUserId, handleDelete }) => {
                             )}
                         </li>
                         <li className="p-1 bg-light-hover">
-                            {user.id === postUserId || user.roles.includes('ROLE_ADMIN') ? (
+                            {user.id === publicationUserId || user.roles.includes('ROLE_ADMIN') ? (
                                 <div className="text-danger text-decoration-none d-flex justify-content-between p-2" role="button"
                                     title="Supprimer ce post"
                                     data-bs-toggle="modal"
-                                    data-bs-target={`#delete-post-modal-${postId}`}>
+                                    data-bs-target={`#delete-post-modal-${id}`}>
                                     Supprimer ce post
                                     <TrashSvg size={18} stroke={"red"} strokeWidth={"1"} />
                                 </div>
@@ -88,8 +94,8 @@ const MoreOptionsMenu = ({ postId, postUserId, handleDelete }) => {
                         </li>
                     </ul>
                 </div>
-                <ConfiramtionDeleteModal postId={postId} deletePublication={deletePublication} />
             </div>
+            <ConfiramtionDeleteModal publicationId={id} deletePublication={deletePublication} />
         </>
     )
 

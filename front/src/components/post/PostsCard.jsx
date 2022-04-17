@@ -10,7 +10,7 @@ import MoreOptionsMenu from "../MoreOptionsMenu";
 import { dateDiff } from "../../services/outils/dateHandler";
 import SharePostMenu from "./SharePostMenu";
 import LikesPost from "./LikesPost";
-import EditModal  from "../EditModal";
+import EditModal from "../EditModal";
 
 const PostsCard = ({ posts = [], isLoading = true, handleDelete, deleteLoader }) => {
 
@@ -53,7 +53,7 @@ const PostsCard = ({ posts = [], isLoading = true, handleDelete, deleteLoader })
             }, 800)
         }
     }
-
+    
     return (
         <>
             <CommentModal post={modalPost} />
@@ -98,7 +98,7 @@ const PostsCard = ({ posts = [], isLoading = true, handleDelete, deleteLoader })
                                                     <Loader width="1.2" height="1.2" />
                                                 </div>
                                             ) : (
-                                                <MoreOptionsMenu postId={post.id} postUserId={post.User.id} handleDelete={handleDelete} />
+                                                <MoreOptionsMenu publicationId={post.id} publicationUserId={post.User.id} handleDelete={handleDelete} />
                                             )}
 
                                             {/* End User Info */}
