@@ -1,16 +1,17 @@
-import React from "react";
+import React, { useContext } from "react";
 import { EditSvg } from "./IconsSvg";
 import Editor from "./editor/Editor";
+import { PublicationContext } from "../contexts/PuplicationContext";
+
 
 const EditModal = () => {
 
     const editorContext = "edit-post"
-
+    const { publicationId } = useContext(PublicationContext)
     const handleSubmit = () => {
-        console.log("submit")
+        console.log(publicationId)
     }
     return (
-    
         <div id="edit-post-modal" className="modal fade" tabIndex="-1" aria-hidden="true" style={{ zIndex: 1090 }}>
             <div className="modal-dialog modal-dialog-scrollable modal-lg" role="document">
                 <div className="modal-content rounded-2">

@@ -1,14 +1,16 @@
-import React, {useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Editor from "../components/editor/Editor";
 import { useQuery } from 'react-query';
-import { getAll, deletePost  } from "../services/Api/post/postsApi";
+import { getAll, deletePost } from "../services/Api/post/postsApi";
 import PostsCard from "../components/post/PostsCard";
 import { createPost } from "../services/Api/post/postsApi";
 import { toast } from "react-toastify";
+import { PublicationContext } from "../contexts/PuplicationContext";
 
 const HomePage = () => {
 
-    const [posts, setPosts] = useState([])
+    const [posts, setPosts] = useState([]);
+    const [publicationId, setPublicationId] = useState('')
     // const [newPost, setNewPost] = useState(null);
     const { isLoading } = useQuery('Posts', () => getAll(), {
         refetchOnWindowFocus: false,
@@ -19,14 +21,14 @@ const HomePage = () => {
             toast.error("Une erreur s'est produite lors du chargement !...");
         }
     })
-    
+
     /**
      * @param {SubmitEvent} event
      */
     const handleSubmit = async (event, data) => {
         event.preventDefault();
         const form = new FormData(event.target);
-        if(data.media.fileBlob){
+        if (data.media.fileBlob) {
             form.set('media', data.media.fileBlob);
         }
         const response = await createPost(form);
@@ -41,7 +43,7 @@ const HomePage = () => {
 
     const [deleteLoader, setDeleteLoader] = useState(null)
     const DeletePost = async (id) => {
-        setDeleteLoader(id)
+        setDeleteLoader( id)
         try {
             await deletePost(id);
             toast.success("Post supprimé avec succès");
@@ -53,7 +55,7 @@ const HomePage = () => {
         }
 
     }
-    
+
     useEffect(() => {
         document.title = "Groupomania"
     }, []);
@@ -64,7 +66,9 @@ const HomePage = () => {
                     <Editor editorContext={'post'} emojiTriggerContext={"post"} handleSubmit={handleSubmit} />
                 </div>
             </div>
-            <PostsCard posts={posts} isLoading={isLoading} handleDelete={DeletePost} deleteLoader={deleteLoader} />
+            <PublicationContext.Provider value={{ publicationId, setPublicationId }} >
+                <PostsCard posts={posts} isLoading={isLoading} handleDelete={DeletePost} deleteLoader={deleteLoader} />
+            </PublicationContext.Provider>
         </main>
     )
 }

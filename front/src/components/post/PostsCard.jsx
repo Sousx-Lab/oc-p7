@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import Loader from '../layout/Loader';
 import defautlAvatar from '../../assets/img/d-avatar.svg';
@@ -11,10 +11,13 @@ import { dateDiff } from "../../services/outils/dateHandler";
 import SharePostMenu from "./SharePostMenu";
 import LikesPost from "./LikesPost";
 import EditModal from "../EditModal";
+import ConfiramtionDeleteModal from "../ConfiramtionDeleteModal";
+import { PublicationContext } from "../../contexts/PuplicationContext";
 
 const PostsCard = ({ posts = [], isLoading = true, handleDelete, deleteLoader }) => {
 
     const navigate = useNavigate()
+    const { publicationId } = useContext(PublicationContext);
     /**
      * @param {Event} event
      */
@@ -53,10 +56,11 @@ const PostsCard = ({ posts = [], isLoading = true, handleDelete, deleteLoader })
             }, 800)
         }
     }
-    
+
     return (
         <>
             <CommentModal post={modalPost} />
+            <ConfiramtionDeleteModal handleDelete={handleDelete} />
             <EditModal />
             {(isLoading) ? (
                 <Loader width="3" height="3" />
@@ -98,7 +102,7 @@ const PostsCard = ({ posts = [], isLoading = true, handleDelete, deleteLoader })
                                                     <Loader width="1.2" height="1.2" />
                                                 </div>
                                             ) : (
-                                                <MoreOptionsMenu publicationId={post.id} publicationUserId={post.User.id} handleDelete={handleDelete} />
+                                                <MoreOptionsMenu modalId={post.id} publicationUserId={post.User.id} handleDelete={handleDelete} />
                                             )}
 
                                             {/* End User Info */}

@@ -1,16 +1,24 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
+import { PublicationContext } from "../contexts/PuplicationContext";
 import { InfoSvg } from "./IconsSvg";
 
-const ConfiramtionDeleteModal = ({publicationId, deletePublication }) => {
+const ConfiramtionDeleteModal = ({ handleDelete }) => {
+
+  const { publicationId, setPublicationId } = useContext(PublicationContext);
+  const deletePublication = async (e) => {
+    e.preventDefault()
+    await handleDelete(publicationId)
+    setPublicationId(null)
+  }
 
   return (
-    <div className="modal fade" id={`delete-post-modal-${publicationId}`} tabIndex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+    <div className="modal fade" id="delete-post-modal" tabIndex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
       <div className="modal-dialog modal-dialog-centered" role="document">
         <div className="modal-content rounded-2">
           <div className="modal-header text-white bg-danger">
             <h6 className="modal-title" id="ModalLabel">
-              Supprimer une publication 
-              <i className="ps-2"><InfoSvg stroke="#ffff"/></i>
+              Supprimer une publication
+              <i className="ps-2"><InfoSvg stroke="#ffff" /></i>
             </h6>
             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close">
               <span aria-hidden="true"></span>

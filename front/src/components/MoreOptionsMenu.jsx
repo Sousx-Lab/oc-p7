@@ -1,26 +1,28 @@
 import React, { useContext, useEffect, useState } from "react";
 import { UserContext } from "../contexts/UserContext";
+import { PublicationContext } from "../contexts/PuplicationContext";
 import { EditSvg, MoreVerticalSvg, TrashSvg } from "./IconsSvg";
-import ConfiramtionDeleteModal from "./ConfiramtionDeleteModal";
 
-const MoreOptionsMenu = ({ publicationId, publicationUserId, handleDelete }) => {
+const MoreOptionsMenu = ({ modalId, publicationUserId }) => {
 
+    const { setPublicationId } = useContext(PublicationContext);
     const { user } = useContext(UserContext);
-    const [id , setId] = useState('');
+    const [id, setId] = useState('');
     const [menuActive, setMenuActive] = useState('')
     handleMoreOptionMenu = async () => {
-        const moreOptionMenu = document.getElementById(`more-option-menu-${publicationId}`);
+        const moreOptionMenu = document.getElementById(`more-option-menu-${id}`);
         if (moreOptionMenu) {
             if (moreOptionMenu.classList.contains('d-none') && menuActive !== "-active") {
                 setMenuActive('-active')
                 moreOptionMenu.classList.remove('d-none')
                 moreOptionMenu.classList.add('d-block')
-                console.log('ici')
+                setPublicationId(id)
                 document.addEventListener('click', ({ target }) => {
-                    if (!target.closest(`#more-options-${publicationId}`)) {
+                    if (!target.closest(`#more-options-${id}`)) {
                         moreOptionMenu.classList.add('d-none')
                         moreOptionMenu.classList.remove('d-block')
                         setMenuActive('')
+                        setPublicationId('')
                     }
                 })
             } else {
@@ -30,19 +32,15 @@ const MoreOptionsMenu = ({ publicationId, publicationUserId, handleDelete }) => 
             }
         }
     }
-
-    const deletePublication = async (e) => {
-        e.preventDefault()
-        await handleDelete(publicationId)
-    }
-
     useEffect(() => {
         document.removeEventListener('click', handleMoreOptionMenu)
+        const controller = new AbortController();
+        return () => controller.abort();
     }, []);
 
     useEffect(() => {
-        setId(publicationId)
-    },[publicationId])
+        setId(modalId)
+    }, [modalId])
     return (
         <>
             <div id={`more-options-${id}`} className="position-absolute end-0" title="Plus..." onClick={handleMoreOptionMenu}
@@ -79,7 +77,7 @@ const MoreOptionsMenu = ({ publicationId, publicationUserId, handleDelete }) => 
                                 <div className="text-danger text-decoration-none d-flex justify-content-between p-2" role="button"
                                     title="Supprimer ce post"
                                     data-bs-toggle="modal"
-                                    data-bs-target={`#delete-post-modal-${id}`}>
+                                    data-bs-target="#delete-post-modal">
                                     Supprimer ce post
                                     <TrashSvg size={18} stroke={"red"} strokeWidth={"1"} />
                                 </div>
@@ -95,7 +93,6 @@ const MoreOptionsMenu = ({ publicationId, publicationUserId, handleDelete }) => 
                     </ul>
                 </div>
             </div>
-            <ConfiramtionDeleteModal publicationId={id} deletePublication={deletePublication} />
         </>
     )
 
