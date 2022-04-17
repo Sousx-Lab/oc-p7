@@ -54,9 +54,9 @@ const PostsCard = ({ posts = [], isLoading = true, handleDelete, deleteLoader })
             }, 800)
         }
     }
-    
-    
-    
+
+
+
     return (
         <>
             <CommentModal post={modalPost} />
@@ -94,12 +94,15 @@ const PostsCard = ({ posts = [], isLoading = true, handleDelete, deleteLoader })
                                                 <div className="d-inline text-muted fs-6 ps-2"><small>- {dateDiff(post.createdAt)}</small></div>
                                                 <UserPopOver user={post.User} />
                                             </div>
-                                            <div className="position-absolute" style={{ left: '95%', top: '-20px' }}>
-                                                {deleteLoader === post.id &&
-                                                    <Loader width="1" height="1" />
-                                                }
-                                            </div>
-                                            <MoreOptionsMenu postId={post.id} postUserId={post.User.id} handleDelete={handleDelete} />
+
+                                            {deleteLoader === post.id ? (
+                                                <div className="position-absolute" style={{ left: '95%' }}>
+                                                    <Loader width="1.2" height="1.2" />
+                                                </div>
+                                            ) : (
+                                                <MoreOptionsMenu postId={post.id} postUserId={post.User.id} handleDelete={handleDelete} />
+                                            )}
+
                                             {/* End User Info */}
 
                                             {/* Post Content */}
