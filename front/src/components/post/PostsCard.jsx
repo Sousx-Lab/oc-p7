@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import Loader from '../layout/Loader';
 import defautlAvatar from '../../assets/img/d-avatar.svg';
@@ -10,7 +10,7 @@ import MoreOptionsMenu from "../MoreOptionsMenu";
 import { dateDiff } from "../../services/outils/dateHandler";
 import SharePostMenu from "./SharePostMenu";
 import LikesPost from "./LikesPost";
-import ConfiramtionDeleteModal from "../ConfiramtionDeleteModal";
+import EditModal  from "../EditModal";
 
 const PostsCard = ({ posts = [], isLoading = true, handleDelete, deleteLoader }) => {
 
@@ -53,11 +53,11 @@ const PostsCard = ({ posts = [], isLoading = true, handleDelete, deleteLoader })
             }, 800)
         }
     }
-    
+
     return (
         <>
             <CommentModal post={modalPost} />
-            <ConfiramtionDeleteModal deletePublication={handleDelete} />
+            <EditModal />
             {(isLoading) ? (
                 <Loader width="3" height="3" />
             ) : (

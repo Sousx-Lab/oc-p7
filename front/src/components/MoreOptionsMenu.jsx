@@ -1,13 +1,14 @@
 import React, { useContext, useEffect, useState } from "react";
 import { UserContext } from "../contexts/UserContext";
 import { EditSvg, MoreVerticalSvg, TrashSvg } from "./IconsSvg";
+import ConfiramtionDeleteModal from "./ConfiramtionDeleteModal";
 
-const MoreOptionsMenu = ({ postId, postUserId}) => {
+const MoreOptionsMenu = ({ postId, postUserId, handleDelete }) => {
 
     const { user } = useContext(UserContext);
 
     const [menuActive, setMenuActive] = useState('')
-    handleMoreOptionMenu =  async () => {
+    handleMoreOptionMenu = async () => {
         const moreOptionMenu = document.getElementById(`more-option-menu-${postId}`);
         if (moreOptionMenu) {
             if (moreOptionMenu.classList.contains('d-none')) {
@@ -30,7 +31,12 @@ const MoreOptionsMenu = ({ postId, postUserId}) => {
     }
     useEffect(() => {
         document.removeEventListener('click', handleMoreOptionMenu)
-    },[])
+    }, [])
+
+    const deletePublication = async (e) => {
+        e.preventDefault()
+        await handleDelete(postId)
+    }
     return (
         <>
             <div id={`more-options-${postId}`} className="position-absolute end-0" title="Plus..." onClick={handleMoreOptionMenu}
@@ -47,11 +53,13 @@ const MoreOptionsMenu = ({ postId, postUserId}) => {
                     <ul className="list-unstyled mb-0">
                         <li className="p-1 bg-light-hover">
                             {user.roles.includes('ROLE_ADMIN') ? (
-                                <a href="#" className="text-black text-decoration-none d-flex justify-content-between p-2"
-                                    title="Editer ce post">
+                                <div className="text-black text-decoration-none d-flex justify-content-between p-2" role="button"
+                                    title="Editer ce post"
+                                    data-bs-toggle="modal"
+                                    data-bs-target={"#edit-post-modal"}>
                                     Modérer ce post
                                     <EditSvg size={18} strokeWidth={"1"} />
-                                </a>
+                                </div>
                             ) : (
                                 <div className="text-muted text-decoration-none cursor-not-allowed d-flex justify-content-between p-2"
                                     title="Editer ce post">
@@ -62,10 +70,10 @@ const MoreOptionsMenu = ({ postId, postUserId}) => {
                         </li>
                         <li className="p-1 bg-light-hover">
                             {user.id === postUserId || user.roles.includes('ROLE_ADMIN') ? (
-                                <div href="#" className="text-danger text-decoration-none d-flex justify-content-between p-2" role="button"
+                                <div className="text-danger text-decoration-none d-flex justify-content-between p-2" role="button"
                                     title="Supprimer ce post"
                                     data-bs-toggle="modal"
-                                    data-bs-target="#delete-post-modal">
+                                    data-bs-target={`#delete-post-modal-${postId}`}>
                                     Supprimer ce post
                                     <TrashSvg size={18} stroke={"red"} strokeWidth={"1"} />
                                 </div>
@@ -80,6 +88,7 @@ const MoreOptionsMenu = ({ postId, postUserId}) => {
                         </li>
                     </ul>
                 </div>
+                <ConfiramtionDeleteModal postId={postId} deletePublication={deletePublication} />
             </div>
         </>
     )
