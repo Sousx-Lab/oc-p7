@@ -15,12 +15,15 @@ import Editor from "../components/editor/Editor";
 import LikesPost from "../components/post/LikesPost";
 import { createComment } from "../services/Api/commentary/commentsApi";
 import CommentariesSection from "../components/comment/CommentariesSection";
-
+import { PublicationContext } from "../contexts/PuplicationContext";
+import ConfiramtionDeleteModal from "../components/ConfiramtionDeleteModal";
+import EditModal from "../components/EditModal";
 
 const PostPage = () => {
 
     const [post, setPost] = useState({});
     const { id } = useParams();
+    const [publicationId, setPublicationId] = useState('')
 
     const { isLoading } = useQuery(['Posts', id], () => getPostById(id), {
         refetchOnWindowFocus: false,
@@ -72,11 +75,14 @@ const PostPage = () => {
 
     const editorContext = "commentary";
     return (
+        <PublicationContext.Provider value={{ publicationId, setPublicationId }} >
         <div className="container">
             <div className="row mx-auto d-flex justify-content-center col-md-6 col-sm-12 border-bottom border-top mt-1 border-light">
                 {/* post */}
                 {post.id && (
                     <>
+                    <ConfiramtionDeleteModal handleDelete={DeletePost} />
+                    <EditModal />
                         <article className="border-start border-end border-1 ">
                             <div className="mt-3">
                                 <Link to="#" className="rounded-circle bg-grey-hover icon-nav" style={{ padding: "0.5rem 0.4rem" }}
@@ -110,7 +116,7 @@ const PostPage = () => {
                                             <Loader width="1" height="1" />
                                         }
                                     </div>
-                                    <MoreOptionsMenu postId={post.id} postUserId={post.User.id} handleDelete={DeletePost} />
+                                    <MoreOptionsMenu modalId={post.id} publicationUserId={post.User.id}/>
 
                                     {/* End User Info */}
                                     <div className=" text-decoration-none">
@@ -151,6 +157,7 @@ const PostPage = () => {
                 {isLoading && <Loader />}
             </div>
         </div>
+        </PublicationContext.Provider>
     )
 }
 

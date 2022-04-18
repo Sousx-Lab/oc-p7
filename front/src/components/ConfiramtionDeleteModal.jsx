@@ -10,7 +10,7 @@ const ConfiramtionDeleteModal = ({ handleDelete }) => {
     await handleDelete(publicationId)
     setPublicationId(null)
   }
-
+  
   return (
     <div className="modal fade" id="delete-post-modal" tabIndex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
       <div className="modal-dialog modal-dialog-centered" role="document">

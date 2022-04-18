@@ -33,7 +33,6 @@ const MoreOptionsMenu = ({ modalId, publicationUserId }) => {
         }
     }
     useEffect(() => {
-        document.removeEventListener('click', handleMoreOptionMenu)
         const controller = new AbortController();
         return () => controller.abort();
     }, []);
