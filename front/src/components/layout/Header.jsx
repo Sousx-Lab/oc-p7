@@ -54,7 +54,7 @@ const Header = () => {
                                     </a>
                                     <div className="dropdown-menu">
                                         <Link className="dropdown-item" to={`/user/${user.id}`}>
-                                            Profile
+                                            Profil
                                             <div className="d-inline ps-2 float-end">
                                                 <UserCircleSvg size={18} />
                                             </div>

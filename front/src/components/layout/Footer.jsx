@@ -25,7 +25,7 @@ const Footer = () => {
                         <li className="list-inline-item">
                             <Link to={`/user/${user.id}`} className="pe-1 text-muted" >
                                 <i className="pe-1"><UserCircleSvg size={16} stroke={"#ffff"} /></i>
-                            Profile
+                            Profil
                         </Link>
                         |
                         </li>
