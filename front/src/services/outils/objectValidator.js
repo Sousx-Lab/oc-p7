@@ -4,3 +4,12 @@ export function isEmptyObject(value) {
   }
   return true
 }
+
+export function isValidHttpUrl(string) {
+  try {
+    new URL(string);
+  } catch (_) {
+    return false;  
+  }
+  return true
+}

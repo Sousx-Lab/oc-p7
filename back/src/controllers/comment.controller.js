@@ -67,10 +67,16 @@ exports.updateComment = async (req, res, next) => {
         if(!comment){
             return res.http.NotFound({error: {message : "Comment not found"}});
         }
+
+        let uploadedFile = req.files?.media ? req.files?.media[0].filename: null;
+        if(req.body.media === comment.media && uploadedFile === null){
+            uploadedFile = comment.getDataValue('media')
+        }
+        
         if(comment.user_id === req.user.id || req.user.roles.includes('ROLE_ADMIN')){
             await comment.set({
-                content: req.body.content ?? comment.getDataValue('content'),
-                media: req.files?.media ? req.files?.media[0].filename: comment.getDataValue('media') 
+                content: req.body.content || null,
+                media: uploadedFile 
             },{ individualHooks: true});
             
             await comment.validate();

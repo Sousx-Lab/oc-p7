@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useQuery } from 'react-query';
 import { getUserById } from "../services/Api/user/usersApi";
+import { deletePost } from "../services/Api/post/postsApi";
 import { toast } from 'react-toastify'
 import defautlAvatar from '../assets/img/d-avatar.svg';
 import { ArrowLeftSvg, CommentSvg } from '../components/IconsSvg';
@@ -10,11 +11,14 @@ import MoreOptionsMenu from '../components/MoreOptionsMenu';
 import MediaType from '../components/MediaType';
 import LikesPost from '../components/post/LikesPost';
 import SharePostMenu from '../components/post/SharePostMenu';
-import PostsCard from "../components/post/PostsCard";
-
+import { PublicationContext } from "../contexts/PublicationContext";
+import ConfiramtionDeleteModal from "../components/ConfiramtionDeleteModal";
+import EditModal from "../components/EditModal";
+import Loader from '../components/layout/Loader';
 
 const UserPage = () => {
 
+    const [publication, setPublication] = useState('')
     const { id } = useParams();
     const [userData, setUserData] = useState({});
 
@@ -33,6 +37,20 @@ const UserPage = () => {
         if (event.target.dataset.link) {
             navigate(event.target.dataset.link)
         }
+    }
+    const [deleteLoader, setDeleteLoader] = useState(null)
+    const DeletePost = async (id) => {
+        setDeleteLoader(id)
+        try {
+            await deletePost(id);
+            toast.success("Post supprimé avec succès");
+            setDeleteLoader(null);
+            setUserData({...userData, Posts: userData.Posts.filter(post => post.id !== id)});
+        } catch (error) {
+            setDeleteLoader(null);
+            toast.error("Une erreur est survenue lors de la suppression du post");
+        }
+
     }
     useEffect(() => {
         document.title =
@@ -62,60 +80,68 @@ const UserPage = () => {
                             <small> Inscrit depuis le {new Date(userData.createdAt).toLocaleDateString()}</small>
                         </div>
                     </div>
-                    {userData.Posts.map((post, key) => (
-                        <div className="row col-sm-12 col-md-8 col-xl-6 mx-auto bg-light-hover" key={key}>
-                            <article className="border-start border-end border-1 cursor-pointer" data-link={`/post/${post.id}`}
-                                onClick={postLink}>
-                                <div className="d-flex mb-3 mt-4 position-relative">
-                                    <div className="pe-2" data-link={`/post/${post.id}`}>
-                                        <Link className="d-block overflow-auto" to={`/userData/${userData.id}`}
-                                            data-popover="true">
-                                            <img className="rounded-circle border border-3" width={54}
-                                                alt={`photo de profile de ${userData.firstName} ${userData.lastName}`}
-                                                src={userData.profilePicture || defautlAvatar}
-                                                data-holder-rendered="true" />
-                                        </Link>
-                                    </div>
-                                    <div className="d-flex flex-column ms-2 w-100">
-                                        <div className="text-start pb-3" data-link={`/post/${post.id}`}>
-                                            <Link to={`../userData/${userData.id}`}
-                                                className="fw-bold text-capitalize link-dark"
+                    {/* End User Info */}
+                    <PublicationContext.Provider value={{ publication, setPublication }} >
+                        <ConfiramtionDeleteModal handleDelete={DeletePost} />
+                        <EditModal />
+                        {userData.Posts.map((post, key) => (
+                            <div key={key} className="row col-sm-12 col-md-8 col-xl-6 mx-auto bg-light-hover" >
+                                <article className="border-start border-end border-1 cursor-pointer" data-link={`/post/${post.id}`}
+                                    onClick={postLink}>
+                                    <div className="d-flex mb-3 mt-4 position-relative">
+                                        <div className="pe-2" data-link={`/post/${post.id}`}>
+                                            <Link className="d-block overflow-auto" to={`/userData/${userData.id}`}
                                                 data-popover="true">
-                                                {`${userData.firstName} ${userData.lastName}`}
+                                                <img className="rounded-circle border border-3" width={54}
+                                                    alt={`photo de profile de ${userData.firstName} ${userData.lastName}`}
+                                                    src={userData.profilePicture || defautlAvatar}
+                                                    data-holder-rendered="true" />
                                             </Link>
-                                            <div className="d-inline text-muted fs-6 ps-2"><small>- {dateDiff(post.createdAt)}</small></div>
                                         </div>
-                                        <MoreOptionsMenu postId={post.id} postUserId={userData.id} />
-
-                                        {/* End User Info */}
-                                        <Link className=" text-decoration-none" to={`/post/${post.id}`} >
-                                            <p className="pe-4 pb-3 m-0 text-break text-body text-start">{post.content}</p>
-                                        </Link>
-                                        {post.media && (
-                                            <MediaType mediaType={post.mediaType} media={post.media} id={post.id} />
-                                        )}
-
-                                        {/*  Commentaries & likes  */}
-                                        <div data-link={`/post/${post.id}`} className="d-flex justify-content-evenly pb-3 pt-3">
-                                            <div className="d-flex align-items-center">
-                                                {/* comments  */}
-                                                <div className="rounded-circle p-2" title="Nombres de commentaires">
-                                                    {<CommentSvg />}
-                                                </div>
-                                                <span className="ps-1">{post.commentsCount.toString()}</span>
+                                        <div className="d-flex flex-column ms-2 w-100">
+                                            <div className="text-start pb-3" data-link={`/post/${post.id}`}>
+                                                <Link to={`../userData/${userData.id}`}
+                                                    className="fw-bold text-capitalize link-dark"
+                                                    data-popover="true">
+                                                    {`${userData.firstName} ${userData.lastName}`}
+                                                </Link>
+                                                <div className="d-inline text-muted fs-6 ps-2"><small>- {dateDiff(post.createdAt)}</small></div>
                                             </div>
+                                            {deleteLoader === post.id ? (
+                                                <div className="position-absolute" style={{ left: '95%' }}>
+                                                    <Loader width="1.2" height="1.2" />
+                                                </div>
+                                            ) : (
+                                                <MoreOptionsMenu publication={post} postUserId={userData.id}/>
+                                            )}
+                                            <Link className=" text-decoration-none" to={`/post/${post.id}`} >
+                                                <p className="pe-4 pb-3 m-0 text-break text-body text-start">{post.content}</p>
+                                            </Link>
+                                            {post.media && (
+                                                <MediaType mediaType={post.mediaType} media={post.media} id={post.id} />
+                                            )}
 
-                                            {/* likes*/}
-                                            <LikesPost usersLiked={post.usersLiked} postId={post.id} />
-                                            <SharePostMenu post={post} />
+                                            {/*  Commentaries & likes  */}
+                                            <div data-link={`/post/${post.id}`} className="d-flex justify-content-evenly pb-3 pt-3">
+                                                <div className="d-flex align-items-center">
+                                                    {/* comments  */}
+                                                    <div className="rounded-circle p-2" title="Nombres de commentaires">
+                                                        {<CommentSvg />}
+                                                    </div>
+                                                    <span className="ps-1">{post.commentsCount.toString()}</span>
+                                                </div>
+
+                                                {/* likes*/}
+                                                <LikesPost usersLiked={post.usersLiked} postId={post.id} />
+                                                <SharePostMenu post={post} />
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </article>
-                        </div>
-                    ))}
+                                </article>
+                            </div>
+                        ))}
+                    </PublicationContext.Provider>
                 </>
-
             )}
         </div>
     );

@@ -1,28 +1,28 @@
 import React, { useContext, useEffect, useState } from "react";
 import { UserContext } from "../contexts/UserContext";
-import { PublicationContext } from "../contexts/PuplicationContext";
+import { PublicationContext } from "../contexts/PublicationContext";
 import { EditSvg, MoreVerticalSvg, TrashSvg } from "./IconsSvg";
 
-const MoreOptionsMenu = ({ modalId, publicationUserId }) => {
+const MoreOptionsMenu = ({ publication, publicationUserId}) => {
 
-    const { setPublicationId } = useContext(PublicationContext);
+    const { setPublication } = useContext(PublicationContext);
     const { user } = useContext(UserContext);
     const [id, setId] = useState('');
     const [menuActive, setMenuActive] = useState('')
-    handleMoreOptionMenu = async () => {
+
+    handleMoreOptionMenu = async (e) => {
         const moreOptionMenu = document.getElementById(`more-option-menu-${id}`);
         if (moreOptionMenu) {
             if (moreOptionMenu.classList.contains('d-none') && menuActive !== "-active") {
                 setMenuActive('-active')
                 moreOptionMenu.classList.remove('d-none')
                 moreOptionMenu.classList.add('d-block')
-                setPublicationId(id)
+                setPublication(publication);
                 document.addEventListener('click', ({ target }) => {
                     if (!target.closest(`#more-options-${id}`)) {
                         moreOptionMenu.classList.add('d-none')
                         moreOptionMenu.classList.remove('d-block')
-                        setMenuActive('')
-                        setPublicationId('')
+                        setMenuActive('');
                     }
                 })
             } else {
@@ -38,8 +38,8 @@ const MoreOptionsMenu = ({ modalId, publicationUserId }) => {
     }, []);
 
     useEffect(() => {
-        setId(modalId)
-    }, [modalId])
+        setId(publication?.id)
+    }, [publication])
     return (
         <>
             <div id={`more-options-${id}`} className="position-absolute end-0" title="Plus..." onClick={handleMoreOptionMenu}
@@ -59,7 +59,7 @@ const MoreOptionsMenu = ({ modalId, publicationUserId }) => {
                                 <div className="text-black text-decoration-none d-flex justify-content-between p-2" role="button"
                                     title="Editer ce post"
                                     data-bs-toggle="modal"
-                                    data-bs-target={"#edit-post-modal"}>
+                                    data-bs-target={`#edit-publication-modal${id}`}>
                                     Modérer ce post
                                     <EditSvg size={18} strokeWidth={"1"} />
                                 </div>
@@ -76,7 +76,7 @@ const MoreOptionsMenu = ({ modalId, publicationUserId }) => {
                                 <div className="text-danger text-decoration-none d-flex justify-content-between p-2" role="button"
                                     title="Supprimer ce post"
                                     data-bs-toggle="modal"
-                                    data-bs-target="#delete-post-modal">
+                                    data-bs-target={`#delete-publication-modal${id}`}>
                                     Supprimer ce post
                                     <TrashSvg size={18} stroke={"red"} strokeWidth={"1"} />
                                 </div>

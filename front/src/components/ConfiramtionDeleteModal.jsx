@@ -1,18 +1,24 @@
-import React, { useContext, useEffect } from "react";
-import { PublicationContext } from "../contexts/PuplicationContext";
+import React, { useContext, useEffect, useState } from "react";
+import { PublicationContext } from "../contexts/PublicationContext";
 import { InfoSvg } from "./IconsSvg";
 
 const ConfiramtionDeleteModal = ({ handleDelete }) => {
 
-  const { publicationId, setPublicationId } = useContext(PublicationContext);
+  const { publication, setPublication } = useContext(PublicationContext);
+  const  [id , setId ] = useState('');
   const deletePublication = async (e) => {
-    e.preventDefault()
-    await handleDelete(publicationId)
-    setPublicationId(null)
+    e.preventDefault();
+    await handleDelete(publication.id)
+    setPublication({})
   }
   
+  useEffect(() => {
+    if(publication?.id && publication?.id !== id) {
+      setId(publication.id)
+    }
+  },[publication])
   return (
-    <div className="modal fade" id="delete-post-modal" tabIndex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+    <div className="modal fade" id={`delete-publication-modal${id}`} tabIndex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
       <div className="modal-dialog modal-dialog-centered" role="document">
         <div className="modal-content rounded-2">
           <div className="modal-header text-white bg-danger">

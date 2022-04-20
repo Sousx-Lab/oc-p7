@@ -10,6 +10,7 @@ exports.findOneJoinPostsComment = async(id) =>{
         include: [
             {
             model: Post,
+            order: [['created_at', 'DESC']],
             attributes: ['id', 'content', 'media', 'mediaType', 'likes', 
             ['users_liked', 'usersLiked'],['created_at', 'createdAt'],['updated_at', 'updatedAt'],
             [Sequelize.fn('count', Sequelize.col('post_id')), 'commentsCount'], 
@@ -17,8 +18,10 @@ exports.findOneJoinPostsComment = async(id) =>{
             include: {model: Comment,attributes: []} 
             }
         ],
-        group:['post_id']
+        order: [['Posts', 'created_at', 'DESC']],
+        group:['post_id'],
     });
+
 };
 
 exports.User = User;

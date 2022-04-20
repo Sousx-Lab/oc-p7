@@ -5,12 +5,12 @@ import { getAll, deletePost } from "../services/Api/post/postsApi";
 import PostsCard from "../components/post/PostsCard";
 import { createPost } from "../services/Api/post/postsApi";
 import { toast } from "react-toastify";
-import { PublicationContext } from "../contexts/PuplicationContext";
+import { PublicationContext } from "../contexts/PublicationContext";
 
 const HomePage = () => {
 
     const [posts, setPosts] = useState([]);
-    const [publicationId, setPublicationId] = useState('')
+    const [publication, setPublication] = useState('')
     // const [newPost, setNewPost] = useState(null);
     const { isLoading } = useQuery('Posts', () => getAll(), {
         refetchOnWindowFocus: false,
@@ -24,6 +24,7 @@ const HomePage = () => {
 
     /**
      * @param {SubmitEvent} event
+     * @returns {boolean}
      */
     const handleSubmit = async (event, data) => {
         event.preventDefault();
@@ -66,8 +67,8 @@ const HomePage = () => {
                     <Editor editorContext={'post'} emojiTriggerContext={"post"} handleSubmit={handleSubmit} />
                 </div>
             </div>
-            <PublicationContext.Provider value={{ publicationId, setPublicationId }} >
-                <PostsCard posts={posts} isLoading={isLoading} handleDelete={DeletePost} deleteLoader={deleteLoader} />
+            <PublicationContext.Provider value={{ publication, setPublication }} >
+                <PostsCard fetchedPosts={posts} isLoading={isLoading} handleDelete={DeletePost} deleteLoader={deleteLoader} />
             </PublicationContext.Provider>
         </main>
     )

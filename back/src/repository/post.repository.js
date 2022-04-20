@@ -21,7 +21,7 @@ exports.findOneJoinUserComment = async (id) =>{
                 }],
             },
         ],
-        order: [['created_at', 'DESC']]
+        order: [['Comments', 'created_at', 'DESC']],
     });
 }
 

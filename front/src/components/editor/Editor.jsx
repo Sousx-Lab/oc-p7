@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { useDropzone } from 'react-dropzone';
 import { UserContext } from "../../contexts/UserContext";
 import { MediasSvg } from "../IconsSvg";
@@ -7,7 +7,7 @@ import defautlAvatar from '../../assets/img/d-avatar.svg';
 import { Link } from 'react-router-dom';
 import EmojiPicker from "./EmojiPicker";
 
-const Editor = ({ editorContext, emojiTriggerContext, placeholder = "Quoi de neuf ?", handleSubmit }) => {
+const Editor = ({ editorContext, emojiTriggerContext, placeholder = "Quoi de neuf ?", handleSubmit, publication = '' }) => {
 
     const { user } = useContext(UserContext);
     const [data, setData] = useState({
@@ -23,7 +23,6 @@ const Editor = ({ editorContext, emojiTriggerContext, placeholder = "Quoi de neu
         uploadedFiles.forEach(file => {
             const reader = new FileReader()
             reader.onloadend = () => {
-                console.log(data.content)
                 setData({...data.media, media:{ file: reader.result, type: file.type, fileBlob: file }});
             }
             if (file) {
@@ -53,8 +52,8 @@ const Editor = ({ editorContext, emojiTriggerContext, placeholder = "Quoi de neu
         }
     }, "")
 
-    const handleDeleteUpload = () => {
-        setData({ ...data.media, media: { file: '', type: null } })
+    const handleDeleteUploadedFile = () => {
+        setData({ ...data, media:{ file: '', type: null, fileBlob: null }});
     }
 
     const handleChange = ({ currentTarget }) => {
@@ -67,6 +66,15 @@ const Editor = ({ editorContext, emojiTriggerContext, placeholder = "Quoi de neu
             setData({ content: "", media: { file: "", type: null, fileBlob: null } })
         }
     }
+
+    useEffect(() => {
+        setData({ 
+            ...data,
+            content: publication.content, 
+            media: { file: publication.media, type: publication.mediaType, fileBlob: null } 
+        })
+    },[publication?.id])
+
     return (
         <div className="mx-auto pb-2 pt-3 mb-3">
             <div className="d-flex text-center p-0">
@@ -97,13 +105,13 @@ const Editor = ({ editorContext, emojiTriggerContext, placeholder = "Quoi de neu
                                 </div>
                             </div>
                             <EmojiPicker insertInto={editorContext} TriggerElem={emojiTriggerContext} />
-                            <button disabled={data.content || data.media.file ? false : true}
+                            <button disabled={(data.content || data.media.file) ? false : true}
                                 type="submit"
                                 className="btn btn-primary btn-sm rounded-2 shadow ms-auto" tabIndex="0">Poster</button>
                         </div>
                         {data.media.file && (
                             <div className="col-10 alert alert-dismissible w-100 mt-1 p-0">
-                                <button type="button" onClick={handleDeleteUpload} className="bg-danger btn-danger btn-close p-2"></button>
+                                <button type="button" onClick={handleDeleteUploadedFile} className="bg-danger btn-danger btn-close p-2"></button>
                                 <MediaType mediaType={data.media.type} media={data.media.file} />
                             </div>
                         )}

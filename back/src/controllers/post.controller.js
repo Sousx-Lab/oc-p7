@@ -70,10 +70,14 @@ exports.updatePost = async(req, res, next) => {
         if(!post){
             return res.http.NotFound({error: {message: `Post not found`}});
         }
-        if(post.user_id === req.user.id || req.user.roles.includes('ROLE_ADMIN')){
+        let uploadedFile = req.files?.media ? req.files?.media[0].filename: null;
+        if(req.body.media === post.media && uploadedFile === null){
+            uploadedFile = post.getDataValue('media')
+        }
+        if(req.user.roles.includes('ROLE_ADMIN')){
             await post.set({
                 content: req.body.content || null,
-                media: req.files?.media ? req.files?.media[0].filename: post.getDataValue('media')
+                media: uploadedFile
                 },{ individualHooks: true})
             
             await post.validate()

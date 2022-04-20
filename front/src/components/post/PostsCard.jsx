@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import Loader from '../layout/Loader';
 import defautlAvatar from '../../assets/img/d-avatar.svg';
@@ -12,12 +12,15 @@ import SharePostMenu from "./SharePostMenu";
 import LikesPost from "./LikesPost";
 import EditModal from "../EditModal";
 import ConfiramtionDeleteModal from "../ConfiramtionDeleteModal";
-import { PublicationContext } from "../../contexts/PuplicationContext";
+import { PublicationContext } from "../../contexts/PublicationContext";
+import { updatePost } from '../../services/Api/post/postsApi';
+import { toast } from "react-toastify";
 
-const PostsCard = ({ posts = [], isLoading = true, handleDelete, deleteLoader }) => {
+const PostsCard = ({ fetchedPosts = [], isLoading = true, handleDelete, deleteLoader }) => {
 
     const navigate = useNavigate()
     const { publicationId } = useContext(PublicationContext);
+    const [posts, setPosts] = useState([]);
     /**
      * @param {Event} event
      */
@@ -29,6 +32,9 @@ const PostsCard = ({ posts = [], isLoading = true, handleDelete, deleteLoader })
     const [modalPost, setModalPost] = useState({});
     const [popOver, setPopOver] = useState(false);
 
+    /**
+     * @param {string} id post id
+     */
     const handlePopOver = async (id) => {
         setPopOver(true)
         let userPop = document.getElementById(`user-pop-${id}`)
@@ -43,6 +49,9 @@ const PostsCard = ({ posts = [], isLoading = true, handleDelete, deleteLoader })
         }
     }
 
+    /**
+     * @param {string} id post id
+     */
     const handlePopOverLeave = (id) => {
         setPopOver(false)
         let userPop = document.getElementById(`user-pop-${id}`)
@@ -57,16 +66,35 @@ const PostsCard = ({ posts = [], isLoading = true, handleDelete, deleteLoader })
         }
     }
 
+    /**
+     * @param {SubmitEvent} event
+     * @returns {boolean}
+     */
+    const handleUpdate = async (id, data) => {
+        try {
+            const reponse = await updatePost(id, data);
+            let post = await reponse.json()
+            fetchedPosts = fetchedPosts.map(p => p.id !== post.id ? p : post);
+            setPosts(fetchedPosts);
+            return reponse.ok;
+        } catch (error) {
+            toast.error("Une erreur est survenue lors de la mise à jour du post");
+        }
+    }
+
+    useEffect(() => {
+        setPosts(fetchedPosts);
+    }, [fetchedPosts])
     return (
         <>
             <CommentModal post={modalPost} />
             <ConfiramtionDeleteModal handleDelete={handleDelete} />
-            <EditModal />
+            <EditModal handleUpdate={handleUpdate} />
             {(isLoading) ? (
                 <Loader width="3" height="3" />
             ) : (
                 <>
-                    {posts.map((post, key) => {
+                    {posts.length > 0 && posts.map((post, key) => {
                         return (
                             <div key={key} className="row mx-auto d-flex justify-content-center col-lg-8 col-xl-6 col-sm-12 border-bottom border-top border-light">
                                 <article className="border-start border-end border-1 bg-light-hover cursor-pointer"
@@ -96,13 +124,12 @@ const PostsCard = ({ posts = [], isLoading = true, handleDelete, deleteLoader })
                                                 <div className="d-inline text-muted fs-6 ps-2"><small>- {dateDiff(post.createdAt)}</small></div>
                                                 <UserPopOver user={post.User} />
                                             </div>
-
                                             {deleteLoader === post.id ? (
                                                 <div className="position-absolute" style={{ left: '95%' }}>
                                                     <Loader width="1.2" height="1.2" />
                                                 </div>
                                             ) : (
-                                                <MoreOptionsMenu modalId={post.id} publicationUserId={post.User.id} handleDelete={handleDelete} />
+                                                <MoreOptionsMenu publication={post} publicationUserId={post.User.id} />
                                             )}
 
                                             {/* End User Info */}
@@ -127,7 +154,8 @@ const PostsCard = ({ posts = [], isLoading = true, handleDelete, deleteLoader })
                                                     <div className="rounded-circle p-2 icon-info--bg cursor-pointer" title="Ajouter un commentaire">
                                                         {<CommentSvg />}
                                                     </div>
-                                                    <span className="ps-1 small icon-info--text"><small>{post.commentsCount.toString()}</small></span>
+                                                    <span className="ps-1 small icon-info--text">
+                                                        <small>{post?.commentsCount.toString() || post.Comments.length.toString()}</small></span>
                                                 </div>
 
                                                 {/* likes*/}

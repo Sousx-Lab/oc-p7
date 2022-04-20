@@ -148,12 +148,12 @@ export const CommentsApi = {
      * @returns 
      * PUT: http://localhost:3000/api/comments/{id}
      */
-    updateById(id){return `${API.COMMENTS_ROUTE}/{id}`},
+    updateById(id){return `${API.COMMENTS_ROUTE}/${id}`},
 
     /**
      * @param {string} id Comment id
      * @returns 
      * DELETE: http://localhost:3000/api/comments/{id}
      */
-    deleteById(id){return `${API.COMMENTS_ROUTE}/{id}`},
+    deleteById(id){return `${API.COMMENTS_ROUTE}/${id}`},
 }

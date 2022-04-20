@@ -29,7 +29,7 @@ const Footer = () => {
                         </Link>
                         |
                         </li>
-                        <li className="list-inline-item text-white">
+                        <li className="list-inline-item">
                         <Link to={`/about`} className="pe-1 text-muted">
                                 <i className="pe-1"><InfoSvg size={16} stroke={"#ffff"} /></i>
                             A propos

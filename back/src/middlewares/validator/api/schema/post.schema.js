@@ -11,4 +11,8 @@ exports.postSchema = Joi.object().keys({
       .string()
       .optional()
       .allow(null, ''),
+    media: Joi
+      .string()
+      .optional()
+      .allow(null, ''),
 })

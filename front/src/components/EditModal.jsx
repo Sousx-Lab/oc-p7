@@ -1,18 +1,39 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { EditSvg } from "./IconsSvg";
 import Editor from "./editor/Editor";
-import { PublicationContext } from "../contexts/PuplicationContext";
+import { PublicationContext } from "../contexts/PublicationContext";
+import { toast } from "react-toastify";
+import { isValidHttpUrl } from "../services/outils/objectValidator";
 
-
-const EditModal = () => {
-
-    const editorContext = "edit-post"
-    const { publicationId } = useContext(PublicationContext)
-    const handleSubmit = () => {
-        console.log(publicationId)
+const EditModal = ({ handleUpdate, editorContext = "edit-publication"}) => {
+ 
+    const { publication } = useContext(PublicationContext);
+    const [data, setData] = useState({});
+    const [isLoading, setIsLoading] = useState(false);
+    
+    const handleSubmit = async (event, formData) => {
+        const form = new FormData(event.target);
+        if (formData.media.fileBlob) {
+            form.set('media', formData.media.fileBlob);
+        }else if(isValidHttpUrl(formData.media.file)){
+            form.set('media', formData.media.file);
+        }
+        const submited = await handleUpdate(publication.id, form);
+        if (submited) {
+            toast.success('La publication à été mise à jour avec succès');
+            document.getElementById(`close-modal-${data.id}`).click();
+            setData({});
+            return submited;
+        } else {
+            toast.error("Une erreur s'est produite lors de la mise à jour de la publication !");
+        }
     }
+
+    useEffect(() => {
+        setData(publication);
+    },[publication])
     return (
-        <div id="edit-post-modal" className="modal fade" tabIndex="-1" aria-hidden="true" style={{ zIndex: 1090 }}>
+        <div id={`edit-publication-modal${data.id}`} className="modal fade" tabIndex="-1" aria-hidden="true" style={{ zIndex: 1090 }}>
             <div className="modal-dialog modal-dialog-scrollable modal-lg" role="document">
                 <div className="modal-content rounded-2">
                     <div className="modal-header text-white bg-primary">
@@ -24,10 +45,10 @@ const EditModal = () => {
                         </button>
                     </div>
                     <div className="modal-body">
-                        <Editor editorContext={editorContext} emojiTriggerContext={editorContext} handleSubmit={handleSubmit} />
+                        <Editor editorContext={editorContext} emojiTriggerContext={editorContext} handleSubmit={handleSubmit} publication={data} />
                     </div>
                     <div className="modal-footer">
-                        <button type="button" className="btn btn-primary rounded-2 shadow" data-bs-dismiss="modal">
+                        <button id={`close-modal-${data.id}`} type="button" className="btn btn-primary rounded-2 shadow" data-bs-dismiss="modal">
                             Fermer
                         </button>
                     </div>
