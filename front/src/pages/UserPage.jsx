@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useQuery } from 'react-query';
 import { getUserById } from "../services/Api/user/usersApi";
 import { deletePost } from "../services/Api/post/postsApi";
 import { toast } from 'react-toastify'
 import defautlAvatar from '../assets/img/d-avatar.svg';
-import { ArrowLeftSvg, CommentSvg } from '../components/IconsSvg';
+import { ArrowLeftSvg, CommentSvg, SettingsSvg } from '../components/IconsSvg';
 import { dateDiff } from '../services/outils/dateHandler';
 import MoreOptionsMenu from '../components/MoreOptionsMenu';
 import MediaType from '../components/MediaType';
@@ -15,10 +15,12 @@ import { PublicationContext } from "../contexts/PublicationContext";
 import ConfiramtionDeleteModal from "../components/ConfiramtionDeleteModal";
 import EditModal from "../components/EditModal";
 import Loader from '../components/layout/Loader';
+import { UserContext } from "../contexts/UserContext";
 
 const UserPage = () => {
 
     const [publication, setPublication] = useState('')
+    const { user } = useContext(UserContext)
     const { id } = useParams();
     const [userData, setUserData] = useState({});
 
@@ -66,6 +68,11 @@ const UserPage = () => {
                                 onClick={() => window.history.back()}>
                                 <ArrowLeftSvg strokeWidth="1" size={26} />
                             </Link>
+                            {userData.id === user.id && (
+                                <button className="btn btn-sm btn-primary rounded-2 float-end mt-2">
+                                    Editer profil <SettingsSvg size={"18"} stroke={'#ffff'} />
+                                </button>
+                            )}
                         </div>
                         <div className="d-block overflow-auto">
                             <img className="rounded-circle mb-1 border border-3 border-primary" width={64} alt={`profile picuture`}
@@ -90,7 +97,7 @@ const UserPage = () => {
                                     onClick={postLink}>
                                     <div className="d-flex mb-3 mt-4 position-relative">
                                         <div className="pe-2" data-link={`/post/${post.id}`}>
-                                            <Link className="d-block overflow-auto" to={`/userData/${userData.id}`}
+                                            <Link className="d-block overflow-auto" to={`/user/${userData.id}`}
                                                 data-popover="true">
                                                 <img className="rounded-circle border border-3" width={54}
                                                     alt={`photo de profile de ${userData.firstName} ${userData.lastName}`}
@@ -100,7 +107,7 @@ const UserPage = () => {
                                         </div>
                                         <div className="d-flex flex-column ms-2 w-100">
                                             <div className="text-start pb-3" data-link={`/post/${post.id}`}>
-                                                <Link to={`../userData/${userData.id}`}
+                                                <Link to={`../user/${userData.id}`}
                                                     className="fw-bold text-capitalize link-dark"
                                                     data-popover="true">
                                                     {`${userData.firstName} ${userData.lastName}`}
