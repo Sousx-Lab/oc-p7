@@ -10,7 +10,7 @@ import MoreOptionsMenu from "../MoreOptionsMenu";
 import { dateDiff } from "../../services/outils/dateHandler";
 import SharePostMenu from "./SharePostMenu";
 import LikesPost from "./LikesPost";
-import EditModal from "../EditModal";
+import EditPublicationModal from "../EditPublicationModal";
 import ConfiramtionDeleteModal from "../ConfiramtionDeleteModal";
 import { PublicationContext } from "../../contexts/PublicationContext";
 import { updatePost } from '../../services/Api/post/postsApi';
@@ -89,7 +89,7 @@ const PostsCard = ({ fetchedPosts = [], isLoading = true, handleDelete, deleteLo
         <>
             <CommentModal post={modalPost} />
             <ConfiramtionDeleteModal handleDelete={handleDelete} />
-            <EditModal handleUpdate={handleUpdate} />
+            <EditPublicationModal handleUpdate={handleUpdate} />
             {(isLoading) ? (
                 <Loader width="3" height="3" />
             ) : (

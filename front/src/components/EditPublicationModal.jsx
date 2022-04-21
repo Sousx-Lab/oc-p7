@@ -5,7 +5,7 @@ import { PublicationContext } from "../contexts/PublicationContext";
 import { toast } from "react-toastify";
 import { isValidHttpUrl } from "../services/outils/objectValidator";
 
-const EditModal = ({ handleUpdate, editorContext = "edit-publication"}) => {
+const EditPublicationModal = ({ handleUpdate, editorContext = "edit-publication"}) => {
  
     const { publication } = useContext(PublicationContext);
     const [data, setData] = useState({});
@@ -58,4 +58,4 @@ const EditModal = ({ handleUpdate, editorContext = "edit-publication"}) => {
     )
 }
 
-export default EditModal;
+export default EditPublicationModal;

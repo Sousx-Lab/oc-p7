@@ -13,7 +13,7 @@ import LikesPost from '../components/post/LikesPost';
 import SharePostMenu from '../components/post/SharePostMenu';
 import { PublicationContext } from "../contexts/PublicationContext";
 import ConfiramtionDeleteModal from "../components/ConfiramtionDeleteModal";
-import EditModal from "../components/EditModal";
+import EditPublicationModal from "../components/EditPublicationModal";
 import Loader from '../components/layout/Loader';
 import { UserContext } from "../contexts/UserContext";
 
@@ -47,7 +47,7 @@ const UserPage = () => {
             await deletePost(id);
             toast.success("Post supprimé avec succès");
             setDeleteLoader(null);
-            setUserData({...userData, Posts: userData.Posts.filter(post => post.id !== id)});
+            setUserData({ ...userData, Posts: userData.Posts.filter(post => post.id !== id) });
         } catch (error) {
             setDeleteLoader(null);
             toast.error("Une erreur est survenue lors de la suppression du post");
@@ -69,8 +69,11 @@ const UserPage = () => {
                                 <ArrowLeftSvg strokeWidth="1" size={26} />
                             </Link>
                             {userData.id === user.id && (
-                                <button className="btn btn-sm btn-primary rounded-2 float-end mt-2">
-                                    Editer profil <SettingsSvg size={"18"} stroke={'#ffff'} />
+                                <button className="btn btn-sm btn-primary rounded-2 float-end mt-2" 
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#edit-profil-modal">
+                                    Editer profil
+                                    <i className="ps-1"><SettingsSvg size={"18"} stroke={'#ffff'} /></i>
                                 </button>
                             )}
                         </div>
@@ -90,7 +93,7 @@ const UserPage = () => {
                     {/* End User Info */}
                     <PublicationContext.Provider value={{ publication, setPublication }} >
                         <ConfiramtionDeleteModal handleDelete={DeletePost} />
-                        <EditModal />
+                        <EditPublicationModal />
                         {userData.Posts.map((post, key) => (
                             <div key={key} className="row col-sm-12 col-md-8 col-xl-6 mx-auto bg-light-hover" >
                                 <article className="border-start border-end border-1 cursor-pointer" data-link={`/post/${post.id}`}
@@ -119,7 +122,7 @@ const UserPage = () => {
                                                     <Loader width="1.2" height="1.2" />
                                                 </div>
                                             ) : (
-                                                <MoreOptionsMenu publication={post} postUserId={userData.id}/>
+                                                <MoreOptionsMenu publication={post} postUserId={userData.id} />
                                             )}
                                             <Link className=" text-decoration-none" to={`/post/${post.id}`} >
                                                 <p className="pe-4 pb-3 m-0 text-break text-body text-start">{post.content}</p>

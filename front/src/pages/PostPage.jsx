@@ -17,7 +17,7 @@ import { createComment } from "../services/Api/commentary/commentsApi";
 import CommentariesSection from "../components/comment/CommentariesSection";
 import { PublicationContext } from "../contexts/PublicationContext";
 import ConfiramtionDeleteModal from "../components/ConfiramtionDeleteModal";
-import EditModal from "../components/EditModal";
+import EditPublicationModal from "../components/EditPublicationModal";
 
 const PostPage = () => {
 
@@ -97,7 +97,7 @@ const PostPage = () => {
                     {post.id && (
                         <PublicationContext.Provider value={{ publication, setPublication }} >
                             <ConfiramtionDeleteModal handleDelete={DeletePost} />
-                            <EditModal handleUpdate={handleUpdate} />
+                            <EditPublicationModal handleUpdate={handleUpdate} />
                             <article className="border-start border-end border-1 ">
                                 <div className="mt-3">
                                     <Link to="#" className="rounded-circle bg-grey-hover icon-nav" style={{ padding: "0.5rem 0.4rem" }}

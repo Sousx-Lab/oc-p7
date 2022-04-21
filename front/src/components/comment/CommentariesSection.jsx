@@ -7,7 +7,7 @@ import defautlAvatar from '../../assets/img/d-avatar.svg';
 import { dateDiff } from '../../services/outils/dateHandler';
 import { PublicationContext } from "../../contexts/PublicationContext";
 import ConfiramtionDeleteModal from "../ConfiramtionDeleteModal";
-import EditModal from "../EditModal";
+import EditPublicationModal from "../EditPublicationModal";
 import { deleteComment, updateComment } from "../../services/Api/commentary/commentsApi";
 import { toast } from 'react-toastify';
 import Loader from '../layout/Loader';
@@ -54,7 +54,7 @@ const CommentariesSection = ({ commentaries = [] }) => {
     return (
         <PublicationContext.Provider value={{ publication, setPublication }} >
             <ConfiramtionDeleteModal handleDelete={DeleteComment} />
-            <EditModal handleUpdate={handleUpdate} editorContext="edit-comment-publication" />
+            <EditPublicationModal handleUpdate={handleUpdate} editorContext="edit-comment-publication" />
             {comments.length > 0 && comments.map((comment, key) => {
                 return (
                     <div key={key} className="border-start border-end border-bottom border-1 pt-4 pb-5 bg-light-hover">
@@ -84,7 +84,7 @@ const CommentariesSection = ({ commentaries = [] }) => {
                                         <Loader width="1.2" height="1.2" />
                                     </div>
                                 ) : (
-                                    <MoreOptionsMenu publication={comment} publicationUserId={comment.User.id} editModalId={comment.id} />
+                                    <MoreOptionsMenu publication={comment} publicationUserId={comment.User.id} EditPublicationModalId={comment.id} />
                                 )}
                                 <div className=" text-decoration-none">
                                     <p className="pe-4 pb-3 m-0 text-break text-body text-start">{comment.content}</p>
