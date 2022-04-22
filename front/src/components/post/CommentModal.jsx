@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import { createComment } from '../../services/Api/commentary/commentsApi'
 import { Link } from 'react-router-dom';
 import { useNavigate } from "react-router-dom";
@@ -22,9 +22,9 @@ const CommentModal = ({ post }) => {
         try {
             const response = await createComment(post?.id, form);
             if (response.ok) {
-                let newComment = await response.json();
-                //    setPost({...post, Comments: [newComment, ...post.Comments]});
+                await response.json();
                 toast.success("Votre commentaire à été ajouté !");
+                document.getElementById('comment-modal-close').click();
                 return response.ok
             }
         } catch (error) {
@@ -47,7 +47,7 @@ const CommentModal = ({ post }) => {
                         <div className="d-flex text-center mb-5 mt-4">
                             <div data-link={`/post/${post.id}`} className="pe-2">
                                 <Link to={`/user/${post.User?.id}`}>
-                                    <img className="rounded-circle" width={54} alt={`profile picuture ${'qsd'}`}
+                                    <img className="rounded-circle border border-3" width={54} alt={`profile picuture ${'qsd'}`}
                                         src={post.User?.profilePicture || defautlAvatar}
                                         data-holder-rendered="true" />
                                 </Link>
@@ -69,7 +69,7 @@ const CommentModal = ({ post }) => {
                         <Editor editorContext={editorContext} emojiTriggerContext={editorContext} placeholder="Réagissez à ce post" handleSubmit={SubmitComment} />
                     </div>
                     <div className="modal-footer">
-                        <button type="button" className="btn btn-primary rounded-2 shadow" data-bs-dismiss="modal">
+                        <button id="comment-modal-close" type="button" className="btn btn-primary rounded-2 shadow" data-bs-dismiss="modal">
                             Fermer
                         </button>
                     </div>

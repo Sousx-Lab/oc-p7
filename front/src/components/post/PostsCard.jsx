@@ -30,42 +30,7 @@ const PostsCard = ({ fetchedPosts = [], isLoading = true, handleDelete, deleteLo
         }
     }
     const [modalPost, setModalPost] = useState({});
-    const [popOver, setPopOver] = useState(false);
-
-    /**
-     * @param {string} id post id
-     */
-    const handlePopOver = async (id) => {
-        setPopOver(true)
-        let userPop = document.getElementById(`user-pop-${id}`)
-        if (userPop && !popOver) {
-            setTimeout(() => {
-                if (userPop.classList.contains('d-none')) {
-                    userPop.classList.remove('d-none')
-                    userPop.classList.add('d-block')
-                }
-                return;
-            }, 800);
-        }
-    }
-
-    /**
-     * @param {string} id post id
-     */
-    const handlePopOverLeave = (id) => {
-        setPopOver(false)
-        let userPop = document.getElementById(`user-pop-${id}`)
-        if (userPop && popOver) {
-            setTimeout(() => {
-                if (userPop.classList.contains('d-block')) {
-                    userPop.classList.remove('d-block')
-                    userPop.classList.add('d-none')
-                }
-                return;
-            }, 800)
-        }
-    }
-
+    
     /**
      * @param {SubmitEvent} event
      * @returns {boolean}
@@ -113,16 +78,8 @@ const PostsCard = ({ fetchedPosts = [], isLoading = true, handleDelete, deleteLo
                                         </div>
                                         <div className="d-flex flex-column ms-2 w-100">
                                             <div data-link={`/post/${post.id}`} className="text-start pb-3">
-                                                <Link to={`user/${post.User.id}`}
-                                                    className="fw-bold text-capitalize link-dark text-decoration-none"
-                                                    data-popover="true"
-                                                    onMouseEnter={() => handlePopOver(post.User.id)}
-                                                    onMouseLeave={() => handlePopOverLeave(post.User.id)}
-                                                >
-                                                    {`${post.User.firstName} ${post.User.lastName}`}
-                                                </Link>
+                                                <UserPopOver user={post.User} keyId={key} />
                                                 <div className="d-inline text-muted fs-6 ps-2"><small>- {dateDiff(post.createdAt)}</small></div>
-                                                <UserPopOver user={post.User} />
                                             </div>
                                             {deleteLoader === post.id ? (
                                                 <div className="position-absolute" style={{ left: '95%' }}>

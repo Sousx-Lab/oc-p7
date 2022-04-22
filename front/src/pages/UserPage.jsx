@@ -13,9 +13,12 @@ import LikesPost from '../components/post/LikesPost';
 import SharePostMenu from '../components/post/SharePostMenu';
 import { PublicationContext } from "../contexts/PublicationContext";
 import ConfiramtionDeleteModal from "../components/ConfiramtionDeleteModal";
+import ConfirmationDeleteUserModal from "../components/ConfirmationDeleteUserModal";
 import EditPublicationModal from "../components/EditPublicationModal";
 import Loader from '../components/layout/Loader';
 import { UserContext } from "../contexts/UserContext";
+import EditUserProfilModal from "../components/EditUserProfilModal";
+import CommentModal from "../components/post/CommentModal";
 
 const UserPage = () => {
 
@@ -45,7 +48,7 @@ const UserPage = () => {
         setDeleteLoader(id)
         try {
             await deletePost(id);
-            toast.success("Post supprimé avec succès");
+            toast.info("Post supprimé avec succès");
             setDeleteLoader(null);
             setUserData({ ...userData, Posts: userData.Posts.filter(post => post.id !== id) });
         } catch (error) {
@@ -54,27 +57,52 @@ const UserPage = () => {
         }
 
     }
+    const [modalPost, setModalPost] = useState({});
+
+    const [updatedData, setUpdatedData] = useState('')
     useEffect(() => {
         document.title =
             `${userData?.firstName} ${userData?.lastName} sur Groupomania`;
     }, [userData]);
+
+    useEffect(() => {
+        if (updatedData.id) {
+            setUserData(updatedData)
+        }
+
+    }, [updatedData])
     return (
         <div className="container pb-5">
+            <CommentModal
+                post={
+                    {id: modalPost.id, 
+                    content: modalPost.content, 
+                    User: {
+                        id: userData.id,
+                        firstName: userData.firstName,
+                        lastName: userData.lastName,
+                        profilePicture: userData.profilePicture
+                    }}}
+             />
+            <ConfirmationDeleteUserModal userId={userData.id} />
             {userData.id && (
                 <>
-                    <div className="row col-sm-12 col-md-8 col-xl-6 mx-auto pb-5 mt-1 bg-light-hover border border-1">
+                    <div className="row col-sm-12 col-md-8 col-xl-6 mx-auto pb-5 bg-light-hover border border-1">
                         <div className="mt-3 mb-3">
                             <Link to="#" className="rounded-circle bg-grey-hover icon-nav" style={{ padding: "0.5rem 0.4rem" }}
                                 onClick={() => window.history.back()}>
                                 <ArrowLeftSvg strokeWidth="1" size={26} />
                             </Link>
-                            {userData.id === user.id && (
-                                <button className="btn btn-sm btn-primary rounded-2 float-end mt-2" 
-                                    data-bs-toggle="modal" 
-                                    data-bs-target="#edit-profil-modal">
-                                    Editer profil
-                                    <i className="ps-1"><SettingsSvg size={"18"} stroke={'#ffff'} /></i>
-                                </button>
+                            {(userData.id === user.id || user.roles.includes('ROLE_ADMIN')) && (
+                                <>
+                                    <button type="button" className="btn btn-sm btn-primary rounded-2 float-end mt-2"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#edit-profil-modal">
+                                        Editer profil
+                                        <i className="ps-1"><SettingsSvg size={"18"} stroke={'#ffff'} /></i>
+                                    </button>
+                                    <EditUserProfilModal userProperties={userData} setUpdatedData={setUpdatedData} />
+                                </>
                             )}
                         </div>
                         <div className="d-block overflow-auto">
@@ -89,8 +117,10 @@ const UserPage = () => {
                         <div className="text-muted fs-6">
                             <small> Inscrit depuis le {new Date(userData.createdAt).toLocaleDateString()}</small>
                         </div>
+
                     </div>
                     {/* End User Info */}
+
                     <PublicationContext.Provider value={{ publication, setPublication }} >
                         <ConfiramtionDeleteModal handleDelete={DeletePost} />
                         <EditPublicationModal />
@@ -122,7 +152,7 @@ const UserPage = () => {
                                                     <Loader width="1.2" height="1.2" />
                                                 </div>
                                             ) : (
-                                                <MoreOptionsMenu publication={post} postUserId={userData.id} />
+                                                <MoreOptionsMenu publication={post} publicationUserId={userData.id} />
                                             )}
                                             <Link className=" text-decoration-none" to={`/post/${post.id}`} >
                                                 <p className="pe-4 pb-3 m-0 text-break text-body text-start">{post.content}</p>
@@ -133,12 +163,17 @@ const UserPage = () => {
 
                                             {/*  Commentaries & likes  */}
                                             <div data-link={`/post/${post.id}`} className="d-flex justify-content-evenly pb-3 pt-3">
-                                                <div className="d-flex align-items-center">
+                                                <div className="d-flex align-items-center icon-info" role="button"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#add-comment-modal"
+                                                    onClick={() => setModalPost(post)} >
+
                                                     {/* comments  */}
-                                                    <div className="rounded-circle p-2" title="Nombres de commentaires">
+                                                    <div className="rounded-circle p-2 icon-info--bg cursor-pointer" title="Ajouter un commentaire">
                                                         {<CommentSvg />}
                                                     </div>
-                                                    <span className="ps-1">{post.commentsCount.toString()}</span>
+                                                    <span className="ps-1 small icon-info--text">
+                                                        <small>{post?.commentsCount.toString()}</small></span>
                                                 </div>
 
                                                 {/* likes*/}

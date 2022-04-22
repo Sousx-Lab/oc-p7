@@ -186,26 +186,31 @@ exports.updateUserById = async(req, res, next) =>{
         if(!user){
             res.http.NotFound({error: {message: 'User not found!'}});
         }
-        if(user.id !== req.user.id){
-            return res.http.Forbidden({error: {message: "permission denied!"}});
-        }
-        const payload = {
-            ...req.body,
-            newPassword: req.body.newPassword ?? null,
-            uploadedPicture: req.files?.profilePicture || null
-        }
-        if(!await bcrypt.compare(payload.currentPassword, user.password)){
-            if(payload.uploadedPicture){
-                deleteFile(payload.uploadedPicture[0].filename)
-            }
-            return res.http.BadRequest({error: {message: 'Invalid current Password'}});
+        if(user.id !== req.user.id && !req.user.roles.includes('ROLE_ADMIN')){
+            return res.http.Forbidden({error: {message: `${req.user.roles[1]} permission denied!` }});
         }
         
+        let uploadedPicture = req.files?.profilePicture ? req.files?.profilePicture[0].filename : null
+        if(!await bcrypt.compare(req.body.currentPassword, user.password) && !req.user.roles.includes('ROLE_ADMIN')){
+            if(uploadedPicture){
+                deleteFile(uploadedPicture)
+            }
+            return res.http.BadRequest({
+                validationError: {
+                    currentPassword: {
+                        message: 'Current password is invalid'
+                    }
+            }}); 
+        }
+        
+        if(req.body.profilePicture === user.profilePicture && uploadedPicture === null){
+            uploadedFile = post.getDataValue('media')
+        }
         await user.set({
-            ...payload,
+            ...req.body,
             roles: [],
-            password: payload.newPassword ? await bcrypt.hash(payload.newPassword, 10): user.password,
-            profilePicture: payload.uploadedPicture ? payload.uploadedPicture[0].filename: user.getDataValue('profilePicture')
+            password: req.body.newPassword ? await bcrypt.hash(req.body.newPassword, 10) : user.password,
+            profilePicture: uploadedPicture
         },{ individualHooks: true});
 
         await user.validate();
@@ -215,22 +220,24 @@ exports.updateUserById = async(req, res, next) =>{
         
         await user.save();
 
-        const xsrfToken = crypto.randomBytes(64).toString('hex');
-        res.cookie("access_token", jwt.jwtSign(user, xsrfToken), cookieOptions);
+        if(user.id === req.user.id){
+            const xsrfToken = crypto.randomBytes(64).toString('hex');
+            res.cookie("access_token", jwt.jwtSign(user, xsrfToken), cookieOptions);
+            return res.http.Ok({
+                id: user.id,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                roles: user.roles,
+                profilePicture: user.profilePicture,
+                bio: user.bio,
+                createdAt: user.created_at,
+                updatedAt: user.updated_at,
+                expiresAt: Date.now() + parseInt(process.env.JWT_TOKEN_EXPIRES_IN,10),
+                xsrfToken: xsrfToken
+            })
+        }
 
-        return res.http.Ok({
-            id: user.id,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            roles: user.roles,
-            profilePicture: user.profilePicture,
-            bio: user.bio,
-            isActive: user.isActive,
-            createdAt: user.created_at,
-            updatedAt: user.updated_at,
-            expiresAt: Date.now() + parseInt(process.env.JWT_TOKEN_EXPIRES_IN,10),
-            xsrfToken: xsrfToken
-        })
+        return res.http.Ok({})
         
     } catch (error) {
         return jsonErrors(error, res)

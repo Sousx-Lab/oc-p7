@@ -22,7 +22,7 @@ const CommentariesSection = ({ commentaries = [] }) => {
         setDeleteLoader(id)
         try {
             await deleteComment(id);
-            toast.success("Commentaire supprimé avec succès");
+            toast.info("Commentaire supprimé avec succès");
             setDeleteLoader(null);
             setComments(comments.filter(post => post.id !== id));
         } catch (error) {
@@ -70,14 +70,9 @@ const CommentariesSection = ({ commentaries = [] }) => {
                             </div>
                             <div className="d-flex flex-column ms-2 w-100">
                                 <div className="text-start pb-3">
-                                    <Link to={`../user/${comment.User.id}`}
-                                        className="fw-bold text-capitalize link-dark"
-                                        data-popover="true">
-
-                                        {`${comment.User.firstName} ${comment.User.lastName}`}
-                                    </Link>
+                                    <UserPopOver user={comment.User} keyId={key} />
                                     <div className="d-inline text-muted fs-6 ps-2"><small>- {dateDiff(comment.createdAt)}</small></div>
-                                    <UserPopOver id={comment.User.id} user={comment.User} />
+
                                 </div>
                                 {deleteLoader === comment.id ? (
                                     <div className="position-absolute" style={{ left: '95%' }}>

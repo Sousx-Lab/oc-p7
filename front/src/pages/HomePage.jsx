@@ -47,7 +47,7 @@ const HomePage = () => {
         setDeleteLoader( id)
         try {
             await deletePost(id);
-            toast.success("Post supprimé avec succès");
+            toast.info("Post supprimé avec succès");
             setDeleteLoader(null);
             setPosts(posts.filter(post => post.id !== id));
         } catch (error) {

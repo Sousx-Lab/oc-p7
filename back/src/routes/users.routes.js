@@ -3,7 +3,7 @@ const userController = require('../controllers/user.controller');
 const { xss } = require('express-xss-sanitizer');
 const schemaValidator = require('../middlewares/validator/api/schema.validator');
 const {signupSchema, loginSchema, 
-    updateUserSchema, forgotPasswordSchema, resetPasswordSchema }= require('../middlewares/validator/api/schema/user.schema');
+    updateUserSchema, forgotPasswordSchema, resetPasswordSchema, deleteUserShema }= require('../middlewares/validator/api/schema/user.schema');
 const multer = require('../middlewares/multer/multer')
 const isGranted = require('../middlewares/security/authenticator');
 
@@ -27,7 +27,7 @@ router.put('/:id', xss(), isGranted('ROLE_USER'), multer, schemaValidator.body(u
 router.get('/:id', isGranted('ROLE_USER'), userController.getUserById);
 
 /** Delete User by id */
-router.delete('/:id', isGranted('ROLE_USER'), userController.deleteUserById);
+router.delete('/:id', isGranted('ROLE_USER'), schemaValidator.body(deleteUserShema), userController.deleteUserById);
 
 /** Refresh token */
 router.post('/refresh-token', isGranted('ROLE_USER'), userController.refreshToken);

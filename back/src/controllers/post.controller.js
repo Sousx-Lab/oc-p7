@@ -70,6 +70,7 @@ exports.updatePost = async(req, res, next) => {
         if(!post){
             return res.http.NotFound({error: {message: `Post not found`}});
         }
+        
         let uploadedFile = req.files?.media ? req.files?.media[0].filename: null;
         if(req.body.media === post.media && uploadedFile === null){
             uploadedFile = post.getDataValue('media')

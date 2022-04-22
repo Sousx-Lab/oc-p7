@@ -59,7 +59,7 @@ const PostPage = () => {
         setDeleteLoader(id)
         try {
             await deletePost(id);
-            toast.success("Post supprimé avec succès");
+            toast.info("Post supprimé avec succès");
             setDeleteLoader(null);
             navigate("/", { replace: true });
         } catch (error) {
@@ -91,87 +91,82 @@ const PostPage = () => {
 
     const editorContext = "commentary";
     return (
-            <div className="container">
-                <div className="row mx-auto d-flex justify-content-center col-md-6 col-sm-12 border-bottom border-top mt-1 border-light">
-                    {/* Post */}
-                    {post.id && (
-                        <PublicationContext.Provider value={{ publication, setPublication }} >
-                            <ConfiramtionDeleteModal handleDelete={DeletePost} />
-                            <EditPublicationModal handleUpdate={handleUpdate} />
-                            <article className="border-start border-end border-1 ">
-                                <div className="mt-3">
-                                    <Link to="#" className="rounded-circle bg-grey-hover icon-nav" style={{ padding: "0.5rem 0.4rem" }}
-                                        onClick={() => window.history.back()}>
-                                        <ArrowLeftSvg strokeWidth="1" size={26} />
+        <div className="container">
+            <div className="row mx-auto d-flex justify-content-center col-md-6 col-sm-12 border-bottom border-top mt-1 border-light">
+                {/* Post */}
+                {post.id && (
+                    <PublicationContext.Provider value={{ publication, setPublication }} >
+                        <ConfiramtionDeleteModal handleDelete={DeletePost} />
+                        <EditPublicationModal handleUpdate={handleUpdate} />
+                        <article className="border-start border-end border-1 ">
+                            <div className="mt-3">
+                                <Link to="#" className="rounded-circle bg-grey-hover icon-nav" style={{ padding: "0.5rem 0.4rem" }}
+                                    onClick={() => window.history.back()}>
+                                    <ArrowLeftSvg strokeWidth="1" size={26} />
+                                </Link>
+                            </div>
+                            <div className="d-flex mb-3 mt-4 position-relative">
+                                <div className="pe-2">
+                                    <Link to={`../user/${post.User.id}`}
+                                        className="d-block overflow-auto "
+                                        data-popover="true">
+                                        <img className="rounded-circle border border-3" width={54}
+                                            alt={`photo de profile de ${post.User.firstName} ${post.User.lastName}`}
+                                            src={post.User.profilePicture || defautlAvatar}
+                                            data-holder-rendered="true" />
                                     </Link>
                                 </div>
-                                <div className="d-flex mb-3 mt-4 position-relative">
-                                    <div className="pe-2">
-                                        <Link to={`../user/${post.User.id}`}
-                                            className="d-block overflow-auto "
-                                            data-popover="true">
-                                            <img className="rounded-circle border border-3" width={54}
-                                                alt={`photo de profile de ${post.User.firstName} ${post.User.lastName}`}
-                                                src={post.User.profilePicture || defautlAvatar}
-                                                data-holder-rendered="true" />
-                                        </Link>
+                                <div className="d-flex flex-column ms-2 w-100">
+                                    <div className="text-start pb-3">
+                                        <UserPopOver user={post.User} />
+                                        <div className="d-inline text-muted fs-6 ps-2"><small>- {dateDiff(post.createdAt)}</small></div>
                                     </div>
-                                    <div className="d-flex flex-column ms-2 w-100">
-                                        <div className="text-start pb-3">
-                                            <Link to={`../user/${post.User.id}`}
-                                                className="fw-bold text-capitalize link-dark"
-                                                data-popover="true">
-                                                {`${post.User.firstName} ${post.User.lastName}`}
-                                            </Link>
-                                            <div className="d-inline text-muted fs-6 ps-2"><small>- {dateDiff(post.createdAt)}</small></div>
-                                            <UserPopOver id={post.User.id} user={post.User} />
-                                        </div>
-                                        <div className="position-absolute" style={{ left: '95%', top: '-20px' }}>
-                                            {deleteLoader === post.id &&
-                                                <Loader width="1" height="1" />
-                                            }
-                                        </div>
-                                        <MoreOptionsMenu publication={post} publicationUserId={post.User.id} targetId={post.id} />
+                                    <div className="position-absolute" style={{ left: '95%', top: '-20px' }}>
+                                        {deleteLoader === post.id &&
+                                            <Loader width="1" height="1" />
+                                        }
+                                    </div>
+                                    <MoreOptionsMenu publication={post} publicationUserId={post.User.id} targetId={post.id} />
 
-                                        {/* End User Info */}
-                                        <div className=" text-decoration-none">
-                                            <p className="pe-4 pb-3 m-0 text-break text-body text-start fs-4">{post.content}</p>
-                                        </div>
-                                        {post.media && (
-                                            <MediaType mediaType={post.mediaType} media={post.media} id={post.id} />
-                                        )}
+                                    {/* End User Info */}
+                                    <div className=" text-decoration-none">
+                                        <p className="pe-4 pb-3 m-0 text-break text-body text-start fs-4">{post.content}</p>
+                                    </div>
+                                    {post.media && (
+                                        <MediaType mediaType={post.mediaType} media={post.media} id={post.id} />
+                                    )}
 
-                                        {/*  Commentaries & likes  */}
-                                        <div data-link={`/post/${post.id}`} className="d-flex justify-content-evenly pb-3 pt-3">
-                                            <div className="d-flex align-items-center">
-                                                {/* comments  */}
-                                                <div className="rounded-circle p-2" title="Nombres de commentaires">
-                                                    {<CommentSvg />}
-                                                </div>
-                                                <span className="ps-1">{post.Comments.length.toString()}</span>
+                                    {/*  Commentaries & likes  */}
+                                    <div data-link={`/post/${post.id}`} className="d-flex justify-content-evenly pb-3 pt-3">
+                                        <div className="d-flex align-items-center">
+                                            {/* comments  */}
+                                            <div className="rounded-circle p-2" title="Nombres de commentaires">
+                                                {<CommentSvg />}
                                             </div>
-
-                                            {/* likes*/}
-                                            <LikesPost usersLiked={post.usersLiked} postId={post.id} />
-                                            <SharePostMenu post={post} />
+                                            <span className="ps-1">{post.Comments.length.toString()}</span>
                                         </div>
+
+                                        {/* likes*/}
+                                        <LikesPost usersLiked={post.usersLiked} postId={post.id} />
+                                        <SharePostMenu post={post} />
                                     </div>
                                 </div>
-                            </article>
-                            <div className="border pt-3 pb-3">
-                                <Editor editorContext={editorContext} emojiTriggerContext={editorContext}
-                                    placeholder="Réagissez à ce post" handleSubmit={handleSubmitComment} />
                             </div>
-                            {/* End Post */}
+                        </article>
+                        <div className="border pt-3 pb-3">
+                            <Editor editorContext={editorContext} emojiTriggerContext={editorContext}
+                                placeholder="Réagissez à ce post" handleSubmit={handleSubmitComment} />
+                        </div>
+                        {/* End Post */}
                     </PublicationContext.Provider>
-                    )}
-                    {/* Commentaries */}
-                    <CommentariesSection commentaries={post.Comments} />
-                    {/* End Commentaries */}
-                    {isLoading && <Loader />}
-                </div>
+                )}
+                {/* Commentaries */}
+                <CommentariesSection commentaries={post.Comments} />
+                {/* End Commentaries */}
+                {isLoading && <Loader />}
             </div>
-        
+        </div>
+
     )
 }
 
