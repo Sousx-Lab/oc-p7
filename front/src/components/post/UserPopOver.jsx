@@ -59,6 +59,7 @@ const UserPopOver = ({ user, keyId }) => {
                 <Link to={`/user/${user.id}`}
                     className="d-block text-capitalize fw-bold text-break mb-3 text-decoration-none link-dark">
                     {`${user.firstName} ${user.lastName}`}
+                    <small className="fw-lighter badge bg-primary text-wrap ms-2">{user.roles.includes('ROLE_ADMIN') && ('admin')}</small>
                 </Link>
                 <div className="mt-2 text-break">{user?.bio || ""}</div>
             </div>

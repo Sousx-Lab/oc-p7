@@ -112,7 +112,9 @@ const UserPage = () => {
                         </div>
                         <div className="d-block text-capitalize fw-bold text-break mb-3 text-decoration-none link-dark">
                             {`${userData.firstName} ${userData.lastName}`}
+                            <small className="fw-lighter badge bg-primary text-wrap ms-2">{userData?.roles.includes('ROLE_ADMIN') && ('admin')}</small>
                         </div>
+                        
                         <p className="text-break col-xl-6 col-sm-10 mb-1">{userData?.bio || ""}</p>
                         <div className="text-muted fs-6">
                             <small> Inscrit depuis le {new Date(userData.createdAt).toLocaleDateString()}</small>
