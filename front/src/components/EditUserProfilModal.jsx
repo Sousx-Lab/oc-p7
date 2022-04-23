@@ -26,15 +26,15 @@ const EditUserProfilModal = ({ userProperties = {}, setUpdatedData }) => {
     const handlePreview = (e) => {
         const reader = new FileReader();
         let file = e.target.files[0];
-        if(file && file.type.match('image.*')) {
+        if (file && file.type.match('image.*')) {
             reader.readAsDataURL(e.target.files[0]);
             reader.onloadend = () => {
                 setUserData({ ...userData, profilePicture: reader.result });
             };
         }
-        
+
     }
-    const [error, setError] = useState();
+    const [error, setError] = useState(null);
     const [isSubmited, setIsSubmited] = useState(false);
     /**
      * @param {SubmitEvent} event 
@@ -43,13 +43,14 @@ const EditUserProfilModal = ({ userProperties = {}, setUpdatedData }) => {
         setIsSubmited(true);
         event.preventDefault();
         const form = new FormData(event.target);
-        if(!form.get('profilePicture').name && isValidHttpUrl(userData.profilePicture)) {
+        if (!form.get('profilePicture').name && isValidHttpUrl(userData.profilePicture)) {
             form.set('profilePicture', user.profilePicture.split('/').pop());
-            console.log(form.get('profilePicture'));
+            console.log(form.get('role'));
         }
         const response = await updateUser(userData.id, form);
         if (!response.ok) {
-            setError(response.validationError);
+            let error = await response.json();
+            setError(error.validationError);
             setIsSubmited(false);
             toast.error('Une erreur est survenue lors de la mise à jour de votre profil');
             return;
@@ -57,9 +58,10 @@ const EditUserProfilModal = ({ userProperties = {}, setUpdatedData }) => {
         if (userData.id === user.id) {
             await saveUser(await response.json());
         }
-        setUpdatedData(userData)
+        setUpdatedData(userData);
+        setError(null);
         toast.success('Votre profil a été mis à jour avec succès');
-        // setUserData({ ...userData, currentPassword: "", newPassword: "", confirmNewPassword: "" });
+        setUserData({ ...userData, currentPassword: "", newPassword: "", confirmNewPassword: "" });
         setIsSubmited(false);
         document.getElementById('edit-profil-close-modal').click();
     }
@@ -85,7 +87,7 @@ const EditUserProfilModal = ({ userProperties = {}, setUpdatedData }) => {
                                 <div className="mx-auto text-center mb-3">
                                     <img className="rounded-circle mb-1 border border-3 border-primary position-relative"
                                         width={84} alt={`profile picuture`}
-                                        style={{maxWidth: '100%', maxHeight: '84px', objectFit: 'cover'}}
+                                        style={{ maxWidth: '100%', maxHeight: '84px', objectFit: 'cover' }}
                                         src={userData.profilePicture || defautlAvatar}
                                         data-holder-rendered="true" />
                                     <div className="d-flex justify-content-center">
@@ -215,6 +217,15 @@ const EditUserProfilModal = ({ userProperties = {}, setUpdatedData }) => {
                                         </div>
                                     </>
                                 )}
+                                {user.roles.includes("ROLE_ADMIN") && (
+                                    <div className="form-group mb-5">
+                                        <label htmlFor="pet-select">Rôle utilisateur</label>
+                                        <select defaultValue={"ROLE_ADMIN"} id="role" name="role" className="form-select" aria-label="select role">
+                                            <option value="ROLE_ADMIN">Administrateur</option>
+                                            <option value="ROLE_USER">Utilisateur</option>
+                                        </select>
+                                    </div>
+                                )}
                                 <div className='d-flex mb-5 justify-content-between'>
                                     <button type="submit" disabled={(isSubmited || isUserData) ? true : false} className="btn btn-primary rounded-2">
                                         {isSubmited && (
@@ -230,7 +241,8 @@ const EditUserProfilModal = ({ userProperties = {}, setUpdatedData }) => {
                         </div>
                     </div>
                     <div className="modal-footer">
-                        <button id="edit-profil-close-modal" type="button" className="btn btn-primary rounded-2 shadow" data-bs-dismiss="modal">
+                        <button id="edit-profil-close-modal" type="button" className="btn btn-primary rounded-2 shadow" 
+                            data-bs-dismiss="modal" onClick={() => setUserData(userProperties)}>
                             Fermer
                         </button>
                     </div>

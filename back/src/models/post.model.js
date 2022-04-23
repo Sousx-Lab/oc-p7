@@ -102,7 +102,10 @@ module.exports = (sequelize, DataTypes) => {
     /** likes count this usersLiked array */
     likes: {
       type: DataTypes.STRING(255),
-      defaultValue: '0'
+      defaultValue: '0',
+      get(){
+        return this.getDataValue('usersLiked').length.toString();
+      }
     },
   },
   {

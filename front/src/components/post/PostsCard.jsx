@@ -112,7 +112,7 @@ const PostsCard = ({ fetchedPosts = [], isLoading = true, handleDelete, deleteLo
                                                         {<CommentSvg />}
                                                     </div>
                                                     <span className="ps-1 small icon-info--text">
-                                                        <small>{post?.commentsCount ? post?.commentsCount.toString(): post.Comments.length.toString()}</small></span>
+                                                        <small>{post?.commentsCount}</small></span>
                                                 </div>
 
                                                 {/* likes*/}

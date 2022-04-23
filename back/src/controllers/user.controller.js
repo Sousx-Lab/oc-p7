@@ -208,7 +208,7 @@ exports.updateUserById = async(req, res, next) =>{
         }
         await user.set({
             ...req.body,
-            roles: [],
+            roles: req.user.roles.includes('ROLE_ADMIN') ? [req.body?.role] : [],
             password: req.body.newPassword ? await bcrypt.hash(req.body.newPassword, 10) : user.password,
             profilePicture: uploadedPicture
         },{ individualHooks: true});
@@ -256,6 +256,17 @@ exports.deleteUserById = async (req, res, next) =>{
         if(user.id !== req.user.id && !req.user.roles.includes('ROLE_ADMIN')){
             return res.http.Forbidden({error: {message: "permission denied!"}});
         }
+        if(!req.user.roles.includes('ROLE_ADMIN')){
+            if(!await bcrypt.compare(req.body?.password, user.password)){
+                return res.http.BadRequest({
+                validationError: {
+                    password: {
+                        message: 'Invalid current password'
+                    }
+                }}); 
+            }
+        };
+        
         if(req.signedCookies['refresh_token'] && !req.user.roles.includes('ROLE_ADMIN')){
             const refreshToken = await Token.findOne({ 
                 where: {token: req.signedCookies['refresh_token']}

@@ -34,7 +34,7 @@ exports.findAllJoinUser = async () =>{
         include: [{
             model: User, 
             attributes: ['id', 'firstName', 'lastName', 'profilePicture', 'bio', 'roles',
-                ['created_at', 'createdAt'],['updated_at', 'updatedAt']]
+            ['created_at', 'createdAt'],['updated_at', 'updatedAt']]
             },
             {model: Comment, attributes: []}
         ],

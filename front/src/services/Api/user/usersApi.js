@@ -35,7 +35,6 @@ export async function updateUser(id, data) {
             headers: {'x-xsrf-token': xsrfToken},
         })
         return response;
-        
     }
     return null;
 }
@@ -45,15 +44,15 @@ export async function updateUser(id, data) {
  * @param {string} id 
  * @returns {Promise<Response>}
  */
-export async function deleteUser(id) {
+export async function deleteUser(id, password) {
     let { xsrfToken } = await getUser();
     if(xsrfToken){
         const response = fetch(UserApi.deleteById(id), {
+            body: JSON.stringify({password}),
             method: 'DELETE',
             credentials: 'include',
             headers: {...headers, 'x-xsrf-token': xsrfToken}
         })
-        
         return response;
     }
     return null;

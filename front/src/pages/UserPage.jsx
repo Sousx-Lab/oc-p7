@@ -189,7 +189,7 @@ const UserPage = () => {
                                                         {<CommentSvg />}
                                                     </div>
                                                     <span className="ps-1 small icon-info--text">
-                                                        <small>{post?.commentsCount ? post?.commentsCount.toString(): post.Comments.length.toString()}</small></span>
+                                                        <small>{post.commentsCount.toString()}</small></span>
                                                 </div>
 
                                                 {/* likes*/}

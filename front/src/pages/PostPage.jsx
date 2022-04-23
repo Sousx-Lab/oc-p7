@@ -61,7 +61,7 @@ const PostPage = () => {
             await deletePost(id);
             toast.info("Post supprimé avec succès");
             setDeleteLoader(null);
-            navigate("/", { replace: true });
+            window.history.back();
         } catch (error) {
             setDeleteLoader(null)
             toast.error("Une erreur est survenue lors de la suppression du post");
