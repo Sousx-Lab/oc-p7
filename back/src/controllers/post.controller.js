@@ -72,7 +72,7 @@ exports.updatePost = async(req, res, next) => {
         }
         
         let uploadedFile = req.files?.media ? req.files?.media[0].filename: null;
-        if(req.body.media === post.media && uploadedFile === null){
+        if(req.body.media === post.getDataValue('media') && uploadedFile === null){
             uploadedFile = post.getDataValue('media')
         }
         if(req.user.roles.includes('ROLE_ADMIN')){

@@ -16,7 +16,7 @@ const EditPublicationModal = ({ handleUpdate, editorContext = "edit-publication"
         if (formData.media.fileBlob) {
             form.set('media', formData.media.fileBlob);
         }else if(isValidHttpUrl(formData.media.file)){
-            form.set('media', formData.media.file);
+            form.set('media', formData.media.file.split('/').pop());
         }
         const submited = await handleUpdate(publication.id, form);
         if (submited) {

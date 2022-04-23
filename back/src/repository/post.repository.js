@@ -46,7 +46,7 @@ exports.findAllJoinUser = async () =>{
 exports.findOneJoinUser = async (id) =>{
     return await Post.findOne({
         where: {id: id},
-        attributes: ['id', 'content', 'media', 'likes', 'mediaType',,
+        attributes: ['id', 'content', 'media', 'likes', 'mediaType',
         ['users_liked', 'usersLiked'],['created_at', 'createdAt'],['updated_at', 'updatedAt'],
         [Sequelize.fn('count', Sequelize.col('post_id')), 'commentsCount']
         ],

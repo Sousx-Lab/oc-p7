@@ -143,7 +143,7 @@ const PostPage = () => {
                                             <div className="rounded-circle p-2" title="Nombres de commentaires">
                                                 {<CommentSvg />}
                                             </div>
-                                            <span className="ps-1">{post.Comments.length.toString()}</span>
+                                            <span className="ps-1">{post?.Comments.length.toString()}</span>
                                         </div>
 
                                         {/* likes*/}

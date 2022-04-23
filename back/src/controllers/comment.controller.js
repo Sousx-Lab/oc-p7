@@ -69,7 +69,7 @@ exports.updateComment = async (req, res, next) => {
         }
 
         let uploadedFile = req.files?.media ? req.files?.media[0].filename: null;
-        if(req.body.media === comment.media && uploadedFile === null){
+        if(req.body.media === comment.getDataValue('media') && uploadedFile === null){
             uploadedFile = comment.getDataValue('media')
         }
         

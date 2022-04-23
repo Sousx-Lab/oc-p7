@@ -5,6 +5,8 @@ import { UserContext } from "../contexts/UserContext";
 import { updateUser } from "../services/Api/user/usersApi";
 import { toast } from "react-toastify";
 import { saveUser } from "../services/Api/security/authenticator";
+import { isValidHttpUrl } from "../services/outils/objectValidator";
+
 const EditUserProfilModal = ({ userProperties = {}, setUpdatedData }) => {
 
     const { user } = useContext(UserContext);
@@ -16,10 +18,22 @@ const EditUserProfilModal = ({ userProperties = {}, setUpdatedData }) => {
     });
     const [isPasswordChange, setIsPasswordChange] = useState(false);
     let isUserData = !Object.keys(userData).every((k) => userData[k] !== '')
+    const fileAccept = '.jpeg,.jpg,.png,.webp,';
+
     const handleChange = ({ currentTarget }) => {
         setUserData({ ...userData, [currentTarget.name]: currentTarget.value });
     }
-    
+    const handlePreview = (e) => {
+        const reader = new FileReader();
+        let file = e.target.files[0];
+        if(file && file.type.match('image.*')) {
+            reader.readAsDataURL(e.target.files[0]);
+            reader.onloadend = () => {
+                setUserData({ ...userData, profilePicture: reader.result });
+            };
+        }
+        
+    }
     const [error, setError] = useState();
     const [isSubmited, setIsSubmited] = useState(false);
     /**
@@ -29,6 +43,10 @@ const EditUserProfilModal = ({ userProperties = {}, setUpdatedData }) => {
         setIsSubmited(true);
         event.preventDefault();
         const form = new FormData(event.target);
+        if(!form.get('profilePicture').name && isValidHttpUrl(userData.profilePicture)) {
+            form.set('profilePicture', user.profilePicture.split('/').pop());
+            console.log(form.get('profilePicture'));
+        }
         const response = await updateUser(userData.id, form);
         if (!response.ok) {
             setError(response.validationError);
@@ -41,7 +59,7 @@ const EditUserProfilModal = ({ userProperties = {}, setUpdatedData }) => {
         }
         setUpdatedData(userData)
         toast.success('Votre profil a été mis à jour avec succès');
-        setUserData({ ...userData, currentPassword: "", newPassword: "", confirmNewPassword: "" });
+        // setUserData({ ...userData, currentPassword: "", newPassword: "", confirmNewPassword: "" });
         setIsSubmited(false);
         document.getElementById('edit-profil-close-modal').click();
     }
@@ -63,13 +81,24 @@ const EditUserProfilModal = ({ userProperties = {}, setUpdatedData }) => {
                     </div>
                     <div className="modal-body">
                         <div className="row">
-                            <div className="col-lg-8 mx-auto text-center mb-3">
-                                <img className="rounded-circle mb-1 border border-3 border-primary position-relative"
-                                    width={84} alt={`profile picuture`}
-                                    src={userData.profilePicture || defautlAvatar}
-                                    data-holder-rendered="true" />
-                            </div>
                             <form className='col-lg-8 mx-auto' onSubmit={handleSubmit} encType={"multipart/form-data"}>
+                                <div className="mx-auto text-center mb-3">
+                                    <img className="rounded-circle mb-1 border border-3 border-primary position-relative"
+                                        width={84} alt={`profile picuture`}
+                                        style={{maxWidth: '100%', maxHeight: '84px', objectFit: 'cover'}}
+                                        src={userData.profilePicture || defautlAvatar}
+                                        data-holder-rendered="true" />
+                                    <div className="d-flex justify-content-center">
+                                        <input
+                                            onChange={handlePreview}
+                                            type="file"
+                                            className={"form-control form-control-sm w-50 " + (error?.profilePicture && "is-invalid")}
+                                            accept={fileAccept}
+                                            multiple={false}
+                                            name="profilePicture" />
+                                        {error?.profilePicture && <p className="invalid-feedback">{error?.profilePicture.message}</p>}
+                                    </div>
+                                </div>
                                 <div className="form-group mb-3">
                                     <label htmlFor="firstName">Prénom</label>
                                     <input
@@ -141,7 +170,7 @@ const EditUserProfilModal = ({ userProperties = {}, setUpdatedData }) => {
                                     {error?.currentPassword && <p className="invalid-feedback">{error?.currentPassword.message}</p>}
                                 </div>
                                 <div className="form-check form-switch mb-4">
-                                    <label className="form-check-label" for="newPassword">Changer mon mot de passe</label>
+                                    <label htmlFor="newPassword" className="form-check-label">Changer mon mot de passe</label>
                                     <input
                                         onChange={() => setIsPasswordChange(!isPasswordChange)}
                                         checked={isPasswordChange}

@@ -203,8 +203,8 @@ exports.updateUserById = async(req, res, next) =>{
             }}); 
         }
         
-        if(req.body.profilePicture === user.profilePicture && uploadedPicture === null){
-            uploadedFile = post.getDataValue('media')
+        if(req.body.profilePicture === user.getDataValue('profilePicture') && uploadedPicture === null){
+            uploadedPicture = user.getDataValue('profilePicture')
         }
         await user.set({
             ...req.body,

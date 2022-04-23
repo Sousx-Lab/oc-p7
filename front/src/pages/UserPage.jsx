@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useQuery } from 'react-query';
 import { getUserById } from "../services/Api/user/usersApi";
-import { deletePost } from "../services/Api/post/postsApi";
+import { deletePost, updatePost } from "../services/Api/post/postsApi";
 import { toast } from 'react-toastify'
 import defautlAvatar from '../assets/img/d-avatar.svg';
 import { ArrowLeftSvg, CommentSvg, SettingsSvg } from '../components/IconsSvg';
@@ -55,7 +55,21 @@ const UserPage = () => {
             setDeleteLoader(null);
             toast.error("Une erreur est survenue lors de la suppression du post");
         }
+    }
 
+    /**
+     * @param {SubmitEvent} event
+     * @returns {boolean}
+     */
+     const handleUpdate = async (id, data) => {
+        try {
+            const reponse = await updatePost(id, data);
+            let post = await reponse.json()
+            setUserData({ ...userData, Posts: userData.Posts.map(p => p.id !== post.id ? p : post) });
+            return reponse.ok;
+        } catch (error) {
+            toast.error("Une erreur est survenue lors de la mise à jour du post");
+        }
     }
     const [modalPost, setModalPost] = useState({});
 
@@ -125,7 +139,7 @@ const UserPage = () => {
 
                     <PublicationContext.Provider value={{ publication, setPublication }} >
                         <ConfiramtionDeleteModal handleDelete={DeletePost} />
-                        <EditPublicationModal />
+                        <EditPublicationModal handleUpdate={handleUpdate}/>
                         {userData.Posts.map((post, key) => (
                             <div key={key} className="row col-sm-12 col-md-8 col-xl-6 mx-auto bg-light-hover" >
                                 <article className="border-start border-end border-1 cursor-pointer" data-link={`/post/${post.id}`}
@@ -175,7 +189,7 @@ const UserPage = () => {
                                                         {<CommentSvg />}
                                                     </div>
                                                     <span className="ps-1 small icon-info--text">
-                                                        <small>{post?.commentsCount.toString()}</small></span>
+                                                        <small>{post?.commentsCount ? post?.commentsCount.toString(): post.Comments.length.toString()}</small></span>
                                                 </div>
 
                                                 {/* likes*/}
