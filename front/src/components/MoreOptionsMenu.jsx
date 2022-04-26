@@ -10,6 +10,13 @@ const MoreOptionsMenu = ({ publication, publicationUserId}) => {
     const [id, setId] = useState('');
     const [menuActive, setMenuActive] = useState('')
 
+    const hideMenuIfClickOutside = (event, parent) => {
+        if (!event.target.closest(`#more-options-${id}`)) {
+            parent.classList.add('d-none')
+            parent.classList.remove('d-block')
+            setMenuActive('');
+        }
+    }
     handleMoreOptionMenu = async (e) => {
         const moreOptionMenu = document.getElementById(`more-option-menu-${id}`);
         if (moreOptionMenu) {
@@ -18,24 +25,15 @@ const MoreOptionsMenu = ({ publication, publicationUserId}) => {
                 moreOptionMenu.classList.remove('d-none')
                 moreOptionMenu.classList.add('d-block')
                 setPublication(publication);
-                document.addEventListener('click', ({ target }) => {
-                    if (!target.closest(`#more-options-${id}`)) {
-                        moreOptionMenu.classList.add('d-none')
-                        moreOptionMenu.classList.remove('d-block')
-                        setMenuActive('');
-                    }
-                })
+                document.addEventListener('click', (event) => hideMenuIfClickOutside(event, moreOptionMenu))
             } else {
                 setMenuActive('')
                 moreOptionMenu.classList.remove('d-block')
                 moreOptionMenu.classList.add('d-none')
+                document.removeEventListener('click', (event) => handleMoreOptionMenu(event, moreOptionMenu))
             }
         }
     }
-    useEffect(() => {
-        const controller = new AbortController();
-        return () => controller.abort();
-    }, []);
 
     useEffect(() => {
         setId(publication?.id)

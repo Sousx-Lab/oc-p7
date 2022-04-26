@@ -222,7 +222,6 @@ const EditUserProfilModal = ({ userProperties = {}, setUpdatedData }) => {
                                         <label htmlFor="pet-select">Rôle utilisateur</label>
                                         <select defaultValue={"ROLE_ADMIN"} id="role" name="role" className="form-select" aria-label="select role">
                                             <option value="ROLE_ADMIN">Administrateur</option>
-                                            <option value="ROLE_USER">Utilisateur</option>
                                         </select>
                                     </div>
                                 )}

@@ -25,11 +25,19 @@ exports.findOneJoinUserComment = async (id) =>{
     });
 }
 
-exports.findAllJoinUser = async () =>{
-    return await Post.findAll({
+/**
+ * 
+ * @param {number} page 
+ * @param {number} perPage 
+ * @returns 
+ */
+exports.findAllJoinUser = async (page = 1, perPage = 10) =>{
+    return await Post.findAndCountAll({
+        offset: (page* perPage) - perPage,
+        limit: perPage,
         attributes: ['id', 'content','media', 'likes', 'mediaType',
         ['users_liked', 'usersLiked'],['created_at', 'createdAt'],['updated_at', 'updatedAt'],
-        [Sequelize.fn('count', Sequelize.col('post_id')), 'commentsCount']
+        [Sequelize.literal("(SELECT COUNT(*) FROM comments where post_id = post.id)"), "commentsCount"],
         ],
         include: [{
             model: User, 
@@ -39,7 +47,8 @@ exports.findAllJoinUser = async () =>{
             {model: Comment, attributes: []}
         ],
         group: ['post.id'],
-        order: [['created_at', 'DESC']]
+        order: [['created_at', 'DESC']],
+        separate:true
     });
 }
 

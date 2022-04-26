@@ -16,7 +16,7 @@ module.exports = {
     let posts = [];
     let comments = [];
     let date = new Date().toISOString().slice(0, 19).replace('T', ' ');
-    for await (let i of asyncGenerator(35)){
+    for await (let i of asyncGenerator(36)){
       users = [...users, {
         id: crypto.randomUUID(),
         email: `email${i}@domain.com`,

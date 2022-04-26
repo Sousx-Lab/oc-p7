@@ -139,3 +139,18 @@
     }
 
 }
+
+.icon-white {
+    &:hover {
+        svg {
+            path {
+                stroke: #ffff;
+            }
+        }
+    }
+    svg {
+        path {
+            stroke: #6c6a6a;
+        }
+    }
+}

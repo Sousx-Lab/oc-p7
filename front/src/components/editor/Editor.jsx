@@ -93,6 +93,7 @@ const Editor = ({ editorContext, emojiTriggerContext, placeholder = "Quoi de neu
                             className="form-control form-control border-0 rounded ps-2 editor-textarea"
                             placeholder={placeholder}
                             autoComplete="false"
+                            maxLength={400}
                             data-context={editorContext}
                         />
                         <div className="d-flex mt-2 align-items-center" >

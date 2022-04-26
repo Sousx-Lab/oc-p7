@@ -5,10 +5,13 @@ const postRespository = require('../repository/post.repository');
  * Get All Posts 
  */
 exports.getAllPosts = async (req, res, next) => {
-    const limit = req.query.limit
+    let perPage = parseInt(req.query?.perPage) || 10;
+    perPage = perPage > 10 ? 10 : perPage;
+    
+    const page = parseInt(req.query?.page) || 1;
     try {
-        const posts = await postRespository.findAllJoinUser();
-        return res.http.Ok(posts);
+        const {count, rows: posts } = await postRespository.findAllJoinUser(page, perPage);
+        return res.http.Ok({total: count.length, posts});
     } catch (error) {
         return jsonErrors(error, res);
     };   

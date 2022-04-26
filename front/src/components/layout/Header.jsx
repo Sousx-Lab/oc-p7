@@ -23,12 +23,8 @@ const Header = () => {
         } catch (error) {
             toast.error("Une erreur s'est produite! Veuillez réessayer plus tard")
         }
-
     }
-    const navLink = () => {
-        return 'nav-link ' + (location.pathname === '/' ? 'active' : '')
-    }
-
+    
     return (
         <>
             <header>
@@ -44,7 +40,7 @@ const Header = () => {
                             </Link>
                             <ul className="nav navbar-nav ms-auto justify-content-end">
                                 <li className="nav-item">
-                                    <Link id="accueil" to={"/"} className={navLink()}>Accueil
+                                    <Link id="accueil" to={"/"} className={'nav-link ' + (location.pathname === '/' ? 'active' : '')}>Accueil
                                         <span className="visually-hidden">(current)</span>
                                     </Link>
                                 </li>
@@ -53,17 +49,17 @@ const Header = () => {
                                         href="#" role="button" aria-haspopup="true" aria-expanded="false"><strong>{user?.firstName}</strong>
                                     </a>
                                     <div className="dropdown-menu">
-                                        <Link className="dropdown-item" to={`/user/${user.id}`}>
-                                            Profil
-                                            <div className="d-inline ps-2 float-end">
+                                        <Link className="dropdown-item icon-white" to={`/user/${user.id}`}>
+                                            Profil 
+                                            <i className="d-inline ps-2 float-end">
                                                 <UserCircleSvg size={18} />
-                                            </div>
+                                            </i>
                                         </Link>
                                         <div className="dropdown-item bg-danger text-light" onClick={handleLogout} role="button">
                                             Déconnexion
-                                            <div className="d-inline ps-2 float-end">
+                                            <i className="d-inline ps-2 float-end">
                                                 <ArrowOutSvg stroke="#ffff" size={18} />
-                                            </div>
+                                            </i>
                                         </div>
                                     </div>
                                 </li>

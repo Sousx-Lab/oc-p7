@@ -106,7 +106,7 @@ export async function signup(credentials) {
 
 /**
  * @param {User} user 
- * @returns {void}
+ * @returns {Promise}
  */
 export async function logout(user){
     if(user){

@@ -5,10 +5,10 @@ import {getUser} from '../security/authenticator';
 /**
  * @returns {Promise<any>}
  */
-export async function getAll() {
+export async function getAll(page = 1) {
     let {xsrfToken} = await getUser();
     if (xsrfToken) {
-        const response = fetch(PostsApi.getAll, {
+        const response = fetch(PostsApi.getAll(page), {
             credentials: 'include',
             headers: {
                 ...headers,

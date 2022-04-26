@@ -101,7 +101,7 @@ const UserPage = () => {
             <ConfirmationDeleteUserModal userId={userData.id} />
             {userData.id && (
                 <>
-                    <div className="row col-sm-12 col-md-8 col-xl-6 mx-auto pb-5 bg-light-hover border border-1">
+                    <div className="row col-sm-12 col-md-8 col-xl-6 mx-auto pb-5 bg-light bg-gradient border border-1">
                         <div className="mt-3 mb-3">
                             <Link to="#" className="rounded-circle bg-grey-hover icon-nav" style={{ padding: "0.5rem 0.4rem" }}
                                 onClick={() => window.history.back()}>
@@ -142,7 +142,7 @@ const UserPage = () => {
                         <EditPublicationModal handleUpdate={handleUpdate}/>
                         {userData.Posts.map((post, key) => (
                             <div key={key} className="row col-sm-12 col-md-8 col-xl-6 mx-auto bg-light-hover" >
-                                <article className="border-start border-end border-1 cursor-pointer" data-link={`/post/${post.id}`}
+                                <article className="border-start border-end border-1 border-bottom cursor-pointer" data-link={`/post/${post.id}`}
                                     onClick={postLink}>
                                     <div className="d-flex mb-3 mt-4 position-relative">
                                         <div className="pe-2" data-link={`/post/${post.id}`}>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Editor from "../components/editor/Editor";
-import { useQuery } from 'react-query';
+import { useInfiniteQuery } from 'react-query';
+import { useInView } from 'react-intersection-observer';
 import { getAll, deletePost } from "../services/Api/post/postsApi";
 import PostsCard from "../components/post/PostsCard";
 import { createPost } from "../services/Api/post/postsApi";
@@ -9,19 +10,29 @@ import { PublicationContext } from "../contexts/PublicationContext";
 
 const HomePage = () => {
 
-    const [posts, setPosts] = useState([]);
-    const [publication, setPublication] = useState('')
-    // const [newPost, setNewPost] = useState(null);
-    const { isLoading } = useQuery('Posts', () => getAll(), {
-        refetchOnWindowFocus: false,
-        onSuccess: (data) => {
-            setPosts(data);
-        },
-        onError(err) {
-            toast.error("Une erreur s'est produite lors du chargement !...");
-        }
-    })
+    
+    const [publication, setPublication] = useState('');
 
+    const [posts, setPosts] = useState([]);
+    const { ref, inView } = useInView();
+    
+    const perPage = 5;
+    const { isLoading, fetchNextPage, hasNextPage, hasPreviousPage } = useInfiniteQuery('Posts',
+        async({pageParam = 0}) => getAll(pageParam), {
+            getNextPageParam: (lastPage, allPages) => {
+                const maxPage = Math.ceil(lastPage.total / perPage);
+                let nextPage = allPages.length+1;
+                return nextPage <= maxPage ? nextPage : undefined;
+            },
+            onSuccess: (data) => {
+                setPosts(data.pages.map(({ posts }) =>  posts).flat());
+            },
+            onError(err) {
+                toast.error("Une erreur s'est produite lors du chargement !...");
+            },
+            keepPreviousData: true,
+    })
+    
     /**
      * @param {SubmitEvent} event
      * @returns {boolean}
@@ -58,8 +69,12 @@ const HomePage = () => {
     }
 
     useEffect(() => {
-        document.title = "Groupomania"
-    }, []);
+        (async () => {
+            if(hasNextPage && inView){
+                await fetchNextPage();
+            }
+        })()
+    },[inView])
     return (
         <main className="container" role="main">
             <div className="row mx-auto d-flex justify-content-center mt-2">
@@ -68,7 +83,7 @@ const HomePage = () => {
                 </div>
             </div>
             <PublicationContext.Provider value={{ publication, setPublication }} >
-                <PostsCard fetchedPosts={posts} isLoading={isLoading} handleDelete={DeletePost} deleteLoader={deleteLoader} />
+                <PostsCard fetchedPosts={posts} isLoading={isLoading} handleDelete={DeletePost} deleteLoader={deleteLoader} inView={ref} />
             </PublicationContext.Provider>
         </main>
     )

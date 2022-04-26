@@ -29,10 +29,11 @@ const ConfirmationDeleteUserModal = ({ userId }) => {
         }
         window.localStorage.removeItem('user')
         setUser(null);
-        navigate('/login', { replace: true });
-        toast.info("Votre compte utilisateur à été supprimé !");
+        document.getElementById('delete-user-close-modal').click();
+        navigate('/login');
+        toast.info("Votre compte utilisateur à bien été supprimé !");
     }
-    
+
     return (
         <div className="modal fade" id="delete-user-modal" tabIndex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
             <div className="modal-dialog modal-dialog-centered" role="document">
@@ -57,12 +58,14 @@ const ConfirmationDeleteUserModal = ({ userId }) => {
                                     <label htmlFor="currentPassword">Votre mot de passe actuel</label>
                                     <input
                                         onChange={handleChange}
+                                        onKeyDown={(e) => e.key === 'Enter' && handledeleteUser(e)}
                                         type="password"
                                         value={password || ""}
                                         className={"form-control " + (error?.password && "is-invalid")}
                                         placeholder="********"
                                         name="password"
                                         required
+                                        autoFocus={true}
                                     />
                                     {error?.password && <p className="invalid-feedback">{error?.password.message}</p>}
                                 </div>
@@ -73,7 +76,12 @@ const ConfirmationDeleteUserModal = ({ userId }) => {
                         <button type="button" className="btn btn-primary rounded-2 shadow" data-bs-toggle="modal" data-bs-target="#edit-profil-modal">
                             Annuler
                         </button>
-                        <button type="button" className="btn btn-danger rounded-2 shadow" disabled={password.length > 8 ? !true : !false} onClick={handledeleteUser}>
+                        <button id="delete-user-close-modal" type="button" hidden className="hidden"
+                            data-bs-dismiss="modal">
+                        </button>
+                        <button type="button" className="btn btn-danger rounded-2 shadow"
+                            disabled={password.length > 8 ? !true : !false}
+                            onClick={handledeleteUser}>
                             {isSubmited && (
                                 <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
                             )}

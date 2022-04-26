@@ -87,10 +87,11 @@ export const UserApi = {
 export const PostsApi = {
 
     /**
+     * @param {number} page
      * @returns {string}
-     * GET: http://localhost:3000/api/posts/
+     * GET: http://localhost:3000/api/posts?page=1
      */
-    get getAll(){return `${API.POSTS_ROUTE}/`},
+    getAll(page = 1){return `${API.POSTS_ROUTE}?page=${page}`},
 
     /**
      * @param {string} id Post id

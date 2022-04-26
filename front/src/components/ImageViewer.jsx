@@ -13,6 +13,7 @@ const ImageViewer = ({ children, imageId }) => {
             title: false,
             toolbar: false,
             movable: false,
+            toggleOnDblclick: true,
         });
     }
     useEffect(() => {
