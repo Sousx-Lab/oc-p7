@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { useDropzone } from 'react-dropzone';
 import { UserContext } from "../../contexts/UserContext";
 import { MediasSvg } from "../IconsSvg";

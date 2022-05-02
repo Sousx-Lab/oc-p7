@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from 'react-query';
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { getPostById, deletePost, updatePost } from "../services/Api/post/postsApi";

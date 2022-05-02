@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { EditSvg } from "./IconsSvg";
 import defautlAvatar from '../assets/img/d-avatar.svg';
 import { UserContext } from "../contexts/UserContext";

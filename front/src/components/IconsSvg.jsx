@@ -1,5 +1,3 @@
-import React from "react";
-
 export const HeartSvg = ({ size = 22, stroke = "#6c6a6a", fill = "none", strokeWidth = "1.5" }) =>
 (<svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24"
     fill={fill} stroke={stroke} strokeWidth={strokeWidth} strokeLinecap="round"

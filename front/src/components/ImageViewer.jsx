@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import Viewer from 'viewerjs';
 
 const ImageViewer = ({ children, imageId }) => {

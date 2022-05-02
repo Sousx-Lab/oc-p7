@@ -1,4 +1,4 @@
-import React, {useContext} from "react";
+import {useContext, useEffect} from "react";
 import {UserContext} from "../../contexts/UserContext";
 import { Outlet } from "react-router-dom";
 import { Link } from "react-router-dom";
@@ -9,6 +9,9 @@ const Footer = () => {
     const { user } = useContext(UserContext);
     const date = new Date();
 
+    useEffect(() => {
+        document.getElementById('app').classList.add('with-footer')
+    },[])
     return (
         <>
             <Outlet />

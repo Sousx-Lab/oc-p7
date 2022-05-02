@@ -11,13 +11,15 @@ body {
     padding: 0;
     overflow-y: scroll;
     overflow-x: hidden;
-    
 }
 
 #app {
     min-height: 100vh;
     position: relative;
-    padding-bottom: 250px;
+    &.with-footer{
+        padding-bottom: 250px;
+        
+    }
 }
 
 footer{

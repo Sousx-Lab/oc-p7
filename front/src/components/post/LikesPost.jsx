@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { UserContext } from '../../contexts/UserContext';
 import { HeartSvg } from '../IconsSvg';
 import { LikePost } from '../../services/Api/post/postsApi';

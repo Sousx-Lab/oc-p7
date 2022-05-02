@@ -1,4 +1,4 @@
-import React, {useContext} from "react";
+import {useContext} from "react";
 import { CopySvg, MailSvg, ShareSvg } from "../IconsSvg";
 import { UserContext } from "../../contexts/UserContext";
 import { toast } from 'react-toastify';

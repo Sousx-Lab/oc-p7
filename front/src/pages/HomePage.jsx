@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Editor from "../components/editor/Editor";
 import { useInfiniteQuery } from 'react-query';
 import { useInView } from 'react-intersection-observer';

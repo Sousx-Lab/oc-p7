@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import { useState, useContext, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import Loader from '../layout/Loader';
 import defautlAvatar from '../../assets/img/d-avatar.svg';

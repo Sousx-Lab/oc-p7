@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { UserContext } from '../contexts/UserContext';
 import logo from '../assets/img/icon-top-font-monochrome-purple.svg'
@@ -61,7 +61,7 @@ const LoginPage = () => {
         }
     }, []);
     return (
-        <div className='d-flex flex-column mx-auto col-md-8 col-lg-5 mt-5 entrance-page'>
+        <div className='d-flex flex-column mx-auto col-md-8 col-lg-5 mt-5 entrance-page no-footer'>
             <div className='p-2 text-center'>
                 <img className='img-fluid' src={logo} alt="Logo Groupomania" />
                 <h1 className='pt-2 fs-3 text-muted'>Se connecter</h1>

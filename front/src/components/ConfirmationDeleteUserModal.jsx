@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { AlertTriangleSvg } from "./IconsSvg";
 import { UserContext } from "../contexts/UserContext";
 import { deleteUser } from "../services/Api/user/usersApi";
@@ -29,9 +29,10 @@ const ConfirmationDeleteUserModal = ({ userId }) => {
         }
         window.localStorage.removeItem('user')
         setUser(null);
-        document.getElementById('delete-user-close-modal').click();
-        navigate('/login');
+        document.querySelector('.modal-backdrop').remove();
+        navigate('/', { replace: true });
         toast.info("Votre compte utilisateur à bien été supprimé !");
+        
     }
 
     return (
