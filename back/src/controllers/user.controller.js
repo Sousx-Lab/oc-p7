@@ -208,7 +208,7 @@ exports.updateUserById = async(req, res, next) =>{
         }
         await user.set({
             ...req.body,
-            roles: req.user.roles.includes('ROLE_ADMIN') ? [req.body?.role] : [],
+            roles: (req.user.roles.includes('ROLE_ADMIN') && req.body?.role) ? [req.body?.role] : [],
             password: req.body.newPassword ? await bcrypt.hash(req.body.newPassword, 10) : user.password,
             profilePicture: uploadedPicture
         },{ individualHooks: true});

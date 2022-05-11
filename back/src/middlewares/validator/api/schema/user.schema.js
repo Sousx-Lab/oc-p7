@@ -135,10 +135,9 @@ exports.updateUserSchema = Joi.object().keys({
     .string()
     .trim()
     .optional()
-    .allow(null, 'ROLE_ADMIN', 'ROLE_USER')
+    .allow(null, '')
     .messages({
       'string.base': "current role must be a string e.g. ROLE_ADMIN",
-      'string.empty': "current role must not be empty",
     }),
   currentPassword: Joi
     .string()

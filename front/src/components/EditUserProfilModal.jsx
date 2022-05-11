@@ -7,14 +7,14 @@ import { toast } from "react-toastify";
 import { saveUser } from "../services/Api/security/authenticator";
 import { isValidHttpUrl } from "../services/outils/objectValidator";
 
-const EditUserProfilModal = ({ userProperties = {}, setUpdatedData }) => {
+const EditUserProfilModal = ({ userProperties, setUpdatedData }) => {
 
     const { user } = useContext(UserContext);
     const [userData, setUserData] = useState({
         ...userProperties,
-        currentPassword: "",
-        newPassword: "",
-        confirmNewPassword: "",
+        currentPassword: '',
+        newPassword: '',
+        confirmNewPassword: '',
     });
     const [isPasswordChange, setIsPasswordChange] = useState(false);
     let isUserData = !Object.keys(userData).every((k) => userData[k] !== '')
@@ -44,8 +44,7 @@ const EditUserProfilModal = ({ userProperties = {}, setUpdatedData }) => {
         event.preventDefault();
         const form = new FormData(event.target);
         if (!form.get('profilePicture').name && isValidHttpUrl(userData.profilePicture)) {
-            form.set('profilePicture', user.profilePicture.split('/').pop());
-            console.log(form.get('role'));
+            form.set('profilePicture', userData.profilePicture.split('/').pop());
         }
         const response = await updateUser(userData.id, form);
         if (!response.ok) {
@@ -61,7 +60,7 @@ const EditUserProfilModal = ({ userProperties = {}, setUpdatedData }) => {
         setUpdatedData(userData);
         setError(null);
         toast.success('Votre profil a été mis à jour avec succès');
-        setUserData({ ...userData, currentPassword: "", newPassword: "", confirmNewPassword: "" });
+        setUserData({ ...userData, currentPassword: '', newPassword: '', confirmNewPassword: '' });
         setIsSubmited(false);
         document.getElementById('edit-profil-close-modal').click();
     }
@@ -220,7 +219,8 @@ const EditUserProfilModal = ({ userProperties = {}, setUpdatedData }) => {
                                 {user.roles.includes("ROLE_ADMIN") && (
                                     <div className="form-group mb-5">
                                         <label htmlFor="pet-select">Rôle utilisateur</label>
-                                        <select defaultValue={"ROLE_ADMIN"} id="role" name="role" className="form-select" aria-label="select role">
+                                        <select defaultValue={"NO_SET"} id="role" name="role" className="form-select" aria-label="select role">
+                                            <option value="">---Rôle---</option>
                                             <option value="ROLE_ADMIN">Administrateur</option>
                                         </select>
                                     </div>
