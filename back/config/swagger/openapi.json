@@ -85,7 +85,7 @@
         ],
         "summary": "Logs in user",
         "operationId": "loginUser",
-        "description": "Logsin user and returns **access_token** & **refrsh_token** cookie & **xsrfToken** in body",
+        "description": "return user and **access_token** & **refrsh_token** cookie & **xsrfToken** in body",
         "requestBody": {
           "description": "Login user",
           "content": {
