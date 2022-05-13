@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useRef } from "react";
 import { UserContext } from "../contexts/UserContext";
 import { PublicationContext } from "../contexts/PublicationContext";
 import { EditSvg, MoreVerticalSvg, TrashSvg } from "./IconsSvg";
@@ -9,7 +9,8 @@ const MoreOptionsMenu = ({ publication, publicationUserId}) => {
     const { user } = useContext(UserContext);
     const [id, setId] = useState('');
     const [menuActive, setMenuActive] = useState('')
-
+    const menuRef = useRef(null);
+    
     const hideMenuIfClickOutside = (event, parent) => {
         if (!event.target.closest(`#more-options-${id}`)) {
             parent.classList.add('d-none')
@@ -18,14 +19,15 @@ const MoreOptionsMenu = ({ publication, publicationUserId}) => {
         }
     }
     handleMoreOptionMenu = async (e) => {
-        const moreOptionMenu = document.getElementById(`more-option-menu-${id}`);
+        const moreOptionMenu = menuRef.current;
         if (moreOptionMenu) {
             if (moreOptionMenu.classList.contains('d-none') && menuActive !== "-active") {
                 setMenuActive('-active')
                 moreOptionMenu.classList.remove('d-none')
                 moreOptionMenu.classList.add('d-block')
                 setPublication(publication);
-                document.addEventListener('click', (event) => hideMenuIfClickOutside(event, moreOptionMenu))
+                document.addEventListener('click', (event) => 
+                  hideMenuIfClickOutside(event, moreOptionMenu))
             } else {
                 setMenuActive('')
                 moreOptionMenu.classList.remove('d-block')
@@ -48,7 +50,7 @@ const MoreOptionsMenu = ({ publication, publicationUserId}) => {
                         <MoreVerticalSvg />
                     </i>
                 </div>
-                <div id={`more-option-menu-${id}`}
+                <div id={`more-option-menu-${id}`} ref={menuRef}
                     className="d-none bg-white shadow position-absolute"
                     style={{ top: "40px", right: "0", width: "200px", cursor: "default", borderRadius: "3px" }} >
                     <ul className="list-unstyled mb-0">
