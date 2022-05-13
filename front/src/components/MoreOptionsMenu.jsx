@@ -40,6 +40,11 @@ const MoreOptionsMenu = ({ publication, publicationUserId}) => {
     useEffect(() => {
         setId(publication?.id)
     }, [publication])
+    useEffect(() => {
+      return () => { 
+        menuRef.current = false
+      }
+    }, [])
     return (
         <>
             <div id={`more-options-${id}`} className="position-absolute end-0" title="Plus..." onClick={handleMoreOptionMenu}
