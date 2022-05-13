@@ -120,8 +120,10 @@ const UserPage = () => {
                             )}
                         </div>
                         <div className="d-block overflow-auto">
-                            <img className="rounded-circle mb-1 border border-3 border-primary" width={64} alt={`profile picuture`}
+                            <img className="rounded-circle mb-1 border border-3 border-primary"  alt={`profile picuture`}
                                 src={userData.profilePicture || defautlAvatar}
+                                height={64} width={64}
+                                style={{ objectFit: "cover" }}
                                 data-holder-rendered="true" />
                         </div>
                         <div className="d-block text-capitalize fw-bold text-break mb-3 text-decoration-none link-dark">
@@ -148,8 +150,9 @@ const UserPage = () => {
                                         <div className="pe-2" data-link={`/post/${post.id}`}>
                                             <Link className="d-block overflow-auto" to={`/user/${userData.id}`}
                                                 data-popover="true">
-                                                <img className="rounded-circle border border-3" width={54}
+                                                <img className="rounded-circle border border-3" width={56} height={56}
                                                     alt={`photo de profile de ${userData.firstName} ${userData.lastName}`}
+                                                    style={{ objectFit: "cover" }}
                                                     src={userData.profilePicture || defautlAvatar}
                                                     data-holder-rendered="true" />
                                             </Link>

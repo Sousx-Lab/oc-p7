@@ -67,6 +67,7 @@ const EditUserProfilModal = ({ userProperties, setUpdatedData }) => {
 
     useEffect(() => {
         setUserData(userProperties);
+        console.log(userProperties);
     }, [userProperties]);
     return (
         <div id="edit-profil-modal" className="modal fade" tabIndex="-1" aria-hidden="true" style={{ zIndex: 1090 }}>

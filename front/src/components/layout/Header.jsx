@@ -65,8 +65,10 @@ const Header = () => {
                                 </li>
                                 <li className="nav-item">
                                     <Link to={`/user/${user.id}`} className="d-none d-md-inline">
-                                        <img className="rounded-circle border border-2 border-success" src={user.profilePicture || defautlAvatar} width={32}
+                                        <img className="rounded-circle border border-2 border-success" src={user.profilePicture || defautlAvatar}
                                             alt={`${user.firstName} ${user.lastName}`}
+                                            width={40} height={40}
+                                            style={{objectFit: "cover"}}
                                             title={`${user.firstName} ${user.lastName}`}
                                         />
                                     </Link>

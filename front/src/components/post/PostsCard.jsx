@@ -68,8 +68,10 @@ const PostsCard = ({ fetchedPosts = [], isLoading = true, handleDelete, deleteLo
                                     <Link to={`/user/${post.User.id}`}
                                         className="d-block overflow-auto "
                                         data-popover="true">
-                                        <img className="rounded-circle border border-3" width={54} alt={`photo de profile de ${post.User.firstName} ${post.User.lastName}`}
+                                        <img className="rounded-circle border border-3" alt={`photo de profile de ${post.User.firstName} ${post.User.lastName}`}
                                             src={post.User.profilePicture || defautlAvatar}
+                                            width="56" height="56"
+                                            style={{objectFit: "cover"}}
                                             data-holder-rendered="true" />
                                     </Link>
                                 </div>
