@@ -81,7 +81,7 @@ const Editor = ({ editorContext, emojiTriggerContext, placeholder = "Quoi de neu
                 <div className="pe-2">
                     <Link to={`/user/${user.id}`}>
                         <img className="rounded-circle border border-3 border-success" width={54} alt={`${user.firstName} ${user.lastName}`}
-                            src={user.profilePicture || defautlAvatar}
+                            src={editorContext === 'edit' ? publication?.User?.profilePicture|| defautlAvatar : user.profilePicture || defautlAvatar}
                             style={{Width: '100%', maxHeight: '54px', objectFit: 'cover'}}
                             title={`${user.firstName} ${user.lastName}`}
                             data-holder-rendered="true" />

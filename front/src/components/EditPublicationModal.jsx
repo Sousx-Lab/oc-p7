@@ -5,7 +5,7 @@ import { PublicationContext } from "../contexts/PublicationContext";
 import { toast } from "react-toastify";
 import { isValidHttpUrl } from "../services/outils/objectValidator";
 
-const EditPublicationModal = ({ handleUpdate, editorContext = "edit-publication"}) => {
+const EditPublicationModal = ({ handleUpdate, editorContext = "edit"}) => {
  
     const { publication } = useContext(PublicationContext);
     const [data, setData] = useState({});

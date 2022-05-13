@@ -54,7 +54,7 @@ const CommentariesSection = ({ commentaries = [] }) => {
     return (
         <PublicationContext.Provider value={{ publication, setPublication }} >
             <ConfiramtionDeleteModal handleDelete={DeleteComment} />
-            <EditPublicationModal handleUpdate={handleUpdate} editorContext="edit-comment-publication" />
+            <EditPublicationModal handleUpdate={handleUpdate} editorContext="edit" />
             {comments.length > 0 && comments.map((comment, key) => {
                 return (
                     <div key={key} className="border-start border-end border-bottom border-1 pt-4 pb-5 bg-light-hover">
