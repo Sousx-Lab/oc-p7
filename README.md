@@ -1,9 +1,10 @@
 # GroupoMania
 
 GroupoMania is a corporate social network (OpenClassRooms project)
+
 ## Demo
 
-https://user-images.githubusercontent.com/57526966/169263687-f48b217c-2ada-46cd-9ef8-d35eaf6bb43f.mp4
+https://user-images.githubusercontent.com/57526966/169264066-f2a75a8e-7c95-45c1-acb3-045b11d9fa52.mp4
 
 ## Install dependencies
 
